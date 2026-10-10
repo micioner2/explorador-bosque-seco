@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../domain/visita.dart';
+import '../../domain/visita.dart';
+import '../view_models/visitas_view_model.dart';
 
 /// Formulario corto para registrar al visitante (reemplaza al cuaderno).
-class RegistrarVisitantePage extends StatefulWidget {
+class RegistrarVisitantePage extends ConsumerStatefulWidget {
   const RegistrarVisitantePage({super.key});
 
   @override
-  State<RegistrarVisitantePage> createState() => _RegistrarVisitantePageState();
+  ConsumerState<RegistrarVisitantePage> createState() =>
+      _RegistrarVisitantePageState();
 }
 
-class _RegistrarVisitantePageState extends State<RegistrarVisitantePage> {
+class _RegistrarVisitantePageState
+    extends ConsumerState<RegistrarVisitantePage> {
   final _formKey = GlobalKey<FormState>();
   final _nombre = TextEditingController();
   final _edad = TextEditingController();
@@ -27,20 +31,23 @@ class _RegistrarVisitantePageState extends State<RegistrarVisitantePage> {
 
   void _registrar() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    final ahora = DateTime.now();
-    final visita = Visita(
-      id: ahora.microsecondsSinceEpoch.toString(),
-      asociacionId: 'demo',
-      nombreResponsable: _nombre.text,
-      edad: int.parse(_edad.text),
-      procedencia: _procedencia,
-      tamanoGrupo: _grupo,
-      actividad: _actividad,
-      fechaEntrada: ahora,
-      salidaPrevista: ahora.add(const Duration(hours: 8)),
-    );
+    final visita = ref
+        .read(visitasViewModelProvider.notifier)
+        .registrar(
+          nombreResponsable: _nombre.text,
+          edad: int.parse(_edad.text),
+          procedencia: _procedencia,
+          tamanoGrupo: _grupo,
+          actividad: _actividad,
+        );
+    _formKey.currentState?.reset();
+    _nombre.clear();
+    _edad.clear();
+    setState(() => _grupo = 1);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Visita de ${visita.nombreResponsable} registrada')),
+      SnackBar(
+        content: Text('Visita de ${visita.nombreResponsable} registrada'),
+      ),
     );
   }
 
@@ -59,8 +66,7 @@ class _RegistrarVisitantePageState extends State<RegistrarVisitantePage> {
                 labelText: 'Nombre del responsable',
               ),
               textCapitalization: TextCapitalization.words,
-              validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? 'Ingresa el nombre' : null,
+              validator: _validarNombre,
             ),
             const SizedBox(height: 12),
             TextFormField(
@@ -130,6 +136,9 @@ class _RegistrarVisitantePageState extends State<RegistrarVisitantePage> {
       ),
     );
   }
+
+  static String? _validarNombre(String? valor) =>
+      (valor == null || valor.trim().isEmpty) ? 'Ingresa el nombre' : null;
 
   static String? _validarEdad(String? valor) {
     final edad = int.tryParse(valor ?? '');

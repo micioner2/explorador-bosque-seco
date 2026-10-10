@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/reloj.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../shared/widgets/tarjeta_dato.dart';
-import '../../puntos/data/pasaporte_repository.dart';
-import '../../visitas/data/visitas_repository.dart';
-import '../domain/reporte_diario.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/widgets/tarjeta_dato.dart';
+import '../view_models/reporte_view_model.dart';
 
 /// Reporte de cierre del día (base del PDF que pide AIDER).
 class ReportePage extends ConsumerWidget {
@@ -14,11 +11,7 @@ class ReportePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final reporte = ReporteDiario.calcular(
-      dia: ref.watch(relojProvider)(),
-      visitas: ref.watch(visitasDelDiaProvider),
-      escaneos: ref.watch(pasaporteProvider).escaneos,
-    );
+    final reporte = ref.watch(reporteViewModelProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Reporte del día')),

@@ -32,33 +32,34 @@ comunidad.
 
 ## Arquitectura
 
-Organizada por funcionalidades (*feature-first*). Cada una separa:
-
-- `domain/`: entidades y reglas de negocio puras en Dart, sin Flutter. Es
-  la parte cubierta por las pruebas unitarias.
-- `data/`: repositorios y proveedores de datos (hoy, datos de demostración).
-- `presentation/`: pantallas y widgets.
+**MVVM con repositorios, organizada por funcionalidad**: la arquitectura que
+recomienda la [guía oficial de Flutter](https://docs.flutter.dev/app-architecture/guide).
+La evaluación de alternativas y el diseño offline-first están en
+[`docs/ARQUITECTURA.md`](docs/ARQUITECTURA.md).
 
 ```
 lib/
 ├── main.dart
 ├── app.dart
 ├── core/
-│   ├── reloj.dart              # hora inyectable para pruebas
-│   ├── router/                 # go_router: rutas y navegación por modo
-│   └── theme/                  # paleta y tema
+│   ├── reloj.dart                  # hora inyectable para pruebas
+│   ├── router/                     # go_router: rutas y navegación por modo
+│   └── theme/                      # paleta y tema
 ├── features/
-│   ├── explorar/               # espacio, atractivos y servicios
-│   ├── mapa/                   # mapa de la ruta sin señal
-│   ├── escaneo/                # lector de QR de los puntos
-│   ├── puntos/                 # pasaporte, reglas de puntos y canje
-│   ├── visitas/                # registro, salida y alerta "sigue dentro"
-│   └── reportes/               # reporte diario
-└── shared/widgets/             # componentes reutilizables
-test/                           # pruebas unitarias y de widgets
+│   └── <funcionalidad>/
+│       ├── domain/                 # modelos, reglas e interfaces (Dart puro)
+│       ├── data/                   # implementaciones de repositorios
+│       └── presentation/
+│           ├── view_models/        # estado y acciones (Riverpod Notifier)
+│           └── views/              # pantallas
+└── shared/widgets/                 # componentes reutilizables
+test/                               # dominio, ViewModels y widgets
 ```
 
-**Stack:** Flutter 3.38.9 (Dart 3.10) · Riverpod · go_router.
+Funcionalidades: `explorar`, `mapa`, `escaneo`, `puntos`, `visitas` y
+`reportes`.
+
+**Stack:** Flutter 3.38.9 (Dart 3.10) · Riverpod 3 · go_router.
 
 ### Reglas de negocio con pruebas
 

@@ -1,14 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/espacio.dart';
-
-/// Fuente de datos de los espacios turísticos.
-///
-/// La implementación real leerá el paquete descargado para uso sin señal;
-/// mientras tanto se usan datos de demostración.
-abstract interface class EspacioRepository {
-  Espacio espacioActual();
-}
+import '../domain/espacio_repository.dart';
 
 /// Datos de demostración de El Angolo. Los valores entre corchetes se
 /// reemplazan con la información real de la asociación.
@@ -59,10 +52,7 @@ class EspacioRepositoryDemo implements EspacioRepository {
   );
 }
 
+/// Punto único donde se elige la implementación del repositorio.
 final espacioRepositoryProvider = Provider<EspacioRepository>(
   (ref) => const EspacioRepositoryDemo(),
-);
-
-final espacioActualProvider = Provider<Espacio>(
-  (ref) => ref.watch(espacioRepositoryProvider).espacioActual(),
 );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/theme/app_colors.dart';
-import '../../../shared/widgets/aviso_sin_senal.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/widgets/aviso_sin_senal.dart';
 
 /// Mapa de la ruta con la ubicación del turista.
 ///

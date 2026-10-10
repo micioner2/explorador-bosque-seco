@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/router/rutas.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../shared/widgets/tarjeta_dato.dart';
-import '../data/espacio_repository.dart';
-import '../domain/espacio.dart';
+import '../../../../core/router/rutas.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/widgets/tarjeta_dato.dart';
+import '../../domain/espacio.dart';
+import '../view_models/explorar_view_model.dart';
 
 /// Pantalla principal del turista: información práctica, atractivos y
 /// servicios de la comunidad.
@@ -15,7 +15,7 @@ class ExplorarPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final espacio = ref.watch(espacioActualProvider);
+    final espacio = ref.watch(explorarViewModelProvider);
 
     return Scaffold(
       appBar: AppBar(

@@ -1,12 +1,12 @@
 import 'package:go_router/go_router.dart';
 
-import '../../features/escaneo/presentation/escanear_page.dart';
-import '../../features/explorar/presentation/explorar_page.dart';
-import '../../features/mapa/presentation/mapa_page.dart';
-import '../../features/puntos/presentation/pasaporte_page.dart';
-import '../../features/reportes/presentation/reporte_page.dart';
-import '../../features/visitas/presentation/hoy_page.dart';
-import '../../features/visitas/presentation/registrar_visitante_page.dart';
+import '../../features/escaneo/presentation/views/escanear_page.dart';
+import '../../features/explorar/presentation/views/explorar_page.dart';
+import '../../features/mapa/presentation/views/mapa_page.dart';
+import '../../features/puntos/presentation/views/pasaporte_page.dart';
+import '../../features/reportes/presentation/views/reporte_page.dart';
+import '../../features/visitas/presentation/views/hoy_page.dart';
+import '../../features/visitas/presentation/views/registrar_visitante_page.dart';
 import 'rutas.dart';
 import 'shells.dart';
 

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_colors.dart';
-import '../data/pasaporte_repository.dart';
-import '../domain/pasaporte.dart';
-import '../domain/producto.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../domain/pasaporte.dart';
+import '../../domain/producto.dart';
+import '../view_models/pasaporte_view_model.dart';
 
 /// Pasaporte del turista: puntos ganados y canje en la tienda comunal.
 class PasaportePage extends ConsumerWidget {
@@ -12,8 +12,20 @@ class PasaportePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pasaporte = ref.watch(pasaporteProvider);
+    final pasaporte = ref.watch(pasaporteViewModelProvider);
     final productos = ref.watch(productosProvider);
+
+    void canjear(Producto producto) {
+      final mensajero = ScaffoldMessenger.of(context);
+      try {
+        ref.read(pasaporteViewModelProvider.notifier).canjear(producto);
+        mensajero.showSnackBar(
+          SnackBar(content: Text('Cupón generado: ${producto.nombre}')),
+        );
+      } on CanjeInvalido catch (error) {
+        mensajero.showSnackBar(SnackBar(content: Text(error.mensaje)));
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Mi pasaporte')),
@@ -32,7 +44,11 @@ class PasaportePage extends ConsumerWidget {
             ),
           ),
           for (final producto in productos)
-            _TarjetaProducto(producto: producto, pasaporte: pasaporte),
+            _TarjetaProducto(
+              producto: producto,
+              pasaporte: pasaporte,
+              onCanjear: () => canjear(producto),
+            ),
         ],
       ),
     );
@@ -76,6 +92,11 @@ class _ResumenPuntos extends StatelessWidget {
                   '${pasaporte.puntosPendientes} pendientes',
                   style: const TextStyle(color: Colors.white70),
                 ),
+                if (pasaporte.puntosCanjeados > 0)
+                  Text(
+                    '${pasaporte.puntosCanjeados} ya canjeados',
+                    style: const TextStyle(color: Colors.white70),
+                  ),
               ],
             ),
           ),
@@ -86,10 +107,15 @@ class _ResumenPuntos extends StatelessWidget {
 }
 
 class _TarjetaProducto extends StatelessWidget {
-  const _TarjetaProducto({required this.producto, required this.pasaporte});
+  const _TarjetaProducto({
+    required this.producto,
+    required this.pasaporte,
+    required this.onCanjear,
+  });
 
   final Producto producto;
   final Pasaporte pasaporte;
+  final VoidCallback onCanjear;
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +134,7 @@ class _TarjetaProducto extends StatelessWidget {
               : 'Te faltan ${pasaporte.puntosFaltantes(producto)} puntos',
         ),
         trailing: puede
-            ? FilledButton(onPressed: () {}, child: const Text('Canjear'))
+            ? FilledButton(onPressed: onCanjear, child: const Text('Canjear'))
             : null,
       ),
     );
