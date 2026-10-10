@@ -54,10 +54,30 @@ jobs:
           fi
 
       - name: Análisis estático (flutter analyze)
-        run: flutter analyze
+        run: |
+          set -o pipefail
+          if ! flutter analyze 2>&1 | tee analyze.log; then
+            {
+              echo "### Observaciones de flutter analyze"
+              echo '```'
+              cat analyze.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
 
       - name: Pruebas (flutter test)
-        run: flutter test --coverage
+        run: |
+          set -o pipefail
+          if ! flutter test --coverage 2>&1 | tee test.log; then
+            {
+              echo "### Pruebas con errores"
+              echo '```'
+              tail -n 150 test.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
 
       - name: Guardar cobertura
         if: always()
