@@ -42,6 +42,13 @@ jobs:
           if ! dart format --output=none --set-exit-if-changed lib test; then
             echo "::error::Hay archivos sin formatear. Ejecuta: dart format lib test"
             dart format lib test > /dev/null
+            {
+              echo "### Cambios de formato pendientes"
+              echo "Ejecuta \`dart format lib test\` y vuelve a subir."
+              echo '```diff'
+              git --no-pager diff
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
             git --no-pager diff
             exit 1
           fi

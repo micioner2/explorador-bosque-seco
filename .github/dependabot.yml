@@ -4,7 +4,14 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    open-pull-requests-limit: 3
   - package-ecosystem: pub
     directory: /
     schedule:
       interval: weekly
+    open-pull-requests-limit: 3
+    # Las versiones mayores pueden exigir un Dart más nuevo que el de
+    # Flutter 3.38.9: se actualizan a mano junto con Flutter.
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
