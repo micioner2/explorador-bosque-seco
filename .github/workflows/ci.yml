@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Descargar código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Instalar Flutter ${{ env.FLUTTER_VERSION }}
         uses: subosito/flutter-action@v2
@@ -61,7 +61,7 @@ jobs:
 
       - name: Guardar cobertura
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: cobertura
           path: coverage/lcov.info
@@ -74,10 +74,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Descargar código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Instalar Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -96,7 +96,7 @@ jobs:
         run: flutter build apk --release
 
       - name: Publicar APK como artefacto
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: explorador-bosque-seco-apk
           path: build/app/outputs/flutter-apk/app-release.apk

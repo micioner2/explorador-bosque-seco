@@ -95,7 +95,10 @@ void main() {
     });
 
     test('sin puntos suficientes lanza CanjeInvalido', () {
-      expect(() => conConfirmados(2).canjear(polo), throwsA(isA<CanjeInvalido>()));
+      expect(
+        () => conConfirmados(2).canjear(polo),
+        throwsA(isA<CanjeInvalido>()),
+      );
     });
 
     test('los puntos pendientes no se pueden canjear', () {

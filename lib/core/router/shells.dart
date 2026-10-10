@@ -67,10 +67,7 @@ class AsociacionShell extends StatelessWidget {
             icon: Icon(Icons.person_add_alt),
             label: 'Registrar',
           ),
-          NavigationDestination(
-            icon: Icon(Icons.bar_chart),
-            label: 'Reporte',
-          ),
+          NavigationDestination(icon: Icon(Icons.bar_chart), label: 'Reporte'),
         ],
       ),
     );

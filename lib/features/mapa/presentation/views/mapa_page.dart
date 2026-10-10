@@ -24,7 +24,11 @@ class MapaPage extends StatelessWidget {
               child: const Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.map_outlined, size: 56, color: AppColors.verdeOscuro),
+                  Icon(
+                    Icons.map_outlined,
+                    size: 56,
+                    color: AppColors.verdeOscuro,
+                  ),
                   SizedBox(height: 8),
                   Text('Mapa sin señal'),
                 ],

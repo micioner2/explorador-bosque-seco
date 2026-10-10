@@ -22,9 +22,11 @@ void main() {
     final visitas = [
       visita('a', grupo: 4, salidaHora: 16),
       visita('b', grupo: 3, salidaHora: 11),
-      visita('c', grupo: 2, salidaHora: 10).marcarSalida(
-        DateTime(2026, 10, 10, 9, 45),
-      ),
+      visita(
+        'c',
+        grupo: 2,
+        salidaHora: 10,
+      ).marcarSalida(DateTime(2026, 10, 10, 9, 45)),
     ];
 
     final resumen = ResumenDelDia.calcular(visitas, ahora);
