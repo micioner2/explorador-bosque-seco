@@ -54,7 +54,7 @@ jobs:
 
       - name: Guardar cobertura
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cobertura
           path: coverage/lcov.info
@@ -89,7 +89,7 @@ jobs:
         run: flutter build apk --release
 
       - name: Publicar APK como artefacto
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: explorador-bosque-seco-apk
           path: build/app/outputs/flutter-apk/app-release.apk
