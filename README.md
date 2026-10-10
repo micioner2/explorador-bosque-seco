@@ -6,6 +6,15 @@ App móvil para el **Reto 12 de AIDER** en el hackathon **Piura Innova**: que lo
 turistas descubran el bosque seco de Piura y que las asociaciones dejen el
 cuaderno de visitas por datos confiables.
 
+## Documentación
+
+| Documento | Contenido |
+|---|---|
+| [`CLAUDE.md`](CLAUDE.md) | Contexto de desarrollo: versiones, comandos, reglas de arquitectura, convenciones y skills de Claude Code. |
+| [`docs/PRODUCTO.md`](docs/PRODUCTO.md) | Propósito, usuarios, funcionalidades, alcance y reglas de negocio de la app móvil. |
+| [`docs/ARQUITECTURA.md`](docs/ARQUITECTURA.md) | Arquitectura elegida, alternativas evaluadas y diseño offline-first. |
+| [`.claude/skills/`](.claude/skills) | Skills del proyecto para Claude Code. |
+
 ## El problema
 
 - **Difusión:** el turista no conoce los senderos, el avistamiento de fauna ni

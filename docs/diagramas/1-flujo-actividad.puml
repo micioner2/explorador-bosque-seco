@@ -1,0 +1,62 @@
+@startuml flujo_visita
+title Flujo de la visita - Explorador Ecoturístico del Bosque Seco
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam ActivityBackgroundColor #F1F8E9
+skinparam ActivityBorderColor #558B2F
+skinparam SwimlaneTitleFontStyle bold
+
+|Turista|
+start
+:Explora lugares, rutas y servicios en la web
+(en casa, con internet);
+:Contacta a un guía por WhatsApp;
+:Llega al local de la asociación;
+
+|Asociación|
+:Abre la PWA en modo asociación;
+:Registra al visitante
+(nombre, edad, DNI, procedencia,
+grupo, actividad, guía, fecha de salida);
+:El sistema crea la VISITA
+y genera un QR personal;
+
+|Turista|
+:Escanea su QR personal;
+:La PWA se abre vinculada a su visita
+(sin cuenta ni contraseña);
+:Toca "Descargar ruta"
+(mapa, puntos, fotos, audios, contactos);
+:Agrega la app a la pantalla de inicio;
+
+partition "En el bosque (sin señal)" {
+  :Ve el mapa con su ubicación GPS y la ruta;
+  repeat
+    :Llega a un punto turístico;
+    :Escanea el QR del punto;
+    :Ve fotos y audio, gana un sello;
+    :El escaneo se guarda en el celular;
+  repeat while (¿Hay más puntos en la ruta?) is (sí)
+  ->no;
+}
+
+:Regresa al pueblo (vuelve la señal);
+:Los datos se sincronizan solos;
+:Deja su opinión;
+:Recibe su insignia compartible;
+
+|Asociación|
+:Marca la salida del visitante;
+if (¿Algún visitante pasó su hora de salida?) then (sí)
+  :Alerta "sigue dentro";
+else (no)
+endif
+:Presiona "Reporte del día";
+:Se genera el PDF
+(visitantes, procedencia, edades,
+puntos más visitados, opiniones);
+
+|AIDER|
+:Ve el panel con todas las asociaciones;
+stop
+@enduml

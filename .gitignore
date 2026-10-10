@@ -43,3 +43,14 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Configuración local y secretos (ver config/supabase.example.json)
+config/*.json
+!config/*.example.json
+.env
+.env.*
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
+# Ajustes personales de Claude Code
+.claude/settings.local.json

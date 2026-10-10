@@ -1,0 +1,49 @@
+@startuml casos_de_uso
+title Casos de uso
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+actor Turista as T
+actor "Encargado de\nasociación" as E
+actor AIDER as A
+
+rectangle "Plataforma PWA - Bosque Seco" {
+  usecase "Explorar lugares, rutas\ny servicios" as UC1
+  usecase "Contactar guía\npor WhatsApp" as UC2
+  usecase "Vincular visita\ncon QR personal" as UC3
+  usecase "Descargar ruta\npara uso sin señal" as UC4
+  usecase "Ver mapa con GPS" as UC5
+  usecase "Escanear QR de punto\ny ganar sello" as UC6
+  usecase "Dejar opinión" as UC7
+  usecase "Compartir insignia" as UC8
+
+  usecase "Registrar visitante" as UC9
+  usecase "Marcar salida" as UC10
+  usecase "Ver quién sigue dentro" as UC11
+  usecase "Generar reporte PDF diario" as UC12
+  usecase "Administrar servicios\ny tarifas" as UC13
+
+  usecase "Ver panel de todas\nlas asociaciones" as UC14
+}
+
+T --> UC1
+T --> UC2
+T --> UC3
+T --> UC4
+T --> UC5
+T --> UC6
+T --> UC7
+T --> UC8
+
+E --> UC9
+E --> UC10
+E --> UC11
+E --> UC12
+E --> UC13
+
+A --> UC14
+
+UC9 ..> UC3 : <<genera QR>>
+UC4 ..> UC5 : <<permite>>
+@enduml

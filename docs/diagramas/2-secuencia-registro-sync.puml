@@ -1,0 +1,49 @@
+@startuml secuencia_registro
+title Secuencia: registro, uso sin señal y sincronización
+skinparam shadowing false
+skinparam defaultFontName Arial
+autonumber
+
+actor "Encargado\nasociación" as E
+actor Turista as T
+participant "PWA\n(modo asociación)" as PA
+participant "PWA\n(modo turista)" as PT
+database "Almacenamiento\nlocal (celular)" as L
+database "Supabase\n(Postgres)" as F
+
+== Registro en la asociación (con señal) ==
+E -> PA : Llena datos del visitante
+PA -> F : Crear visita
+F --> PA : visitaId
+PA --> E : Muestra QR personal (visitaId)
+
+T -> PT : Escanea QR personal
+PT -> L : Guarda visitaId
+T -> PT : "Descargar ruta"
+PT -> F : Pide mapa, puntos, fotos, servicios
+F --> PT : Contenido del espacio
+PT -> L : Guarda todo para uso offline
+
+== En el bosque (sin señal) ==
+T -> PT : Abre mapa
+PT -> L : Lee mapa y ruta
+PT --> T : Mapa + ubicación GPS
+T -> PT : Escanea QR del punto
+PT -> L : Lee fotos y audio del punto
+PT -> L : Guarda escaneo (visitaId, puntoId, hora)
+PT --> T : Muestra contenido + sello
+
+== De vuelta en el pueblo (con señal) ==
+L -> F : Sincroniza escaneos pendientes (automático)
+T -> PT : Deja opinión
+PT -> F : Guarda opinión
+PT --> T : Insignia compartible
+
+== Salida y cierre del día ==
+E -> PA : Marca salida
+PA -> F : Actualizar visita (horaSalida)
+E -> PA : "Reporte del día"
+PA -> F : Consulta visitas, escaneos y opiniones del día
+F --> PA : Datos
+PA --> E : PDF del reporte diario
+@enduml

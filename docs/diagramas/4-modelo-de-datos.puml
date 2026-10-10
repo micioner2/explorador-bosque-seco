@@ -1,0 +1,122 @@
+@startuml modelo_datos
+title Modelo de datos (Supabase / Postgres)
+skinparam shadowing false
+skinparam defaultFontName Arial
+hide methods
+hide circle
+
+class Asociacion {
+  id
+  nombre
+  comunidad
+  departamento
+  presidente
+  whatsapp
+}
+
+class Espacio {
+  id
+  asociacionId
+  nombre
+  descripcion
+  comoLlegar
+  mediosPago
+  haySenal
+  dificultad
+}
+
+class Ruta {
+  id
+  espacioId
+  nombre
+  trazoGeoJSON
+  distanciaKm
+  tiempoMin
+  dificultad
+}
+
+class Punto {
+  id
+  rutaId
+  nombre
+  descripcion
+  lat
+  lng
+  fotos[]
+  audioUrl
+  codigoQR
+}
+
+class Servicio {
+  id
+  asociacionId
+  tipo : guiado | alimentacion | hospedaje | transporte
+  nombre
+  tarifa
+  whatsapp
+  mediosPago
+}
+
+class Visita {
+  id
+  asociacionId
+  espacioId
+  nombre
+  edad
+  dni
+  procedencia
+  tamanoGrupo
+  actividad
+  guiaId
+  fechaEntrada
+  salidaPrevista
+  fechaSalida
+}
+
+class Escaneo {
+  id (UUID del celular)
+  visitaId
+  puntoId
+  fecha
+  estado : pendiente | confirmado
+}
+
+class Producto {
+  id
+  asociacionId
+  nombre
+  puntosRequeridos
+  porcentajeDescuento
+}
+
+class Canje {
+  id
+  visitaId
+  productoId
+  puntosUsados
+  codigo
+  estado
+}
+
+class Opinion {
+  id
+  visitaId
+  calificacion
+  intereses[]
+  comentario
+}
+
+Asociacion "1" -- "*" Espacio
+Asociacion "1" -- "*" Servicio
+Asociacion "1" -- "*" Visita
+Espacio "1" -- "*" Ruta
+Ruta "1" -- "*" Punto
+Espacio "1" -- "*" Visita
+Servicio "1" -- "*" Visita : guía
+Visita "1" -- "*" Escaneo
+Punto "1" -- "*" Escaneo
+Visita "1" -- "0..1" Opinion
+Asociacion "1" -- "*" Producto
+Visita "1" -- "*" Canje
+Producto "1" -- "*" Canje
+@enduml
