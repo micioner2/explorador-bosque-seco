@@ -264,7 +264,6 @@
   "reporteEdades": "Edades",
   "reporteSinRegistros": "Sin registros hoy",
   "reportePdf": "Descargar PDF",
-  "reportePdfAviso": "El PDF oficial se genera en el panel web con estos datos.",
   "edadMenores": "Menos de 18",
   "edad18a29": "18 a 29",
   "edad30a44": "30 a 44",
@@ -623,5 +622,19 @@
 
   "pasaporteSinGrupo": "Aún no tienes sellos",
   "pasaporteSinGrupoDetalle": "Escanea el QR de tu grupo: te lo muestra el guía en el puesto de control. Luego cada punto de la ruta te da un sello.",
-  "pasaporteEscanearGrupo": "Escanear el QR del grupo"
+  "pasaporteEscanearGrupo": "Escanear el QR del grupo",
+
+  "pdfMarca": "BOSQUE SECO · ASOCIACIÓN",
+  "pdfSinCierre": "Día aún sin cerrar",
+  "pdfSinSalida": "Grupos sin salida",
+  "pdfPuntos": "Puntos más visitados",
+  "pdfSinDatos": "Sin datos",
+  "pdfNota": "Generado sin conexión desde el puesto de control · {cuando}",
+  "@pdfNota": {
+    "placeholders": {
+      "cuando": {"type": "String"}
+    }
+  },
+  "pdfGenerando": "Generando PDF…",
+  "pdfError": "No se pudo crear el PDF. Inténtalo de nuevo."
 }

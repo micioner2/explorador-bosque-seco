@@ -134,7 +134,6 @@
   "reporteEdades": "Ages",
   "reporteSinRegistros": "No records today",
   "reportePdf": "Download PDF",
-  "reportePdfAviso": "The official PDF is generated in the web panel from this data.",
   "edadMenores": "Under 18",
   "edad18a29": "18 to 29",
   "edad30a44": "30 to 44",
@@ -324,5 +323,14 @@
 
   "pasaporteSinGrupo": "No stamps yet",
   "pasaporteSinGrupoDetalle": "Scan your group's QR: the guide shows it to you at the checkpoint. Then each stop on the trail gives you a stamp.",
-  "pasaporteEscanearGrupo": "Scan the group's QR"
+  "pasaporteEscanearGrupo": "Scan the group's QR",
+
+  "pdfMarca": "BOSQUE SECO · ASSOCIATION",
+  "pdfSinCierre": "Day not closed yet",
+  "pdfSinSalida": "Groups without exit",
+  "pdfPuntos": "Most visited stops",
+  "pdfSinDatos": "No data",
+  "pdfNota": "Generated offline at the checkpoint · {cuando}",
+  "pdfGenerando": "Creating PDF…",
+  "pdfError": "The PDF could not be created. Try again."
 }

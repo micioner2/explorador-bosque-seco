@@ -105,7 +105,7 @@ asociación cargue la real en el portal web.
 | A2 | **Ver quién está dentro**, volver a mostrar el QR de un grupo y marcar su salida (con confirmación). | ✅ Hecha | |
 | A3 | **Alerta "sigue dentro"** cuando un grupo pasa su hora de salida. | ✅ Hecha | |
 | A9 | **Reservas:** anotar quién viene, día, hora y cuántas personas; reprogramar o cancelar. Cuando el grupo llega, "Llegaron" abre el registro de siempre. | ✅ Hecha | Muestra las reservas retrasadas y las que no llegaron. |
-| A4 | **Reporte del día:** visitantes, grupos, procedencia, edades y detalle por guía. | ✅ Hecha | El PDF oficial lo genera el panel web, no la app. |
+| A4 | **Reporte del día:** visitantes, grupos, procedencia, edades y detalle por guía. **Descargar PDF** lo crea en el celular, sin señal, y lo comparte por WhatsApp o lo guarda. | ✅ Hecha | El panel web también podrá generar el consolidado de todas las asociaciones. |
 | A8 | **Cerrar el día:** deja constancia de quién cerró y a qué hora, y avisa si hay grupos sin salida. | ✅ Hecha | Si algo cambia después del cierre, avisa que hay que actualizarlo. |
 | A5 | **Validar cupones** de canje escaneando su QR. | ⏳ Pendiente | Depende del cupón con QR (T8). |
 
@@ -190,13 +190,14 @@ no exige escribir código de más en el tiempo del hackathon (detalle en
 | D5 | La sesión de la asociación **no se cierra por falta de señal**. | El puesto puede quedarse sin internet; el guía no debe quedarse fuera de la app. |
 | D6 | Se piden **DNI, edad y procedencia** de cada persona, y pasaporte y país si es extranjera. | Es lo que exige el protocolo del SERNANP y lo que necesita el reporte. |
 | D7 | Una reserva, al llegar el grupo, **se convierte en registro** con un toque. | No se escriben los datos dos veces y la reserva queda ligada a la visita real. |
-| D8 | El **PDF oficial** del reporte lo genera el panel web. | La app es para el campo; la oficina trabaja en la web con todos los datos juntos. |
+| D8 | El **consolidado** de todas las asociaciones lo genera el panel web. | La oficina trabaja en la web con todos los datos juntos (el PDF de cada día también sale de la app, ver D16). |
 | D9 | Sin pagos en línea: el contacto es por **WhatsApp**. | Es como ya trabajan las comunidades y evita costos y trámites de pasarelas de pago. |
 | D10 | Sin servidor configurado, la app arranca con **datos de ejemplo** y una cuenta de prueba. | La demo funciona aunque falle internet en la presentación. |
 | D11 | **Español e inglés**, modo claro y oscuro, buen contraste y botones grandes. | Llegan turistas extranjeros y la app se usa al sol, por personas con poca experiencia digital. |
 | D12 | Las tablas nuevas del servidor usan **nombres en inglés**, como las que ya creó el equipo web. | Una sola convención para los dos proyectos. |
 | D13 | Los datos personales (DNI, edad) **solo los ve la asociación dueña** del registro. | Protección de datos personales. Ya está considerado en el diseño de las tablas. |
 | D14 | Versiones de herramientas **fijas** para todo el equipo. | Evita que la app funcione en una laptop y falle en otra o en la revisión automática. |
+| D16 | La app **también genera el PDF del día**, sin señal (criterio C3 de AIDER). | El puesto de control no siempre tiene internet; el guía puede enviar el reporte por WhatsApp apenas cierra el día. El panel web sigue siendo el lugar del consolidado. |
 | D15 | La app se organiza por **módulos** con cuatro partes cada uno (sección 4). | Se prueba fácil, cada integrante trabaja en su módulo y cambiar a datos reales no rompe las pantallas. |
 
 ---
@@ -280,6 +281,9 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
   ejemplo, los que acampan).
 - Sin grupo vinculado, el pasaporte invita a escanear el QR del grupo y el
   mapa solo cuenta los sellos del grupo propio.
+- **PDF del día** desde Reporte: fecha, quién cerró, totales, procedencia,
+  edades, detalle por guía, puntos más visitados y grupos sin salida. Se
+  crea sin señal y se comparte por WhatsApp o se guarda.
 
 > **Dónde está:** las etapas 2 a 6 están en la rama `feature/reservas` y
 > todavía no se han unido a la versión principal (`develop` y `main`).

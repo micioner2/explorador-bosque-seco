@@ -21,9 +21,14 @@ dependencies:
   go_router: ^17.4.0
   http: ^1.6.0
   # La versión de intl la fija flutter_localizations (SDK de Flutter).
+  # Fijada: image 4.11.0 (que trae pdf) usa una función de archive que pdf
+  # no permite instalar, y no compila.
+  image: 4.10.2
   intl: any
   latlong2: ^0.10.1
   mobile_scanner: ^7.1.4
+  pdf: 3.12.0
+  printing: 5.14.3
   qr_flutter: ^4.1.0
   shared_preferences: ^2.5.5
   supabase_flutter: ^2.18.2

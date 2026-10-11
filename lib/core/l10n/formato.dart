@@ -26,3 +26,7 @@ String formatearDuracion(Duration duracion) {
   if (minutos == 0) return '$horas h';
   return '$horas h $minutos min';
 }
+
+/// Hora como la dice la gente: "6:05 p. m." o "6:05 PM".
+String formatearHora(DateTime fecha, String idioma) =>
+    DateFormat.jm(idioma).format(fecha);

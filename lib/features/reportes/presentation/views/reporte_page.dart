@@ -23,6 +23,19 @@ class ReportePage extends ConsumerWidget {
     final l10n = context.l10n;
     final reporte = ref.watch(reporteViewModelProvider);
     final cierre = ref.watch(cierreViewModelProvider);
+    final generandoPdf =
+        ref.watch(reportePdfViewModelProvider) == EstadoPdf.generando;
+
+    // Crea el PDF y abre el menú para compartirlo (WhatsApp, guardar).
+    Future<void> descargarPdf() async {
+      final mensajero = ScaffoldMessenger.of(context);
+      final listo = await ref
+          .read(reportePdfViewModelProvider.notifier)
+          .descargar(l10n);
+      if (!listo) {
+        mensajero.showSnackBar(SnackBar(content: Text(l10n.pdfError)));
+      }
+    }
 
     Future<void> cerrarDia() async {
       final detalle = [
@@ -113,11 +126,14 @@ class ReportePage extends ConsumerWidget {
             const SizedBox(height: AppEspacios.s),
           ],
           OutlinedButton.icon(
-            onPressed: () => ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(l10n.reportePdfAviso))),
-            icon: const Icon(Icons.picture_as_pdf_outlined),
-            label: Text(l10n.reportePdf),
+            onPressed: generandoPdf ? null : descargarPdf,
+            icon: generandoPdf
+                ? const SizedBox.square(
+                    dimension: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.picture_as_pdf_outlined),
+            label: Text(generandoPdf ? l10n.pdfGenerando : l10n.reportePdf),
           ),
         ],
       ),
