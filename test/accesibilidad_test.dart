@@ -5,6 +5,8 @@ import 'package:explorador_bosque_seco/features/preferencias/domain/preferencias
 import 'package:explorador_bosque_seco/features/preferencias/presentation/views/ajustes_page.dart';
 import 'package:explorador_bosque_seco/features/puntos/presentation/views/pasaporte_page.dart';
 import 'package:explorador_bosque_seco/features/reportes/presentation/views/reporte_page.dart';
+import 'package:explorador_bosque_seco/features/reservas/presentation/views/formulario_reserva_page.dart';
+import 'package:explorador_bosque_seco/features/reservas/presentation/views/reservas_page.dart';
 import 'package:explorador_bosque_seco/features/sesion/presentation/views/acceso_page.dart';
 import 'package:explorador_bosque_seco/features/sesion/presentation/views/elegir_guia_page.dart';
 import 'package:explorador_bosque_seco/features/visitas/presentation/views/hoy_page.dart';
@@ -25,6 +27,10 @@ const _pantallas = <String, Widget>{
   'Acceso': AccesoPage(),
   'Elegir guía': ElegirGuiaPage(),
   'Hoy': HoyPage(),
+  'Reservas': ReservasPage(),
+  'Nueva reserva': FormularioReservaPage(),
+  // Reserva de demostración de un día anterior (no llegó).
+  'Reprogramar reserva': FormularioReservaPage(reservaId: 'r1'),
   'Registrar visitante': RegistrarVisitantePage(),
   'Reporte': ReportePage(),
   'Ajustes': AjustesPage(),

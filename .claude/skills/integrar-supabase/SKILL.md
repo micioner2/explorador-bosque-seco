@@ -57,6 +57,12 @@ description: Conecta los repositorios de la app a Supabase (Postgres, Auth, Stor
 - Pendiente con el equipo web: tabla de guías por asociación, valores de
   `profiles.role`, regla RLS para que cada cuenta lea su propio perfil y
   desactivar el registro abierto de usuarios.
+- Pendiente: tabla de reservas (por ejemplo `reservations`, con
+  `association_id`, `contact_name`, `phone`, `scheduled_at`, `people`,
+  `status`, `reschedules`, `visit_id`, `guide_id`). El `id` lo genera el
+  celular (UUID) para que reenviar no duplique; `status` solo avanza de
+  `pending` a `cancelled` o `checked_in` (R14 y R15). El teléfono es dato
+  personal: solo lo lee la asociación dueña (RLS).
 
 ## 3. Esquema y seguridad
 

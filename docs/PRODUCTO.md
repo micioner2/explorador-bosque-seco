@@ -89,6 +89,7 @@ Actores reales (según el mentor de AIDER):
 | A6 | Entrar con la cuenta de la asociación (correo y contraseña creados en el portal web). Solo la primera vez necesita señal: después la sesión se recupera sin internet | Obligatoria | Hecha (Supabase Auth; cuenta de prueba sin servidor) |
 | A7 | El guía elige su nombre ("¿Quién eres?"); cada visita queda a nombre de la asociación y del guía. Se puede cambiar de guía o salir de la cuenta | Obligatoria | Hecha (guías de demostración; falta la tabla de guías en Supabase) |
 | A8 | Cierre diario por asociación, con el detalle de cada guía | Obligatoria | Pendiente |
+| A9 | Reservas: anotar quién viene, el día, la hora y cuántas personas; reprogramar o cancelar (con confirmación); agenda por día con las retrasadas y las que no llegaron. Al llegar el grupo, "Llegaron" abre el registro de siempre y la reserva queda como ingreso de esa visita | Obligatoria | Hecha (datos demo; falta la tabla en Supabase) |
 
 ### Fuera del alcance de la app móvil
 
@@ -105,10 +106,12 @@ Actores reales (según el mentor de AIDER):
 ## 5. Flujo principal
 
 1. **Antes del viaje (con señal):** el turista explora el espacio y contacta a
-   un guía por WhatsApp.
+   un guía por WhatsApp. Si reserva, el guía anota la reserva en la app (día,
+   hora y cuántas personas); se puede reprogramar o cancelar.
 2. **En el puesto de control (con señal):** el guía entra al modo
    asociación con la cuenta de su asociación (solo la primera vez necesita
-   señal) y toca su nombre. Registra al grupo
+   señal) y toca su nombre. Si el grupo tenía reserva, toca "Llegaron" en
+   su reserva y sigue el registro de siempre. Registra al grupo
    (cada integrante por separado, en una sola pantalla), marca sus actividades
    y muestra **un único QR del grupo**. Cada integrante lo escanea: su app
    queda vinculada a la visita y descarga el paquete del espacio. Si alguien
@@ -139,6 +142,9 @@ Actores reales (según el mentor de AIDER):
 | R10 | En la ruta, un punto cuenta como visitado si tiene sello (pendiente o confirmado). El siguiente punto es el primero sin sello en el orden de la ruta. | `ProgresoRuta` |
 | R11 | Al puesto de control solo se entra con la cuenta de una asociación activa. La cuenta queda guardada en el celular y no se cierra por falta de señal; solo si el servidor la rechaza o alguien sale de ella. | `Sesion`, `redirigirSegunSesion`, `SesionRepositorySupabase` |
 | R12 | Sin guía elegido no se registran visitas. El guía debe ser de la misma asociación de la cuenta, y cada visita guarda la asociación y el guía. El guía se vuelve a elegir al abrir la app (el celular puede ser compartido). | `Sesion.elegirGuia`, `Sesion.quienRegistra` |
+| R13 | Una reserva necesita el nombre de quien reserva, entre 1 y 99 personas y un día y hora que no hayan pasado. Queda a nombre de la asociación y del guía que la anotó. | `Reserva.nueva`, `ReservasViewModel.crear` |
+| R14 | Solo una reserva pendiente se reprograma (nunca a una hora que ya pasó; se cuenta cada cambio) o se cancela. Pasada su hora está "retrasada"; si era de un día anterior, "no llegó". | `Reserva.reprogramar`, `Reserva.cancelar`, `AgendaReservas` |
+| R15 | Cuando el grupo llega, la reserva se convierte en ingreso una sola vez: se registra a quienes vinieron (pueden ser más o menos que los reservados) y la reserva queda ligada a esa visita. Si la cancelaron mientras tanto, el grupo se registra sin ella. | `Reserva.registrarIngreso`, `RegistroGrupoViewModel.registrar` |
 
 ## 7. Requisitos no funcionales
 
@@ -156,8 +162,9 @@ Actores reales (según el mentor de AIDER):
 ## 8. Modelo de datos (resumen)
 
 `Asociacion` → `Espacio` → `Ruta` → `Punto` (con QR) · `Servicio` · `Producto`
-· `Guia` · `Visita` (grupo, con su QR, su asociación y su guía) → `Visitante`
-(cada integrante) · `Escaneo` · `Canje` · `Opinion`.
+· `Guia` · `Reserva` (se convierte en una visita al llegar) · `Visita` (grupo,
+con su QR, su asociación, su guía y su reserva si tenía) → `Visitante` (cada
+integrante) · `Escaneo` · `Canje` · `Opinion`.
 
 La cuenta de cada asociación es un usuario de Supabase Auth ligado a su
 asociación en la tabla `profiles` (la crea el portal web).
@@ -192,6 +199,8 @@ datos).
 | Puesto de control | Punto de ingreso al área (SERNANP), con señal. |
 | Cuenta de la asociación | Correo y contraseña que crea el portal web para cada asociación. La comparten sus guías autorizados. |
 | Guía | Persona autorizada por la asociación. Elige su nombre al entrar y los grupos que registra quedan a su nombre. |
+| Reserva | Aviso de que un grupo llegará: quién, día, hora y cuántas personas. Está pendiente, cancelada o ingresada. |
+| Ingreso | Momento en que el grupo de una reserva llega y se registra como visita. |
 
 ## 11. Equipo
 

@@ -1,7 +1,30 @@
 import 'package:explorador_bosque_seco/core/l10n/formato.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
+  // En la app, flutter_localizations carga los nombres de días y meses.
+  setUpAll(() async {
+    await initializeDateFormatting('es');
+    await initializeDateFormatting('en');
+  });
+
+  group('formatearFecha', () {
+    final lunes = DateTime(2026, 10, 12, 9);
+
+    test('en español empieza con mayúscula y dice el día de la semana', () {
+      expect(formatearFecha(lunes, 'es'), 'Lunes, 12 de octubre');
+    });
+
+    test('en inglés sigue el orden del idioma', () {
+      expect(formatearFecha(lunes, 'en'), 'Monday, October 12');
+    });
+
+    test('la versión corta sirve para botones', () {
+      expect(formatearFechaCorta(lunes, 'en'), 'Mon, Oct 12');
+    });
+  });
+
   group('formatearDistancia', () {
     test('menos de un kilómetro se muestra en metros', () {
       expect(formatearDistancia(850, 'es'), '850 m');

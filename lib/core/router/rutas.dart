@@ -11,6 +11,13 @@ abstract final class Rutas {
   static const accesoGuia = '/acceso/guia';
 
   static const asociacionHoy = '/asociacion';
+  static const asociacionReservas = '/asociacion/reservas';
   static const asociacionRegistrar = '/asociacion/registrar';
   static const asociacionReporte = '/asociacion/reporte';
+
+  static const reservaNueva = '/asociacion/reservas/nueva';
+  static const reservaReprogramar = '/asociacion/reservas/:id/reprogramar';
+
+  static String reprogramarReserva(String id) =>
+      '/asociacion/reservas/$id/reprogramar';
 }

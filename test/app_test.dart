@@ -391,6 +391,162 @@ void main() {
     });
   });
 
+  group('reservas', () {
+    // A mediodía, la demostración tiene: Paola Ríos (ayer, no llegó),
+    // Diego Flores (hoy 10:30, retrasado), Carmen Seminario (hoy 15:00),
+    // Gabriela Ramos (mañana, 25 personas) y Martín Vega (lunes).
+    Finder enTarjetaDe(String nombre, String texto) => find.descendant(
+      of: find.ancestor(of: find.text(nombre), matching: find.byType(Card)),
+      matching: find.text(texto),
+    );
+
+    Future<void> abrirReservas(WidgetTester tester) async {
+      await abrirApp(tester);
+      await entrarAlPuesto(tester);
+      await tocar(tester, find.text('Reservas'));
+    }
+
+    testWidgets('la agenda separa las que no llegaron y agrupa por día', (
+      tester,
+    ) async {
+      await abrirReservas(tester);
+
+      expect(find.text('No llegaron'), findsOneWidget);
+      expect(find.text('Paola Ríos'), findsOneWidget);
+      expect(find.text('Hoy · 6 personas'), findsOneWidget);
+      expect(enTarjetaDe('Diego Flores', 'Retrasada'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('Martín Vega'), 300);
+      expect(find.text('Mañana · 25 personas'), findsOneWidget);
+      expect(find.text('Lunes, 12 de octubre · 3 personas'), findsOneWidget);
+      expect(enTarjetaDe('Martín Vega', 'Reprogramada'), findsOneWidget);
+      // "Llegaron" solo en las de hoy o atrasadas.
+      expect(enTarjetaDe('Martín Vega', 'Llegaron'), findsNothing);
+      expect(enTarjetaDe('Martín Vega', 'Reprogramar'), findsOneWidget);
+    });
+
+    testWidgets('anota una reserva con día, hora y personas', (tester) async {
+      await abrirReservas(tester);
+
+      await tocar(tester, find.text('Nueva reserva'));
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Nombre de quien reserva'),
+        'Carla Mendoza',
+      );
+      await tester.pumpAndSettle();
+      await tocar(tester, find.text('Mañana'));
+      await tocar(tester, find.byTooltip('Una persona más'));
+      await tocar(tester, find.byTooltip('Una persona más'));
+
+      // Sugiere la próxima hora en punto y resume antes de guardar.
+      expect(find.text('Mañana, 13:00 · 4 personas'), findsOneWidget);
+      await tocar(tester, find.text('Guardar reserva'));
+
+      expect(
+        find.text('Reserva de Carla Mendoza guardada: Mañana, 13:00'),
+        findsOneWidget,
+      );
+      await tester.scrollUntilVisible(find.text('Carla Mendoza'), 300);
+      expect(find.text('Mañana · 29 personas'), findsOneWidget);
+    });
+
+    testWidgets('sin nombre no se guarda', (tester) async {
+      await abrirReservas(tester);
+      await tocar(tester, find.text('Nueva reserva'));
+
+      await tocar(tester, find.text('Guardar reserva'));
+
+      expect(find.text('Ingresa el nombre'), findsOneWidget);
+      expect(find.text('Guardar reserva'), findsOneWidget);
+    });
+
+    testWidgets('reprogramar no acepta una hora que ya pasó', (tester) async {
+      await abrirReservas(tester);
+
+      await tocar(tester, enTarjetaDe('Paola Ríos', 'Reprogramar'));
+      expect(find.text('Reprogramar reserva'), findsOneWidget);
+      // Era para ayer a las 9:00: se propone hoy a la misma hora, que ya pasó.
+      await tocar(tester, find.text('Guardar cambios'));
+      expect(find.text('Esa hora ya pasó. Elige una más tarde.'), findsOne);
+
+      await tocar(tester, find.text('Mañana'));
+      await tocar(tester, find.text('Guardar cambios'));
+
+      expect(
+        find.text('Reserva de Paola Ríos reprogramada: Mañana, 9:00'),
+        findsOneWidget,
+      );
+      expect(find.text('No llegaron'), findsNothing);
+    });
+
+    testWidgets('cancelar pide confirmación y la saca de la agenda', (
+      tester,
+    ) async {
+      await abrirReservas(tester);
+
+      await tocar(tester, enTarjetaDe('Diego Flores', 'Cancelar'));
+      expect(find.text('¿Cancelar la reserva?'), findsOneWidget);
+      await tocar(tester, enDialogo('Volver'));
+      expect(find.text('Diego Flores'), findsOneWidget);
+
+      await tocar(tester, enTarjetaDe('Diego Flores', 'Cancelar'));
+      await tocar(tester, enDialogo('Sí, cancelar'));
+
+      expect(find.text('Reserva de Diego Flores cancelada'), findsOneWidget);
+      expect(find.text('Diego Flores'), findsNothing);
+    });
+
+    testWidgets('cuando el grupo llega, la reserva pasa al registro y se '
+        'vuelve un ingreso', (tester) async {
+      await abrirApp(tester);
+      await entrarAlPuesto(tester);
+
+      // Desde "Hoy", en "Llegan hoy" (debajo de quienes están en el bosque).
+      final llegaron = enTarjetaDe('Carmen Seminario', 'Llegaron');
+      await tester.scrollUntilVisible(
+        llegaron,
+        300,
+        scrollable: find.descendant(
+          of: find.byType(HoyPage),
+          matching: find.byType(Scrollable),
+        ),
+      );
+      await tocar(tester, llegaron);
+
+      expect(find.text('Llegada de una reserva'), findsOneWidget);
+      expect(
+        find.text('Carmen Seminario · 4 personas reservadas'),
+        findsOneWidget,
+      );
+      expect(find.text('Integrantes (0 de 4)'), findsOneWidget);
+      // Se propone el nombre de quien reservó como responsable.
+      expect(
+        find.widgetWithText(TextFormField, 'Carmen Seminario'),
+        findsOneWidget,
+      );
+
+      await tester.enterText(find.widgetWithText(TextFormField, 'Edad'), '45');
+      await tester.pumpAndSettle();
+      await tocar(tester, find.text('Agregar integrante'));
+      expect(find.text('Integrantes (1 de 4)'), findsOneWidget);
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Nombre y apellido'),
+        'Raúl Seminario',
+      );
+      await tester.enterText(find.widgetWithText(TextFormField, 'Edad'), '47');
+      await tester.pumpAndSettle();
+      await tocar(tester, find.text('Senderismo'));
+      await tocar(tester, find.text('Registrar grupo y generar QR'));
+
+      expect(find.text('QR del grupo'), findsOneWidget);
+      await tocar(tester, find.text('Listo'));
+      expect(find.text('Llegada de una reserva'), findsNothing);
+
+      await tocar(tester, find.text('Reservas'));
+      expect(find.text('Carmen Seminario'), findsNothing);
+      expect(find.text('Hoy · 2 personas'), findsOneWidget);
+    });
+  });
+
   testWidgets('en Ajustes se cambia el idioma a inglés', (tester) async {
     await abrirApp(tester);
 

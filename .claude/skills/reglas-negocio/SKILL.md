@@ -52,6 +52,23 @@ lo que no se puede romper.
 - El router aplica las dos reglas (`redirigirSegunSesion`): sin cuenta lleva
   al acceso; sin guía, a "¿Quién eres?".
 
+## Reservas (`lib/features/reservas/domain/`)
+
+- **R13.** Una reserva (`Reserva.nueva`): nombre de quien reserva, entre 1 y
+  `Reserva.maxPersonas` (99) personas y un día y hora que no hayan pasado
+  (se compara al minuto). Guarda la asociación y el guía que la anotó. Su id
+  se genera en el celular (`core/id.dart`, UUID v4).
+- **R14.** Estados: `pendiente` → `cancelada` o `ingresada`. Solo una
+  pendiente se reprograma (nunca al pasado; suma `reprogramaciones`) o se
+  cancela. Pendiente pasada su hora = "retrasada"; de un día anterior =
+  "no llegó" (`AgendaReservas.sinLlegar`).
+- **R15.** Al llegar el grupo, "Llegaron" lleva al registro de siempre con
+  la reserva vinculada (`BorradorGrupo.reservaId`). Al registrar, la visita
+  guarda `reservaId` y la reserva pasa a `ingresada` con `visitaId`, una
+  sola vez. Se registra a quienes vinieron, aunque sean más o menos que los
+  reservados. Si la reserva se canceló mientras tanto, el grupo se registra
+  sin ella.
+
 ## Ruta (`lib/features/mapa/domain/`)
 
 - **R10.** Un punto de la ruta cuenta como visitado si tiene sello, pendiente

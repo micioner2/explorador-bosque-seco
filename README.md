@@ -32,7 +32,7 @@ cuaderno de visitas por datos confiables.
 | Modo | Qué hace |
 |---|---|
 | **Turista** | Explora rutas, atractivos y servicios; contacta a guías por WhatsApp; ve el siguiente punto con su distancia y tiempo, también sin señal; escanea el QR de cada punto y gana puntos. |
-| **Asociación** | Entra con la cuenta de la asociación (solo la primera vez necesita señal) y cada guía toca su nombre. Registra a cada integrante de un grupo desde una sola pantalla y genera **un único QR** para todos, a nombre del guía; ve quién sigue dentro del bosque, canjea puntos y genera el reporte diario. |
+| **Asociación** | Entra con la cuenta de la asociación (solo la primera vez necesita señal) y cada guía toca su nombre. Anota reservas (día, hora y personas), las reprograma o cancela, y cuando el grupo llega la reserva pasa al registro con un toque. Registra a cada integrante de un grupo desde una sola pantalla y genera **un único QR** para todos, a nombre del guía; ve quién sigue dentro del bosque, canjea puntos y genera el reporte diario. |
 
 **Para todos:** la app está en **español e inglés** y tiene **modo claro y
 oscuro** (o el del celular). Se eligen en Ajustes y se guardan en el celular.
@@ -73,7 +73,7 @@ test/                               # dominio, ViewModels y widgets
 ```
 
 Funcionalidades: `explorar`, `mapa`, `escaneo`, `puntos`, `visitas`,
-`reportes`, `preferencias`, `conexion` y `sesion`.
+`reportes`, `reservas`, `preferencias`, `conexion` y `sesion`.
 
 **Stack:** Flutter 3.38.9 (Dart 3.10) · Riverpod 3 · go_router ·
 flutter_localizations (es/en) · shared_preferences · qr_flutter ·
@@ -93,6 +93,9 @@ Supabase (`supabase_flutter`).
 - El siguiente punto de la ruta es el primero sin sello.
 - Al puesto de control solo se entra con la cuenta de la asociación, que no
   se cierra por falta de señal; sin guía elegido no se registran visitas.
+- Una reserva no puede ser para una hora que ya pasó; solo una pendiente se
+  reprograma o cancela, y se convierte en ingreso una sola vez, ligada a la
+  visita que se registró al llegar el grupo.
 
 ## Cómo ejecutar
 

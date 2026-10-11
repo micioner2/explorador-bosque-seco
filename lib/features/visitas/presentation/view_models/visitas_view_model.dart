@@ -24,6 +24,7 @@ class VisitasViewModel extends Notifier<List<Visita>> {
     required Iterable<Visitante> integrantes,
     required Iterable<Actividad> actividades,
     Duration duracionPrevista = const Duration(hours: 8),
+    String? reservaId,
   }) {
     final (:cuenta, :guia) = ref.read(sesionViewModelProvider).quienRegistra();
     final entrada = _ahora;
@@ -36,6 +37,7 @@ class VisitasViewModel extends Notifier<List<Visita>> {
       salidaPrevista: entrada.add(duracionPrevista),
       guiaId: guia.id,
       nombreGuia: guia.nombre,
+      reservaId: reservaId,
     );
     state = [...state, visita];
     return visita;

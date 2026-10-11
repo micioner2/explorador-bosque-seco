@@ -9,12 +9,15 @@ import '../../../../shared/widgets/dialogo_confirmar.dart';
 import '../../../../shared/widgets/estado_vacio.dart';
 import '../../../../shared/widgets/tarjeta_cifra.dart';
 import '../../../../shared/widgets/titulo_seccion.dart';
+import '../../../reservas/presentation/view_models/reservas_view_model.dart';
+import '../../../reservas/presentation/views/tarjeta_reserva.dart';
 import '../../../sesion/presentation/views/boton_sesion.dart';
 import '../../domain/visita.dart';
 import '../view_models/visitas_view_model.dart';
 import 'qr_grupo_dialog.dart';
 
-/// Panel del puesto de control: quién está dentro del bosque y alertas.
+/// Panel del puesto de control: quién está dentro del bosque, alertas y
+/// las reservas que llegan hoy.
 class HoyPage extends ConsumerWidget {
   const HoyPage({super.key});
 
@@ -22,6 +25,8 @@ class HoyPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final resumen = ref.watch(resumenDelDiaProvider);
+    final agenda = ref.watch(agendaReservasProvider);
+    final llegan = agenda.deHoy;
     final atrasadas = resumen.atrasadas;
     // Primero los grupos que ya debieron salir: son los que urgen.
     final enOrden = [
@@ -108,6 +113,17 @@ class HoyPage extends ConsumerWidget {
               atrasada: atrasadas.contains(visita),
               onMarcarSalida: () => marcarSalida(visita),
             ),
+          // Después de quienes están en el bosque (lo urgente), los grupos
+          // con reserva que se esperan hoy: al llegar, pasan al registro con
+          // un toque.
+          if (llegan.reservas.isNotEmpty) ...[
+            TituloSeccion(l10n.hoyLleganHoy(llegan.personas)),
+            for (final reserva in llegan.reservas)
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppEspacios.m),
+                child: TarjetaReserva(reserva: reserva, ahora: agenda.ahora),
+              ),
+          ],
         ],
       ),
     );

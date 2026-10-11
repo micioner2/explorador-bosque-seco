@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../reservas/domain/reserva.dart';
+import '../../../reservas/presentation/view_models/reservas_view_model.dart';
 import '../../domain/visita.dart';
 import 'visitas_view_model.dart';
 
@@ -9,6 +11,7 @@ class BorradorGrupo {
   const BorradorGrupo({
     this.integrantes = const [],
     this.actividades = const {},
+    this.reservaId,
   });
 
   /// Personas ya agregadas. La primera es la responsable del grupo.
@@ -16,6 +19,10 @@ class BorradorGrupo {
 
   /// Actividades que hará todo el grupo.
   final Set<Actividad> actividades;
+
+  /// Reserva del grupo, si llegó con una. Al registrar, se convierte en su
+  /// ingreso.
+  final String? reservaId;
 
   /// Ya se puede registrar: tiene al menos un integrante y una actividad.
   bool get completo => integrantes.isNotEmpty && actividades.isNotEmpty;
@@ -41,6 +48,7 @@ class RegistroGrupoViewModel extends Notifier<BorradorGrupo> {
     state = BorradorGrupo(
       integrantes: [...state.integrantes, integrante],
       actividades: state.actividades,
+      reservaId: state.reservaId,
     );
   }
 
@@ -51,6 +59,7 @@ class RegistroGrupoViewModel extends Notifier<BorradorGrupo> {
           if (!identical(actual, integrante)) actual,
       ],
       actividades: state.actividades,
+      reservaId: state.reservaId,
     );
   }
 
@@ -61,19 +70,48 @@ class RegistroGrupoViewModel extends Notifier<BorradorGrupo> {
     state = BorradorGrupo(
       integrantes: state.integrantes,
       actividades: actividades,
+      reservaId: state.reservaId,
     );
   }
 
+  /// Llegó el grupo de una reserva: lo que se registre quedará como su
+  /// ingreso. Lo ya escrito en el formulario se conserva.
+  void atenderReserva(String reservaId) => state = BorradorGrupo(
+    integrantes: state.integrantes,
+    actividades: state.actividades,
+    reservaId: reservaId,
+  );
+
+  /// El grupo se registra sin reserva.
+  void soltarReserva() => state = BorradorGrupo(
+    integrantes: state.integrantes,
+    actividades: state.actividades,
+  );
+
   /// Registra al grupo como una sola visita, con un único QR, y deja el
-  /// formulario vacío para el siguiente grupo. Lanza [ArgumentError] si
-  /// falta un integrante o una actividad; en ese caso el borrador se conserva.
+  /// formulario vacío para el siguiente grupo. Si llegó con una reserva
+  /// pendiente, la reserva queda como ingreso de esta visita (R15).
+  ///
+  /// Lanza [ArgumentError] si falta un integrante o una actividad; en ese
+  /// caso el borrador se conserva.
   Visita registrar() {
+    final reservas = ref.read(reservasViewModelProvider.notifier);
+    final reservaId = state.reservaId;
+    // Si mientras tanto la cancelaron o ya ingresó, va sin reserva.
+    final reserva = switch (reservaId == null
+        ? null
+        : reservas.buscar(reservaId)) {
+      final Reserva r when r.pendiente => r,
+      _ => null,
+    };
     final visita = ref
         .read(visitasViewModelProvider.notifier)
         .registrar(
           integrantes: state.integrantes,
           actividades: state.actividades,
+          reservaId: reserva?.id,
         );
+    if (reserva != null) reservas.registrarIngreso(reserva.id, visita.id);
     state = const BorradorGrupo();
     return visita;
   }
@@ -83,3 +121,18 @@ final registroGrupoViewModelProvider =
     NotifierProvider<RegistroGrupoViewModel, BorradorGrupo>(
       RegistroGrupoViewModel.new,
     );
+
+/// Reserva cuyo grupo se está registrando. Si mientras tanto la cancelaron
+/// o ya ingresó, es `null` y el grupo se registra sin ella.
+final reservaEnAtencionProvider = Provider<Reserva?>((ref) {
+  final id = ref.watch(
+    registroGrupoViewModelProvider.select((b) => b.reservaId),
+  );
+  if (id == null) return null;
+  final reserva = ref.watch(
+    reservasViewModelProvider.select(
+      (reservas) => reservas.where((r) => r.id == id).firstOrNull,
+    ),
+  );
+  return (reserva != null && reserva.pendiente) ? reserva : null;
+});

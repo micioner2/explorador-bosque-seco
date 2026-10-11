@@ -79,6 +79,11 @@ class AsociacionShell extends StatelessWidget {
             label: l10n.navHoy,
           ),
           NavigationDestination(
+            icon: const Icon(Icons.event_outlined),
+            selectedIcon: const Icon(Icons.event),
+            label: l10n.navReservas,
+          ),
+          NavigationDestination(
             icon: const Icon(Icons.person_add_alt_1_outlined),
             selectedIcon: const Icon(Icons.person_add_alt_1),
             label: l10n.navRegistrar,

@@ -97,6 +97,23 @@ cierra la sesión si el servidor rechaza el pase, no ante un error de red.
 - **Pendiente:** la tabla de guías en Supabase (hoy `GuiasRepositoryDemo`),
   el rol de la cuenta en `profiles` y el cierre diario.
 
+### Reservas y su conversión en ingreso
+
+`features/reservas` guarda las reservas y arma la agenda (`AgendaReservas`:
+no llegaron, hoy y próximos días). La conversión en ingreso reutiliza el
+registro de grupos en lugar de duplicarlo:
+
+1. "Llegaron" (`TarjetaReserva`) llama a
+   `RegistroGrupoViewModel.atenderReserva(id)` y abre la pestaña Registrar.
+2. El registro muestra la reserva (`reservaEnAtencionProvider`) y propone el
+   nombre de quien reservó como responsable.
+3. `RegistroGrupoViewModel.registrar()` crea la visita con su `reservaId` y
+   marca la reserva como `ingresada` con el id de la visita.
+
+La dependencia va en un solo sentido entre ViewModels: `visitas` usa
+`reservas`, nunca al revés. Las reservas nuevas llevan un id generado en el
+celular (`core/id.dart`), listo para la sincronización sin duplicados.
+
 ## Interfaz: tema, idiomas y preferencias
 
 La capa `views` no decide colores ni textos; los pide.

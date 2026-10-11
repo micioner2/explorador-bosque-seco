@@ -6,6 +6,8 @@ import '../../features/mapa/presentation/views/mapa_page.dart';
 import '../../features/preferencias/presentation/views/ajustes_page.dart';
 import '../../features/puntos/presentation/views/pasaporte_page.dart';
 import '../../features/reportes/presentation/views/reporte_page.dart';
+import '../../features/reservas/presentation/views/formulario_reserva_page.dart';
+import '../../features/reservas/presentation/views/reservas_page.dart';
 import '../../features/sesion/domain/sesion.dart';
 import '../../features/sesion/presentation/views/acceso_page.dart';
 import '../../features/sesion/presentation/views/elegir_guia_page.dart';
@@ -69,6 +71,17 @@ GoRouter crearRouter({required Sesion Function() sesion}) => GoRouter(
       path: Rutas.accesoGuia,
       builder: (context, state) => const ElegirGuiaPage(),
     ),
+    // El formulario de reservas se abre encima de la navegación inferior,
+    // desde "Hoy" o desde "Reservas", y al guardar vuelve a donde estaba.
+    GoRoute(
+      path: Rutas.reservaNueva,
+      builder: (context, state) => const FormularioReservaPage(),
+    ),
+    GoRoute(
+      path: Rutas.reservaReprogramar,
+      builder: (context, state) =>
+          FormularioReservaPage(reservaId: state.pathParameters['id']),
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) =>
           AsociacionShell(navigationShell: shell),
@@ -78,6 +91,14 @@ GoRouter crearRouter({required Sesion Function() sesion}) => GoRouter(
             GoRoute(
               path: Rutas.asociacionHoy,
               builder: (context, state) => const HoyPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Rutas.asociacionReservas,
+              builder: (context, state) => const ReservasPage(),
             ),
           ],
         ),

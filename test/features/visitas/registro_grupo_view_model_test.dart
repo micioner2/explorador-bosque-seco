@@ -1,4 +1,6 @@
 import 'package:explorador_bosque_seco/core/reloj.dart';
+import 'package:explorador_bosque_seco/features/reservas/domain/reserva.dart';
+import 'package:explorador_bosque_seco/features/reservas/presentation/view_models/reservas_view_model.dart';
 import 'package:explorador_bosque_seco/features/sesion/data/sesion_repository_demo.dart';
 import 'package:explorador_bosque_seco/features/sesion/presentation/view_models/sesion_view_model.dart';
 import 'package:explorador_bosque_seco/features/visitas/data/visitas_repository_demo.dart';
@@ -126,5 +128,87 @@ void main() {
 
     expect(borrador().integrantes, hasLength(1));
     expect(container.read(visitasViewModelProvider), isEmpty);
+  });
+
+  group('grupo que llega con reserva (R15)', () {
+    // Reserva de demostración: Carmen Seminario, hoy a las 15:00, 4 personas.
+    const reservaId = 'r3';
+
+    Reserva? reserva() =>
+        container.read(reservasViewModelProvider.notifier).buscar(reservaId);
+
+    void registrarAlGrupo() {
+      agregar('Carmen Seminario');
+      agregar('Raúl Seminario');
+      viewModel().alternarActividad(Actividad.senderismo);
+    }
+
+    test(
+      'al registrar, la reserva se convierte en el ingreso de la visita',
+      () {
+        viewModel().atenderReserva(reservaId);
+        expect(container.read(reservaEnAtencionProvider)?.id, reservaId);
+        registrarAlGrupo();
+
+        final visita = viewModel().registrar();
+
+        expect(visita.reservaId, reservaId);
+        expect(reserva()?.estado, EstadoReserva.ingresada);
+        expect(reserva()?.visitaId, visita.id);
+        // Llegaron 2 de los 4 reservados: se registra a quienes vinieron.
+        expect(visita.tamanoGrupo, 2);
+        expect(borrador().reservaId, isNull);
+        expect(
+          container
+              .read(agendaReservasProvider)
+              .deHoy
+              .reservas
+              .map((r) => r.id),
+          isNot(contains(reservaId)),
+        );
+      },
+    );
+
+    test('lo que ya estaba escrito se conserva al atender la reserva', () {
+      agregar('Carmen Seminario');
+
+      viewModel().atenderReserva(reservaId);
+
+      expect(borrador().integrantes, hasLength(1));
+    });
+
+    test('quitar la reserva registra al grupo sin ella', () {
+      viewModel().atenderReserva(reservaId);
+      viewModel().soltarReserva();
+      registrarAlGrupo();
+
+      final visita = viewModel().registrar();
+
+      expect(visita.reservaId, isNull);
+      expect(reserva()?.pendiente, isTrue);
+    });
+
+    test('si la reserva se canceló mientras tanto, el grupo igual se '
+        'registra', () {
+      viewModel().atenderReserva(reservaId);
+      container.read(reservasViewModelProvider.notifier).cancelar(reservaId);
+      expect(container.read(reservaEnAtencionProvider), isNull);
+      registrarAlGrupo();
+
+      final visita = viewModel().registrar();
+
+      expect(visita.reservaId, isNull);
+      expect(reserva()?.estado, EstadoReserva.cancelada);
+    });
+
+    test('si falta un dato, la reserva sigue pendiente', () {
+      viewModel().atenderReserva(reservaId);
+      agregar('Carmen Seminario');
+
+      expect(() => viewModel().registrar(), throwsArgumentError);
+
+      expect(reserva()?.pendiente, isTrue);
+      expect(borrador().reservaId, reservaId);
+    });
   });
 }

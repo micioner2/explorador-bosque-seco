@@ -7,6 +7,17 @@ String formatearDistancia(int metros, String idioma) {
   return '${NumberFormat('0.#', idioma).format(metros / 1000)} km';
 }
 
+/// Fecha completa, con el día de la semana: "Lunes, 12 de octubre" o
+/// "Monday, October 12".
+String formatearFecha(DateTime fecha, String idioma) {
+  final texto = DateFormat.MMMMEEEEd(idioma).format(fecha);
+  return texto.substring(0, 1).toUpperCase() + texto.substring(1);
+}
+
+/// Fecha corta para botones: "lun, 12 oct" o "Mon, Oct 12".
+String formatearFechaCorta(DateTime fecha, String idioma) =>
+    DateFormat.MMMEd(idioma).format(fecha);
+
 /// Duración legible: "25 min", "2 h" o "1 h 50 min".
 String formatearDuracion(Duration duracion) {
   final horas = duracion.inHours;

@@ -364,5 +364,126 @@
   "sesionSalir": "Salir de la cuenta",
   "sesionSalirTitulo": "¿Salir de la cuenta?",
   "sesionSalirDetalle": "Para volver a entrar necesitarás el correo, la contraseña y señal.",
-  "sesionSalirAccion": "Salir"
+  "sesionSalirAccion": "Salir",
+
+  "volver": "Volver",
+  "quitar": "Quitar",
+  "personas": "{n, plural, =1{1 persona} other{{n} personas}}",
+  "@personas": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "diaHoy": "Hoy",
+  "diaManana": "Mañana",
+  "navReservas": "Reservas",
+  "reservasTitulo": "Reservas",
+  "reservasNueva": "Nueva reserva",
+  "reservasVacio": "No hay reservas próximas",
+  "reservasVacioDetalle": "Toca «Nueva reserva» para anotar la primera.",
+  "reservasDia": "{dia} · {n, plural, =1{1 persona} other{{n} personas}}",
+  "@reservasDia": {
+    "placeholders": {
+      "dia": {"type": "String"},
+      "n": {"type": "int"}
+    }
+  },
+  "reservasSinLlegar": "No llegaron",
+  "reservasSinLlegarDetalle": "Reprográmalas o cancélalas para mantener la agenda al día.",
+  "reservaCuando": "{dia}, {hora}",
+  "@reservaCuando": {
+    "placeholders": {
+      "dia": {"type": "String"},
+      "hora": {"type": "String"}
+    }
+  },
+  "reservaTelefono": "Cel. {numero}",
+  "@reservaTelefono": {
+    "placeholders": {
+      "numero": {"type": "String"}
+    }
+  },
+  "reservaRetrasada": "Retrasada",
+  "reservaNoLlego": "No llegó",
+  "reservaReprogramada": "Reprogramada",
+  "reservaLlegaron": "Llegaron",
+  "reservaReprogramar": "Reprogramar",
+  "reservaCancelar": "Cancelar",
+  "reservaCancelarTitulo": "¿Cancelar la reserva?",
+  "reservaCancelarDetalle": "{nombre} · {cuando}. Ya no se esperará a este grupo.",
+  "@reservaCancelarDetalle": {
+    "placeholders": {
+      "nombre": {"type": "String"},
+      "cuando": {"type": "String"}
+    }
+  },
+  "reservaCancelarSi": "Sí, cancelar",
+  "reservaCancelada": "Reserva de {nombre} cancelada",
+  "@reservaCancelada": {
+    "placeholders": {
+      "nombre": {"type": "String"}
+    }
+  },
+  "reservaGuardada": "Reserva de {nombre} guardada: {cuando}",
+  "@reservaGuardada": {
+    "placeholders": {
+      "nombre": {"type": "String"},
+      "cuando": {"type": "String"}
+    }
+  },
+  "reservaReprogramadaAviso": "Reserva de {nombre} reprogramada: {cuando}",
+  "@reservaReprogramadaAviso": {
+    "placeholders": {
+      "nombre": {"type": "String"},
+      "cuando": {"type": "String"}
+    }
+  },
+  "reservaReprogramarTitulo": "Reprogramar reserva",
+  "reservaNombre": "Nombre de quien reserva",
+  "reservaCelular": "Celular (opcional)",
+  "reservaDia": "¿Qué día llegan?",
+  "reservaOtroDia": "Otro día",
+  "reservaHora": "¿A qué hora llegan?",
+  "reservaPersonasPregunta": "¿Cuántas personas?",
+  "reservaMenos": "Una persona menos",
+  "reservaMas": "Una persona más",
+  "reservaResumen": "{cuando} · {n, plural, =1{1 persona} other{{n} personas}}",
+  "@reservaResumen": {
+    "placeholders": {
+      "cuando": {"type": "String"},
+      "n": {"type": "int"}
+    }
+  },
+  "reservaAntes": "Antes: {cuando}",
+  "@reservaAntes": {
+    "placeholders": {
+      "cuando": {"type": "String"}
+    }
+  },
+  "reservaGuardar": "Guardar reserva",
+  "reservaGuardarCambios": "Guardar cambios",
+  "reservaNoExiste": "Esta reserva ya no está pendiente",
+  "validarHoraPasada": "Esa hora ya pasó. Elige una más tarde.",
+  "hoyLleganHoy": "Llegan hoy · {n, plural, =1{1 persona} other{{n} personas}}",
+  "@hoyLleganHoy": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "registrarReserva": "Llegada de una reserva",
+  "registrarReservaDetalle": "{nombre} · {n, plural, =1{1 persona reservada} other{{n} personas reservadas}}",
+  "@registrarReservaDetalle": {
+    "placeholders": {
+      "nombre": {"type": "String"},
+      "n": {"type": "int"}
+    }
+  },
+  "registrarIntegrantesDe": "Integrantes ({n} de {total})",
+  "@registrarIntegrantesDe": {
+    "placeholders": {
+      "n": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "registrarSinReserva": "Registrar sin la reserva"
 }

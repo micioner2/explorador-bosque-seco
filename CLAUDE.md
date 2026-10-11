@@ -209,6 +209,11 @@ funcionar en modo avión:
   con la cuenta de prueba que muestra la pantalla. Cada visita guarda la
   asociación y el guía. Falta la tabla de guías (hoy son de demostración) y
   el cierre diario.
+- **Reservas** (`features/reservas`): pestaña "Reservas" del puesto de
+  control para anotar, reprogramar y cancelar; "Llegan hoy" en la pantalla
+  Hoy. "Llegaron" abre el registro de siempre y, al registrar, la reserva
+  queda como ingreso de la visita. Datos demo; falta su tabla en Supabase.
+  Los ids nuevos se generan en el celular con `nuevoId()` (`core/id.dart`).
 
 ## Skills del proyecto (`.claude/skills/`)
 

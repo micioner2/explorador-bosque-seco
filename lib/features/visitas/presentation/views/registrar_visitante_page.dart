@@ -10,6 +10,7 @@ import '../../../../shared/widgets/acciones_barra.dart';
 import '../../../../shared/widgets/etiqueta_estado.dart';
 import '../../../../shared/widgets/icono_circular.dart';
 import '../../../../shared/widgets/titulo_seccion.dart';
+import '../../../reservas/domain/reserva.dart';
 import '../../../sesion/presentation/view_models/sesion_view_model.dart';
 import '../../../sesion/presentation/views/boton_sesion.dart';
 import '../../domain/visita.dart';
@@ -43,6 +44,22 @@ class _RegistrarVisitantePageState
 
   bool get _hayDatosSinAgregar =>
       _nombre.text.trim().isNotEmpty || _edad.text.isNotEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+    _proponerNombre(ref.read(reservaEnAtencionProvider));
+  }
+
+  /// Quien reservó suele ser el responsable del grupo: se propone su nombre
+  /// para el primer integrante (se puede cambiar).
+  void _proponerNombre(Reserva? reserva) {
+    if (reserva == null) return;
+    final sinEmpezar =
+        _nombre.text.trim().isEmpty &&
+        ref.read(registroGrupoViewModelProvider).integrantes.isEmpty;
+    if (sinEmpezar) _nombre.text = reserva.nombreContacto;
+  }
 
   @override
   void dispose() {
@@ -96,6 +113,11 @@ class _RegistrarVisitantePageState
     final textos = context.textos;
     final borrador = ref.watch(registroGrupoViewModelProvider);
     final guia = ref.watch(sesionViewModelProvider.select((s) => s.guia));
+    final reserva = ref.watch(reservaEnAtencionProvider);
+    // La pantalla puede estar abierta en otra pestaña cuando llega el grupo.
+    ref.listen(reservaEnAtencionProvider, (antes, ahora) {
+      if (ahora?.id != antes?.id) _proponerNombre(ahora);
+    });
 
     return Scaffold(
       appBar: BarraAsociacion(
@@ -124,8 +146,21 @@ class _RegistrarVisitantePageState
                       .cambiarGuia,
                 ),
               ),
+            if (reserva != null)
+              Padding(
+                padding: const EdgeInsets.only(top: AppEspacios.s),
+                child: _LlegadaDeReserva(
+                  reserva: reserva,
+                  onQuitar: _viewModel.soltarReserva,
+                ),
+              ),
             TituloSeccion(
-              l10n.registrarIntegrantes(borrador.integrantes.length),
+              reserva == null
+                  ? l10n.registrarIntegrantes(borrador.integrantes.length)
+                  : l10n.registrarIntegrantesDe(
+                      borrador.integrantes.length,
+                      reserva.personas,
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: AppEspacios.m),
@@ -303,6 +338,71 @@ class _QuienRegistra extends StatelessWidget {
             TextButton(
               onPressed: onCambiar,
               child: Text(l10n.cambiar, semanticsLabel: l10n.sesionCambiarGuia),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// El grupo llegó con reserva: al registrarlo, la reserva queda como su
+/// ingreso. Si no es ese grupo, se quita y se registra sin reserva.
+class _LlegadaDeReserva extends StatelessWidget {
+  const _LlegadaDeReserva({required this.reserva, required this.onQuitar});
+
+  final Reserva reserva;
+  final VoidCallback onQuitar;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final esquema = context.esquema;
+    final textos = context.textos;
+
+    return Card(
+      color: esquema.primaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppEspacios.m,
+          AppEspacios.s,
+          AppEspacios.xs,
+          AppEspacios.s,
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.event_available, color: esquema.onPrimaryContainer),
+            const SizedBox(width: AppEspacios.m),
+            Expanded(
+              child: MergeSemantics(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.registrarReserva,
+                      style: textos.labelMedium?.copyWith(
+                        color: esquema.onPrimaryContainer,
+                      ),
+                    ),
+                    Text(
+                      l10n.registrarReservaDetalle(
+                        reserva.nombreContacto,
+                        reserva.personas,
+                      ),
+                      style: textos.titleSmall?.copyWith(
+                        color: esquema.onPrimaryContainer,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: onQuitar,
+              child: Text(
+                l10n.quitar,
+                semanticsLabel: l10n.registrarSinReserva,
+              ),
             ),
           ],
         ),

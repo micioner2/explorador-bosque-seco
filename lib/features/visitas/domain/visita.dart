@@ -41,6 +41,7 @@ class Visita {
     required this.salidaPrevista,
     this.guiaId,
     this.nombreGuia,
+    this.reservaId,
     this.fechaSalida,
   }) : integrantes = List.unmodifiable(integrantes),
        actividades = Set.unmodifiable(actividades) {
@@ -84,6 +85,9 @@ class Visita {
   final String? guiaId;
   final String? nombreGuia;
 
+  /// Reserva con la que llegó el grupo, si tenía una.
+  final String? reservaId;
+
   final DateTime? fechaSalida;
 
   Visitante get responsable => integrantes.first;
@@ -118,6 +122,7 @@ class Visita {
       salidaPrevista: salidaPrevista,
       guiaId: guiaId,
       nombreGuia: nombreGuia,
+      reservaId: reservaId,
       fechaSalida: fecha,
     );
   }
