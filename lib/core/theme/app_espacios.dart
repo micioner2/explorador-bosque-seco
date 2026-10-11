@@ -17,5 +17,5 @@ abstract final class AppEspacios {
 
   /// Espacio al final de las listas del modo turista para que el botón
   /// flotante de escanear no tape el último elemento.
-  static const bajoBotonFlotante = 96.0;
+  static const bajoBotonFlotante = 120.0;
 }

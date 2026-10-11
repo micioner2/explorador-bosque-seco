@@ -47,10 +47,11 @@ class _AccesoPageState extends ConsumerState<AccesoPage> {
     if (entro) TextInput.finishAutofillContext();
   }
 
-  void _usarCuentaDemo(({String correo, String clave}) cuenta) {
+  /// Un solo toque: llena la cuenta de prueba y entra.
+  Future<void> _usarCuentaDemo(({String correo, String clave}) cuenta) {
     _correo.text = cuenta.correo;
     _clave.text = cuenta.clave;
-    _formKey.currentState?.validate();
+    return _entrar();
   }
 
   @override

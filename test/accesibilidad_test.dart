@@ -84,7 +84,6 @@ void main() {
         await esperarAccesible(tester);
 
         await tocar(tester, find.text('Usar cuenta de prueba'));
-        await tocar(tester, find.text('Entrar'));
         await tocar(tester, find.text('María Quispe'));
         await esperarAccesible(tester);
         semantica.dispose();

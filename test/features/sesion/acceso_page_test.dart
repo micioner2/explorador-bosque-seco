@@ -116,9 +116,7 @@ void main() {
     expect(find.text('Usar cuenta de prueba'), findsNothing);
   });
 
-  testWidgets('la cuenta de prueba llena el correo y la contraseña', (
-    tester,
-  ) async {
+  testWidgets('la cuenta de prueba entra con un solo toque', (tester) async {
     await montarPantalla(tester, const AccesoPage(), sesion: const Sesion());
 
     await tocar(tester, find.text('Usar cuenta de prueba'));

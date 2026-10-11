@@ -140,7 +140,6 @@ void main() {
       expect(find.text('Solo la primera vez necesitas señal'), findsOneWidget);
 
       await tocar(tester, find.text('Usar cuenta de prueba'));
-      await tocar(tester, botonEntrar());
 
       expect(find.text('PASO 2 DE 2'), findsOneWidget);
       expect(find.text('¿Quién eres?'), findsOneWidget);
@@ -682,5 +681,23 @@ void main() {
 
     expect(find.textContaining('por María Quispe'), findsOneWidget);
     expect(find.text('Cerrar el día'), findsNothing);
+  });
+
+  testWidgets('cada servicio tiene su botón compacto de WhatsApp con nombre', (
+    tester,
+  ) async {
+    await abrirApp(tester);
+
+    final boton = find.byTooltip(
+      'Contactar a «Guiado comunitario» por WhatsApp',
+    );
+    await tester.scrollUntilVisible(
+      boton,
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+
+    expect(boton, findsOneWidget);
+    expect(tester.getSize(boton).height, greaterThanOrEqualTo(48));
   });
 }

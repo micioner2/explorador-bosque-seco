@@ -36,7 +36,6 @@
   "explorarAtractivos": "Atractivos",
   "masUnPunto": "+1 punto",
   "explorarServicios": "Servicios de la comunidad",
-  "contactarWhatsapp": "Contactar por WhatsApp",
   "whatsappNumero": "WhatsApp: {numero}",
   "@whatsappNumero": {
     "placeholders": {
@@ -665,5 +664,12 @@
   },
   "sincronizarSinConexion": "No se pudo llegar al servidor. Todo sigue guardado y se enviará al volver la señal.",
   "sincronizarRechazado": "El servidor no aceptó los datos. Todo sigue guardado en el celular.",
-  "sincronizarSinTablas": "El servidor aún no está listo para recibir datos."
+  "sincronizarSinTablas": "El servidor aún no está listo para recibir datos.",
+
+  "contactarWhatsappDe": "Contactar a «{servicio}» por WhatsApp",
+  "@contactarWhatsappDe": {
+    "placeholders": {
+      "servicio": {"type": "String"}
+    }
+  }
 }

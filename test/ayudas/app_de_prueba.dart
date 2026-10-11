@@ -127,7 +127,6 @@ Future<void> entrarAlPuesto(
 }) async {
   await tocar(tester, find.byTooltip('Modo asociación'));
   await tocar(tester, find.text('Usar cuenta de prueba'));
-  await tocar(tester, find.text('Entrar'));
   await tocar(tester, find.text(guia));
   // Espera a que se vaya el saludo, que puede tapar los botones de abajo.
   await tester.pump(const Duration(seconds: 5));

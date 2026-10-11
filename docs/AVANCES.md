@@ -297,6 +297,10 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
 - **Sincronización:** "Sincronizar ahora" en Hoy y en Pasaporte, y envío
   automático al volver la señal. Reenviar no duplica; lo aceptado pasa a
   "confirmado". Sin servidor o sin tablas, el botón no aparece.
+- Pulido: el botón de WhatsApp de cada servicio es compacto, a la derecha
+  (48 px, con nombre para el lector de pantalla); las listas dejan espacio
+  para que "Escanear QR" no tape nada; "Usar cuenta de prueba" entra con un
+  solo toque.
 
 > **Dónde está:** las etapas 2 a 6 están en la rama `feature/reservas` y
 > todavía no se han unido a la versión principal (`develop` y `main`).
@@ -337,8 +341,8 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
    en verde → archivo `explorador-bosque-seco-apk`.
 2. Instalarlo en un celular Android.
 3. **Modo turista:** se abre directamente.
-4. **Modo asociación:** ícono de tienda → "Usar cuenta de prueba" → elegir un
-   guía.
+4. **Modo asociación:** ícono de tienda → "Usar cuenta de prueba" (entra
+   con un toque) → elegir un guía.
 5. Para probar el escaneo, abrir los carteles de
    [`demo/qr-puntos.html`](demo/qr-puntos.html) (bosque) o
    [`demo/qr-puntos/sede.html`](demo/qr-puntos/sede.html) (sede) en otra

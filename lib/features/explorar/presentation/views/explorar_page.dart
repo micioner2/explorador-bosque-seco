@@ -472,13 +472,20 @@ class _TarjetaServicio extends ConsumerWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(width: AppEspacios.s),
+                  // Compacto, a la derecha: el nombre del servicio tiene
+                  // más espacio. Mide 48 px y el lector dice qué hace.
+                  IconButton.filled(
+                    style: IconButton.styleFrom(
+                      minimumSize: const Size.square(
+                        AppEspacios.objetivoTactil,
+                      ),
+                    ),
+                    tooltip: l10n.contactarWhatsappDe(servicio.nombre),
+                    onPressed: contactar,
+                    icon: const Icon(Icons.chat_outlined),
+                  ),
                 ],
-              ),
-              const SizedBox(height: AppEspacios.m),
-              FilledButton.icon(
-                onPressed: contactar,
-                icon: const Icon(Icons.chat_outlined),
-                label: Text(l10n.contactarWhatsapp),
               ),
             ],
           ),

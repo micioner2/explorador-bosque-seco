@@ -29,7 +29,6 @@
   "explorarAtractivos": "Points of interest",
   "masUnPunto": "+1 point",
   "explorarServicios": "Community services",
-  "contactarWhatsapp": "Contact on WhatsApp",
   "whatsappNumero": "WhatsApp: {numero}",
   "tipoGuiado": "Guiding",
   "tipoAlimentacion": "Food",
@@ -351,5 +350,7 @@
   "sincronizadoAviso": "{n, plural, =0{Nothing new to send} =1{1 item synced} other{{n} items synced}}",
   "sincronizarSinConexion": "Could not reach the server. Everything is still saved and will be sent when signal returns.",
   "sincronizarRechazado": "The server did not accept the data. Everything is still saved on the phone.",
-  "sincronizarSinTablas": "The server is not ready to receive data yet."
+  "sincronizarSinTablas": "The server is not ready to receive data yet.",
+
+  "contactarWhatsappDe": "Contact “{servicio}” on WhatsApp"
 }
