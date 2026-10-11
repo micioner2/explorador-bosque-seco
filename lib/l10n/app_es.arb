@@ -15,7 +15,6 @@
   "navReporte": "Reporte",
   "escanearQr": "Escanear QR",
 
-  "avisoSinSenal": "Sin señal · tu ruta está guardada en el celular",
 
   "explorarLema": "Tu guía en el bosque seco, también sin señal.",
   "explorarAntesDeIr": "Antes de ir",
@@ -553,13 +552,6 @@
   "registrarSalidaCambiar": "Cambiar salida",
   "registrarSalidaInvalida": "La salida debe ser después de ahora",
 
-  "hoyGuardadosEnCelular": "{n, plural, =1{1 grupo guardado} other{{n} grupos guardados}} en el celular · pendiente de sincronizar",
-  "@hoyGuardadosEnCelular": {
-    "placeholders": {
-      "n": {"type": "int"}
-    }
-  },
-
   "mapaGpsBuscando": "Buscando tu ubicación (GPS)…",
   "mapaGpsApagado": "Activa la ubicación del celular para verte en el mapa. El GPS funciona sin señal.",
   "mapaGpsSinPermiso": "Da permiso de ubicación a la app para verte en el mapa.",
@@ -636,5 +628,19 @@
     }
   },
   "pdfGenerando": "Generando PDF…",
-  "pdfError": "No se pudo crear el PDF. Inténtalo de nuevo."
+  "pdfError": "No se pudo crear el PDF. Inténtalo de nuevo.",
+
+  "conexionSinSenal": "Sin señal · todo guardado en el celular{n, plural, =0{} =1{ (1 pendiente)} other{ ({n} pendientes)}}",
+  "@conexionSinSenal": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "conexionConSenal": "Con señal · {n, plural, =1{1 pendiente} other{{n} pendientes}} por sincronizar",
+  "@conexionConSenal": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "conexionSincronizado": "Todo sincronizado"
 }

@@ -170,6 +170,8 @@ no exige escribir código de más en el tiempo del hackathon (detalle en
 | **Lector de QR** (`mobile_scanner`) | Leer con la cámara el QR del grupo y los carteles de los puntos. |
 | **Generador de QR** (`qr_flutter`) | Crear el QR único de cada grupo. |
 | **Enlaces externos** (`url_launcher`) | Abrir WhatsApp con el mensaje ya escrito. |
+| **PDF** (`pdf`, `printing`) | Crear el reporte del día en el celular y compartirlo. |
+| **Estado de la red** (`connectivity_plus`) | Saber si hay señal para avisar qué falta sincronizar. |
 | **Traducciones** (`flutter_localizations`) | Tener toda la app en español e inglés. |
 | **Riverpod** y **go_router** | Ordenar internamente los datos de cada pantalla y la navegación entre pantallas. |
 | **GitHub** | Guardar el código y trabajar en equipo. Cada funcionalidad se desarrolla aparte y se revisa antes de unirla. |
@@ -284,6 +286,9 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
 - **PDF del día** desde Reporte: fecha, quién cerró, totales, procedencia,
   edades, detalle por guía, puntos más visitados y grupos sin salida. Se
   crea sin señal y se comparte por WhatsApp o se guarda.
+- **Estado de conexión real** en Mapa y Hoy: "Sin señal · todo guardado en
+  el celular (N pendientes)", "Con señal · N pendientes por sincronizar" o
+  "Todo sincronizado". Cambia solo al activar o quitar el modo avión.
 
 > **Dónde está:** las etapas 2 a 6 están en la rama `feature/reservas` y
 > todavía no se han unido a la versión principal (`develop` y `main`).

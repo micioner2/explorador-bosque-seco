@@ -5,7 +5,6 @@ import '../../../../core/l10n/l10n.dart';
 import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/acciones_barra.dart';
-import '../../../../shared/widgets/aviso_sin_senal.dart';
 import '../../../../shared/widgets/dialogo_confirmar.dart';
 import '../../../../shared/widgets/estado_vacio.dart';
 import '../../../../shared/widgets/tarjeta_cifra.dart';
@@ -13,6 +12,8 @@ import '../../../../shared/widgets/titulo_seccion.dart';
 import '../../../reservas/presentation/view_models/reservas_view_model.dart';
 import '../../../reservas/presentation/views/tarjeta_reserva.dart';
 import '../../../sesion/presentation/views/boton_sesion.dart';
+import '../../../sincronizacion/presentation/view_models/sincronizacion_view_model.dart';
+import '../../../sincronizacion/presentation/views/aviso_conexion.dart';
 import '../../domain/visita.dart';
 import '../view_models/visitas_view_model.dart';
 import 'qr_grupo_dialog.dart';
@@ -26,7 +27,6 @@ class HoyPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final resumen = ref.watch(resumenDelDiaProvider);
-    final registradas = ref.watch(visitasViewModelProvider).length;
     final agenda = ref.watch(agendaReservasProvider);
     final llegan = agenda.deHoy;
     final atrasadas = resumen.atrasadas;
@@ -67,12 +67,9 @@ class HoyPage extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(AppEspacios.l),
         children: [
-          // Aún no hay servidor de visitas: todo queda en el celular y se
-          // dice con honestidad.
-          if (registradas > 0) ...[
-            AvisoSinSenal(mensaje: l10n.hoyGuardadosEnCelular(registradas)),
-            const SizedBox(height: AppEspacios.m),
-          ],
+          // Siempre visible: si hay señal y cuánto falta sincronizar.
+          AvisoConexion(estado: ref.watch(estadoPuestoProvider)),
+          const SizedBox(height: AppEspacios.m),
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,

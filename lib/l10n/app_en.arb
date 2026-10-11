@@ -15,7 +15,6 @@
   "navReporte": "Report",
   "escanearQr": "Scan QR",
 
-  "avisoSinSenal": "No signal · your trail is saved on your phone",
 
   "explorarLema": "Your guide to the dry forest, even with no signal.",
   "explorarAntesDeIr": "Before you go",
@@ -297,8 +296,6 @@
   "registrarSalidaCambiar": "Change exit",
   "registrarSalidaInvalida": "The exit must be later than now",
 
-  "hoyGuardadosEnCelular": "{n, plural, =1{1 group saved} other{{n} groups saved}} on this phone · waiting to sync",
-
   "mapaGpsBuscando": "Finding your location (GPS)…",
   "mapaGpsApagado": "Turn on your phone's location to see yourself on the map. GPS works without signal.",
   "mapaGpsSinPermiso": "Allow location access for the app to see yourself on the map.",
@@ -332,5 +329,9 @@
   "pdfSinDatos": "No data",
   "pdfNota": "Generated offline at the checkpoint · {cuando}",
   "pdfGenerando": "Creating PDF…",
-  "pdfError": "The PDF could not be created. Try again."
+  "pdfError": "The PDF could not be created. Try again.",
+
+  "conexionSinSenal": "No signal · everything saved on your phone{n, plural, =0{} =1{ (1 pending)} other{ ({n} pending)}}",
+  "conexionConSenal": "Online · {n, plural, =1{1 item} other{{n} items}} waiting to sync",
+  "conexionSincronizado": "Everything synced"
 }

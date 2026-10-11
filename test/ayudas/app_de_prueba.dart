@@ -13,6 +13,8 @@ import 'package:explorador_bosque_seco/features/sesion/data/sesion_repository_de
 import 'package:explorador_bosque_seco/features/sesion/domain/guia.dart';
 import 'package:explorador_bosque_seco/features/sesion/domain/sesion.dart';
 import 'package:explorador_bosque_seco/features/sesion/presentation/view_models/sesion_view_model.dart';
+import 'package:explorador_bosque_seco/features/sincronizacion/data/red_repository_conectividad.dart';
+import 'package:explorador_bosque_seco/features/sincronizacion/domain/red_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -63,6 +65,16 @@ class GpsDePrueba implements UbicacionRepository {
   Stream<Coordenada> posiciones() => Stream.fromIterable(_posiciones);
 }
 
+/// Red de prueba: siempre con o sin señal.
+class RedDePrueba implements RedRepository {
+  const RedDePrueba({this.conSenal = false});
+
+  final bool conSenal;
+
+  @override
+  Stream<bool> hayRed() => Stream.value(conSenal);
+}
+
 /// En las pruebas no hay GPS.
 final sinGps = ubicacionRepositoryProvider.overrideWithValue(
   const GpsDePrueba(),
@@ -93,6 +105,7 @@ Future<void> abrirApp(
         almacenLocalProvider.overrideWithValue(almacenCon(grupo: grupo)),
         sinCamara,
         sinGps,
+        redRepositoryProvider.overrideWithValue(const RedDePrueba()),
         preferenciasRepositoryProvider.overrideWithValue(
           PreferenciasRepositoryMemoria(
             Preferencias(idioma: idioma, modoTema: modoTema),
@@ -132,6 +145,7 @@ Future<void> montarPantalla(
   bool oscuro = false,
   Sesion? sesion,
   UbicacionRepository gps = const GpsDePrueba(),
+  RedRepository red = const RedDePrueba(),
   String? grupo = grupoDemo,
   List<Override> overrides = const [],
 }) async {
@@ -142,6 +156,7 @@ Future<void> montarPantalla(
         almacenLocalProvider.overrideWithValue(almacenCon(grupo: grupo)),
         sinCamara,
         ubicacionRepositoryProvider.overrideWithValue(gps),
+        redRepositoryProvider.overrideWithValue(red),
         sesionViewModelProvider.overrideWith(
           () => SesionViewModelFijo(sesion ?? sesionDePrueba),
         ),

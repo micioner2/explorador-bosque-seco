@@ -6,9 +6,10 @@ import '../../../../core/l10n/l10n.dart';
 import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/acciones_barra.dart';
-import '../../../../shared/widgets/aviso_sin_senal.dart';
 import '../../../../shared/widgets/etiqueta_estado.dart';
 import '../../../../shared/widgets/titulo_seccion.dart';
+import '../../../sincronizacion/presentation/view_models/sincronizacion_view_model.dart';
+import '../../../sincronizacion/presentation/views/aviso_conexion.dart';
 import '../../domain/progreso_ruta.dart';
 import '../view_models/mapa_view_model.dart';
 import 'mapa_ruta.dart';
@@ -35,7 +36,7 @@ class MapaPage extends ConsumerWidget {
           AppEspacios.bajoBotonFlotante,
         ),
         children: [
-          const AvisoSinSenal(),
+          AvisoConexion(estado: ref.watch(estadoTuristaProvider)),
           const SizedBox(height: AppEspacios.m),
           _TarjetaSiguiente(progreso: progreso),
           const SizedBox(height: AppEspacios.m),
