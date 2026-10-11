@@ -34,8 +34,15 @@ jobs:
       - name: Versión de Flutter
         run: flutter --version
 
+      # Usa exactamente las versiones de pubspec.lock. Si falla, alguien
+      # cambió pubspec.yaml sin subir el pubspec.lock actualizado.
       - name: Instalar dependencias
-        run: flutter pub get
+        run: flutter pub get --enforce-lockfile
+
+      # Genera lib/l10n/app_localizations*.dart desde los .arb (español e
+      # inglés). Esos archivos no se suben al repositorio.
+      - name: Generar traducciones (flutter gen-l10n)
+        run: flutter gen-l10n
 
       - name: Verificar formato (dart format)
         run: |
@@ -79,6 +86,25 @@ jobs:
             exit 1
           fi
 
+      - name: Resumen de cobertura
+        if: always()
+        run: |
+          if [ -f coverage/lcov.info ]; then
+            awk -F: '
+              /^SF:/ { generado = ($2 ~ /l10n.app_localizations/) }
+              !generado && /^LF:/ { lineas += $2 }
+              !generado && /^LH:/ { cubiertas += $2 }
+              END {
+                if (lineas > 0) {
+                  print "### Cobertura de pruebas"
+                  print ""
+                  printf "**%.1f %%** de las líneas (%d de %d), ", cubiertas * 100 / lineas, cubiertas, lineas
+                  print "sin contar las traducciones generadas."
+                }
+              }
+            ' coverage/lcov.info >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Guardar cobertura
         if: always()
         uses: actions/upload-artifact@v7
@@ -101,6 +127,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+          cache: gradle
 
       - name: Instalar Flutter ${{ env.FLUTTER_VERSION }}
         uses: subosito/flutter-action@v2
@@ -110,7 +137,7 @@ jobs:
           cache: true
 
       - name: Instalar dependencias
-        run: flutter pub get
+        run: flutter pub get --enforce-lockfile
 
       - name: Compilar APK (release)
         run: flutter build apk --release
