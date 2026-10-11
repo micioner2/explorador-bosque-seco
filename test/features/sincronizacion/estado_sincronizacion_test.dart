@@ -97,7 +97,9 @@ void main() {
     test('lo que el servidor confirma deja de estar pendiente', () async {
       red.cambiar(conSenal: true);
       await Future<void>.delayed(Duration.zero);
-      final ids = [for (final v in app.read(visitasViewModelProvider)) v.id];
+      final ids = [
+        for (final v in app.read(visitasViewModelProvider)) claveVisita(v),
+      ];
 
       app
           .read(confirmadosViewModelProvider.notifier)

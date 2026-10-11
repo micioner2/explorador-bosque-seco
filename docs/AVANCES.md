@@ -60,17 +60,17 @@ flowchart LR
 | | Cantidad |
 |---|---|
 | ✅ Funcionalidades terminadas | 16 |
-| 🟡 Funcionalidades a medias | 3 |
-| ⏳ Funcionalidades pendientes | 3 |
+| 🟡 Funcionalidades a medias | 4 |
+| ⏳ Funcionalidades pendientes | 2 |
 
 Lo más importante que **ya funciona**: el registro de grupos que reemplaza al
 cuaderno, el escaneo de QR con la cámara, el mapa con GPS sin señal, las
 reservas, el cierre del día y que **todo queda guardado en el celular** aunque
 se cierre la app.
 
-Lo más importante que **falta**: que la app **envíe** lo guardado al
-servidor cuando vuelve la señal (sincronización). Hoy todo se queda en el
-celular y se muestra como "pendiente de sincronizar".
+Lo más importante que **falta**: que el equipo web cree en el servidor las
+tablas propuestas. La app ya sabe enviar lo guardado cuando vuelve la señal;
+hasta entonces todo queda en el celular como "pendiente de sincronizar".
 
 ---
 
@@ -114,7 +114,7 @@ asociación cargue la real en el portal web.
 | Código | Qué hace | Estado | Notas |
 |---|---|---|---|
 | G1 | **Todo se guarda en el celular** (grupos, reservas, sellos, cierres) y sigue ahí al cerrar la app. | ✅ Hecha | Es la base para funcionar sin señal. |
-| G2 | **Sincronización:** enviar al servidor lo guardado en el celular cuando vuelve la señal, sin duplicar. | ⏳ Pendiente | Las tablas ya están propuestas al equipo web. Falta que la app las use. |
+| G2 | **Sincronización:** enviar al servidor lo guardado en el celular cuando vuelve la señal, sin duplicar. | 🟡 En parte | La app ya envía grupos, sellos y cierres ("Sincronizar ahora" y al volver la señal) y marca lo aceptado como confirmado. Falta que el equipo web cree las tablas propuestas; mientras tanto el botón no aparece. Las reservas aún no se envían. |
 | G3 | **Pensada para usar al sol y por personas con poca experiencia digital:** buen contraste, botones grandes, letra que se puede agrandar sin que se rompa la pantalla, compatible con lectores de pantalla. | ✅ Hecha | Se revisa automáticamente en cada cambio. |
 
 ---
@@ -294,6 +294,9 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
   Angolo y la sede, y "Centrar la ruta de la sede aquí" la arma alrededor de
   donde está el celular (GPS, sin señal). Carteles en
   [`demo/qr-puntos/sede.html`](demo/qr-puntos/sede.html).
+- **Sincronización:** "Sincronizar ahora" en Hoy y en Pasaporte, y envío
+  automático al volver la señal. Reenviar no duplica; lo aceptado pasa a
+  "confirmado". Sin servidor o sin tablas, el botón no aparece.
 
 > **Dónde está:** las etapas 2 a 6 están en la rama `feature/reservas` y
 > todavía no se han unido a la versión principal (`develop` y `main`).
@@ -304,7 +307,7 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
 
 | Pendiente | Depende de | Para qué sirve |
 |---|---|---|
-| Sincronizar con el servidor lo guardado en el celular (G2). | Equipo web (crear las tablas propuestas) y desarrollo móvil. | Que los datos lleguen al panel web y los puntos pasen a "confirmados". |
+| Crear en el servidor las tablas de sincronización (G2). | Equipo web ([`supabase/sincronizacion-app.sql`](supabase/sincronizacion-app.sql)). | Que los grupos, sellos y cierres lleguen al panel web y los puntos pasen a "confirmados". |
 | Lista real de guías por asociación (A7). | Equipo web (tabla de guías) y asociaciones. | Que cada asociación vea a sus guías verdaderos. |
 | Contenido real: rutas, coordenadas, fotos, tarifas y números de WhatsApp. | Equipo de datos y asociaciones, desde el portal web. | Reemplazar los datos de ejemplo. |
 | Descargar la información del lugar desde el servidor (T4). | Desarrollo móvil, después de la sincronización. | Que cada comunidad cargue su propio contenido sin publicar otra versión de la app. |

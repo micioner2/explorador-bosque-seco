@@ -64,6 +64,20 @@ description: Conecta los repositorios de la app a Supabase (Postgres, Auth, Stor
   `pending` a `cancelled` o `checked_in` (R14 y R15). El teléfono es dato
   personal: solo lo lee la asociación dueña (RLS).
 
+## Sincronización (hecha en la app; faltan las tablas)
+
+- `features/sincronizacion`: `SincronizacionRepository` (domain) y
+  `SincronizacionRepositorySupabase` (data) envían con upsert por id
+  visitas + visitantes, sellos (`on_conflict visit_id,point_id`, R1) y
+  cierres (`on_conflict association_id,day`). Solo ids UUID: los datos demo
+  no salen del celular.
+- Lo aceptado se recuerda por colección (`ConfirmadosRepository`); un grupo
+  que marca su salida vuelve a quedar pendiente (`claveVisita`).
+- "Sincronizar ahora" en Hoy y Pasaporte, y envío automático al volver la
+  red (`app.dart`). Sin cliente Supabase o con `PGRST205` el botón se oculta.
+- Tablas: `docs/supabase/sincronizacion-app.sql` (pendiente de ejecutar por
+  el equipo web).
+
 ## 3. Esquema y seguridad
 
 Usa como base `referencia-esquema.sql` (en esta carpeta). Lo esencial:

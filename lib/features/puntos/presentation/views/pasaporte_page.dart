@@ -16,6 +16,7 @@ import '../../../../shared/widgets/titulo_seccion.dart';
 import '../../../escaneo/presentation/view_models/escaneo_view_model.dart';
 import '../../../mapa/domain/progreso_ruta.dart';
 import '../../../mapa/presentation/view_models/mapa_view_model.dart';
+import '../../../sincronizacion/presentation/views/boton_sincronizar.dart';
 import '../../domain/pasaporte.dart';
 import '../../domain/producto.dart';
 import '../view_models/pasaporte_view_model.dart';
@@ -107,6 +108,8 @@ class PasaportePage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const SizedBox(height: AppEspacios.m),
+                const BotonSincronizar(),
                 TituloSeccion(l10n.pasaporteSellos),
                 _Sellos(progreso: progreso),
                 TituloSeccion(l10n.pasaporteCanje),

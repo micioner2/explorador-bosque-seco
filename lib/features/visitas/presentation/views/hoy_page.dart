@@ -14,6 +14,7 @@ import '../../../reservas/presentation/views/tarjeta_reserva.dart';
 import '../../../sesion/presentation/views/boton_sesion.dart';
 import '../../../sincronizacion/presentation/view_models/sincronizacion_view_model.dart';
 import '../../../sincronizacion/presentation/views/aviso_conexion.dart';
+import '../../../sincronizacion/presentation/views/boton_sincronizar.dart';
 import '../../domain/visita.dart';
 import '../view_models/visitas_view_model.dart';
 import 'qr_grupo_dialog.dart';
@@ -69,6 +70,8 @@ class HoyPage extends ConsumerWidget {
         children: [
           // Siempre visible: si hay señal y cuánto falta sincronizar.
           AvisoConexion(estado: ref.watch(estadoPuestoProvider)),
+          const SizedBox(height: AppEspacios.s),
+          const BotonSincronizar(),
           const SizedBox(height: AppEspacios.m),
           IntrinsicHeight(
             child: Row(

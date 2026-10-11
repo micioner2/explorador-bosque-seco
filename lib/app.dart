@@ -40,6 +40,13 @@ class _BosqueSecoAppState extends ConsumerState<BosqueSecoApp> {
     // proveedores compartidos a mitad del dibujo).
     ref.listen(estadoPuestoProvider, (_, _) {});
     ref.listen(estadoTuristaProvider, (_, _) {});
+    ref.listen(sincronizacionDisponibleProvider, (_, _) {});
+    // Al volver la señal se envía solo lo pendiente.
+    ref.listen(hayRedProvider, (antes, ahora) {
+      if (ahora == true && antes != true) {
+        ref.read(sincronizacionViewModelProvider.notifier).sincronizar();
+      }
+    });
     final preferencias = ref.watch(preferenciasViewModelProvider);
     final idioma = preferencias.idioma;
 

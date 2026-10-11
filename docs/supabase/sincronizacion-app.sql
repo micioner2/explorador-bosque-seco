@@ -167,5 +167,6 @@ as $$
   select exists (select 1 from visits where id = p_visit_id)
 $$;
 
-create policy scans_insert_tourist on public.scans for insert to anon
+create policy scans_insert_tourist on public.scans
+  for insert to anon, authenticated
   with check (visit_exists(visit_id));

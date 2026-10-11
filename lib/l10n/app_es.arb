@@ -653,5 +653,17 @@
   "rutaCentrarAqui": "Centrar la ruta de la sede aquí",
   "rutaCentrarAyuda": "En el lugar de la demo: los 5 puntos se arman alrededor de donde estás (GPS, sin señal).",
   "rutaCentrada": "Listo: la ruta de la sede está alrededor de tu ubicación",
-  "rutaCentrarError": "No se pudo leer el GPS. Activa la ubicación y vuelve a intentarlo."
+  "rutaCentrarError": "No se pudo leer el GPS. Activa la ubicación y vuelve a intentarlo.",
+
+  "sincronizarAhora": "Sincronizar ahora",
+  "sincronizando": "Sincronizando…",
+  "sincronizadoAviso": "{n, plural, =0{No había nada nuevo por enviar} =1{1 registro sincronizado} other{{n} registros sincronizados}}",
+  "@sincronizadoAviso": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "sincronizarSinConexion": "No se pudo llegar al servidor. Todo sigue guardado y se enviará al volver la señal.",
+  "sincronizarRechazado": "El servidor no aceptó los datos. Todo sigue guardado en el celular.",
+  "sincronizarSinTablas": "El servidor aún no está listo para recibir datos."
 }
