@@ -18,31 +18,35 @@ class VisitasRepositoryLocal implements VisitasRepository {
         deJson: visitaDeJson,
       );
 
-  /// Visitas con las que empieza el celular la primera vez (datos de
-  /// demostración), o `null` para empezar vacío.
-  final List<Visita> Function(DateTime dia)? semilla;
+  /// Visitas de demostración a partir de la hora actual, o `null` para no
+  /// tener ninguna. No se guardan: se calculan cada vez, así la demo se ve
+  /// igual a cualquier hora. Si el guía cambia una (marca su salida), se
+  /// guarda esa versión y reemplaza a la de demostración.
+  final List<Visita> Function(DateTime ahora)? semilla;
 
   final ColeccionLocal<Visita> _coleccion;
-  List<Visita>? _visitas;
+  List<Visita>? _guardadas;
 
-  List<Visita> _todas(DateTime hoy) {
-    final guardadas = _visitas ??= _coleccion.leer();
-    if (guardadas != null) return guardadas;
-    final iniciales = semilla?.call(hoy) ?? const <Visita>[];
-    _visitas = [...iniciales];
-    _coleccion.guardar(iniciales);
-    return _visitas!;
+  List<Visita> get _todas => _guardadas ??= _coleccion.leer() ?? [];
+
+  /// Visitas que entraron hoy y las de días anteriores que siguen dentro
+  /// (por ejemplo, un grupo que acampa o que no marcó su salida).
+  @override
+  List<Visita> visitasDelDia(DateTime dia) {
+    final guardadas = _todas;
+    final ids = {for (final v in guardadas) v.id};
+    return [
+      for (final visita in [
+        ...?semilla?.call(dia).where((v) => !ids.contains(v.id)),
+        ...guardadas,
+      ])
+        if (_mismoDia(visita.fechaEntrada, dia) || !visita.salio) visita,
+    ];
   }
 
   @override
-  List<Visita> visitasDelDia(DateTime dia) => [
-    for (final visita in _todas(dia))
-      if (_mismoDia(visita.fechaEntrada, dia)) visita,
-  ];
-
-  @override
   Future<void> guardar(Visita visita) {
-    final todas = _todas(visita.fechaEntrada);
+    final todas = _todas;
     final indice = todas.indexWhere((v) => v.id == visita.id);
     if (indice < 0) {
       todas.add(visita);
@@ -108,13 +112,12 @@ Visitante _visitanteDeJson(Map<String, Object?> json) => Visitante(
 );
 
 /// Punto único donde se elige la implementación: las visitas viven en el
-/// celular. Sin servidor (cuenta de prueba), empiezan con las de
-/// demostración.
+/// celular. Sin servidor (cuenta de prueba), se suman las de demostración.
 final visitasRepositoryProvider = Provider<VisitasRepository>(
   (ref) => VisitasRepositoryLocal(
     ref.watch(almacenLocalProvider),
     semilla: ref.watch(datosDemoProvider)
-        ? const VisitasRepositoryDemo().visitasDelDia
+        ? const VisitasRepositoryDemo().visitasDe
         : null,
   ),
 );

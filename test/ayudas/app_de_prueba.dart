@@ -1,4 +1,5 @@
 import 'package:explorador_bosque_seco/app.dart';
+import 'package:explorador_bosque_seco/core/almacen/almacen_local.dart';
 import 'package:explorador_bosque_seco/core/l10n/l10n.dart';
 import 'package:explorador_bosque_seco/core/reloj.dart';
 import 'package:explorador_bosque_seco/core/theme/app_theme.dart';
@@ -67,17 +68,29 @@ final sinGps = ubicacionRepositoryProvider.overrideWithValue(
   const GpsDePrueba(),
 );
 
+/// Grupo de demostración (`bosqueseco:visita:v-demo`) al que las pruebas
+/// vinculan el celular del turista: es el de los sellos del pasaporte demo.
+const grupoDemo = 'v-demo';
+
+/// Almacén del celular con el turista ya vinculado a [grupo] (o sin vincular
+/// si es `null`).
+AlmacenMemoria almacenCon({String? grupo}) =>
+    AlmacenMemoria({'turista.visitaVinculada': ?grupo});
+
 /// Abre la app completa con idioma, apariencia y hora fijos, para que las
 /// pruebas no dependan del celular ni del reloj de quien las corre.
 Future<void> abrirApp(
   WidgetTester tester, {
   Idioma idioma = Idioma.es,
   ModoTema modoTema = ModoTema.claro,
+  String? grupo = grupoDemo,
+  DateTime? ahora,
 }) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        relojProvider.overrideWithValue(() => mediodia),
+        relojProvider.overrideWithValue(() => ahora ?? mediodia),
+        almacenLocalProvider.overrideWithValue(almacenCon(grupo: grupo)),
         sinCamara,
         sinGps,
         preferenciasRepositoryProvider.overrideWithValue(
@@ -119,12 +132,14 @@ Future<void> montarPantalla(
   bool oscuro = false,
   Sesion? sesion,
   UbicacionRepository gps = const GpsDePrueba(),
+  String? grupo = grupoDemo,
   List<Override> overrides = const [],
 }) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
         relojProvider.overrideWithValue(() => mediodia),
+        almacenLocalProvider.overrideWithValue(almacenCon(grupo: grupo)),
         sinCamara,
         ubicacionRepositoryProvider.overrideWithValue(gps),
         sesionViewModelProvider.overrideWith(

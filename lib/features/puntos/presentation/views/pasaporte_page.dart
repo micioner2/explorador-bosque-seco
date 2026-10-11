@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/router/rutas.dart';
 import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/acciones_barra.dart';
 import '../../../../shared/widgets/dialogo_confirmar.dart';
 import '../../../../shared/widgets/encabezado.dart';
+import '../../../../shared/widgets/estado_vacio.dart';
 import '../../../../shared/widgets/etiqueta_estado.dart';
 import '../../../../shared/widgets/icono_circular.dart';
 import '../../../../shared/widgets/titulo_seccion.dart';
+import '../../../escaneo/presentation/view_models/escaneo_view_model.dart';
 import '../../../mapa/domain/progreso_ruta.dart';
 import '../../../mapa/presentation/view_models/mapa_view_model.dart';
 import '../../domain/pasaporte.dart';
@@ -27,6 +31,7 @@ class PasaportePage extends ConsumerWidget {
     final pasaporte = ref.watch(pasaporteViewModelProvider);
     final productos = ref.watch(productosProvider);
     final progreso = ref.watch(mapaViewModelProvider);
+    final vinculado = ref.watch(vinculoViewModelProvider) != null;
 
     Future<void> canjear(Producto producto) async {
       final mensajero = ScaffoldMessenger.of(context);
@@ -55,6 +60,37 @@ class PasaportePage extends ConsumerWidget {
           ),
         );
       }
+    }
+
+    // Sin grupo vinculado no hay sellos que mostrar: se invita a escanear
+    // el QR del grupo, que es el primer paso en el bosque.
+    if (!vinculado) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.pasaporteTitulo),
+          actions: const [BotonAjustes()],
+        ),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            AppEspacios.l,
+            AppEspacios.xl,
+            AppEspacios.l,
+            AppEspacios.bajoBotonFlotante,
+          ),
+          children: [
+            EstadoVacio(
+              icono: Icons.qr_code_2,
+              titulo: l10n.pasaporteSinGrupo,
+              detalle: l10n.pasaporteSinGrupoDetalle,
+            ),
+            FilledButton.icon(
+              onPressed: () => context.push<void>(Rutas.escanear),
+              icon: const Icon(Icons.qr_code_scanner),
+              label: Text(l10n.pasaporteEscanearGrupo),
+            ),
+          ],
+        ),
+      );
     }
 
     return Scaffold(

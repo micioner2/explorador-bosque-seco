@@ -1,13 +1,17 @@
 import '../domain/reserva.dart';
 
-/// Reservas de demostración, relativas al día de hoy. Se reemplazan por las
-/// de Supabase cuando exista su tabla.
+/// Reservas de demostración, calculadas a partir de la hora actual: una que
+/// no llegó ayer, una retrasada, una que **llega en la próxima hora** y dos
+/// de los próximos días. Se usan cuando la app se compila sin servidor.
 class ReservasRepositoryDemo {
   const ReservasRepositoryDemo();
 
-  List<Reserva> reservas(DateTime hoy) {
+  /// Cuánto falta para que llegue la reserva de la próxima hora.
+  static const llegaEn = Duration(minutes: 40);
+
+  List<Reserva> reservasDe(DateTime ahora) {
     DateTime en(int dias, int hora, [int minuto = 0]) =>
-        DateTime(hoy.year, hoy.month, hoy.day + dias, hora, minuto);
+        DateTime(ahora.year, ahora.month, ahora.day + dias, hora, minuto);
 
     return [
       Reserva(
@@ -25,7 +29,7 @@ class ReservasRepositoryDemo {
         asociacionId: 'demo',
         nombreContacto: 'Diego Flores',
         telefono: '956 112 233',
-        fechaHora: en(0, 10, 30),
+        fechaHora: ahora.subtract(const Duration(minutes: 90)),
         personas: 2,
         guiaId: 'g1',
         nombreGuia: 'María Quispe',
@@ -35,7 +39,7 @@ class ReservasRepositoryDemo {
         asociacionId: 'demo',
         nombreContacto: 'Carmen Seminario',
         telefono: '944 300 120',
-        fechaHora: en(0, 15),
+        fechaHora: ahora.add(llegaEn),
         personas: 4,
         guiaId: 'g1',
         nombreGuia: 'María Quispe',

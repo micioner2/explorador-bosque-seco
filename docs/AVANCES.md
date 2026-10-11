@@ -7,7 +7,7 @@ Hackathon Piura Innova 2026
 > cualquier persona que necesite entender qué hace la app hoy, cómo está
 > pensada y qué falta, sin leer código.
 >
-> **Última actualización:** 10 de octubre de 2026.
+> **Última actualización:** 11 de octubre de 2026.
 >
 > **Para comentar:** citen el código de la fila (por ejemplo, *T3* o *D4*).
 > Así sabemos exactamente a qué se refieren.
@@ -272,7 +272,16 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
 - Propuesta de tablas del servidor para el equipo web
   ([`supabase/sincronizacion-app.sql`](supabase/sincronizacion-app.sql)).
 
-> **Dónde está:** las etapas 2 a 5 están en la rama `feature/reservas` y
+### Etapa 6 — Demo a cualquier hora (11 de octubre)
+
+- Los datos de ejemplo se calculan con la hora actual: siempre se ve la
+  alerta "sigue dentro" y una reserva por llegar.
+- "Hoy" también muestra los grupos de días anteriores que siguen dentro (por
+  ejemplo, los que acampan).
+- Sin grupo vinculado, el pasaporte invita a escanear el QR del grupo y el
+  mapa solo cuenta los sellos del grupo propio.
+
+> **Dónde está:** las etapas 2 a 6 están en la rama `feature/reservas` y
 > todavía no se han unido a la versión principal (`develop` y `main`).
 
 ---
@@ -296,9 +305,10 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
 - Como la sincronización aún no está, los sellos ganados en el bosque se
   quedan **pendientes**. El canje se muestra con puntos de ejemplo que ya
   vienen confirmados.
-- Los grupos de ejemplo de la pantalla "Hoy" se crean con la fecha del
-  **primer día** que se abre la app. Hay que abrirla por primera vez el mismo
-  día de la demo.
+- Los datos de ejemplo se calculan con la hora del celular: a cualquier
+  hora hay un grupo con la alerta "sigue dentro" (debió salir hace 30
+  minutos), dos grupos dentro de su horario y una reserva que llega en la
+  próxima hora.
 - La demo se hace en Android. La app está hecha para funcionar también en
   iPhone, pero no es la prioridad del hackathon.
 

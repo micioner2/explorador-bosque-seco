@@ -17,27 +17,27 @@ class ReservasRepositoryLocal implements ReservasRepository {
         deJson: reservaDeJson,
       );
 
-  /// Reservas con las que empieza el celular la primera vez (datos de
-  /// demostración), o `null` para empezar vacío.
-  final List<Reserva> Function(DateTime hoy)? semilla;
+  /// Reservas de demostración a partir de la hora actual, o `null` para no
+  /// tener ninguna. No se guardan: se calculan cada vez. Si el guía cambia
+  /// una (la cancela o llega el grupo), se guarda esa versión y reemplaza a
+  /// la de demostración.
+  final List<Reserva> Function(DateTime ahora)? semilla;
 
   final ColeccionLocal<Reserva> _coleccion;
-  List<Reserva>? _reservas;
+  List<Reserva>? _guardadas;
 
-  List<Reserva> _todas(DateTime hoy) {
-    final guardadas = _reservas ??= _coleccion.leer();
-    if (guardadas != null) return guardadas;
-    final iniciales = semilla?.call(hoy) ?? const <Reserva>[];
-    _reservas = [...iniciales];
-    _coleccion.guardar(iniciales);
-    return _reservas!;
-  }
+  List<Reserva> get _todas => _guardadas ??= _coleccion.leer() ?? [];
 
   @override
   List<Reserva> reservas(DateTime hoy) {
     final inicioDelDia = DateTime(hoy.year, hoy.month, hoy.day);
+    final guardadas = _todas;
+    final ids = {for (final r in guardadas) r.id};
     return [
-      for (final reserva in _todas(hoy))
+      for (final reserva in [
+        ...?semilla?.call(hoy).where((r) => !ids.contains(r.id)),
+        ...guardadas,
+      ])
         if (reserva.pendiente || !reserva.fechaHora.isBefore(inicioDelDia))
           reserva,
     ];
@@ -45,7 +45,7 @@ class ReservasRepositoryLocal implements ReservasRepository {
 
   @override
   Future<void> guardar(Reserva reserva) {
-    final todas = _todas(reserva.fechaHora);
+    final todas = _todas;
     final indice = todas.indexWhere((r) => r.id == reserva.id);
     if (indice < 0) {
       todas.add(reserva);
@@ -85,13 +85,12 @@ Reserva reservaDeJson(Map<String, Object?> json) => Reserva(
 );
 
 /// Punto único donde se elige la implementación: las reservas viven en el
-/// celular. Sin servidor (cuenta de prueba), empiezan con las de
-/// demostración.
+/// celular. Sin servidor (cuenta de prueba), se suman las de demostración.
 final reservasRepositoryProvider = Provider<ReservasRepository>(
   (ref) => ReservasRepositoryLocal(
     ref.watch(almacenLocalProvider),
     semilla: ref.watch(datosDemoProvider)
-        ? const ReservasRepositoryDemo().reservas
+        ? const ReservasRepositoryDemo().reservasDe
         : null,
   ),
 );

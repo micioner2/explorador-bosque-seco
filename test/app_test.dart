@@ -58,7 +58,7 @@ void main() {
   testWidgets('escanear un punto suma un sello pendiente al pasaporte', (
     tester,
   ) async {
-    await abrirApp(tester);
+    await abrirApp(tester, grupo: null);
 
     await tocar(tester, find.text('Escanear QR'));
     expect(find.textContaining('escanea el QR de tu grupo'), findsOneWidget);
@@ -301,7 +301,7 @@ void main() {
     await entrarAlPuesto(tester);
 
     expect(find.text('1 grupo pasó su hora de salida'), findsOneWidget);
-    expect(find.text('Debía salir a las 11:00'), findsOneWidget);
+    expect(find.text('Debía salir a las 11:30'), findsOneWidget);
 
     // El grupo atrasado va primero en la lista.
     await tocar(tester, find.text('Marcar salida').first);
@@ -465,7 +465,7 @@ void main() {
 
   group('reservas', () {
     // A mediodía, la demostración tiene: Paola Ríos (ayer, no llegó),
-    // Diego Flores (hoy 10:30, retrasado), Carmen Seminario (hoy 15:00),
+    // Diego Flores (hace 90 min, retrasado), Carmen Seminario (en 40 min),
     // Gabriela Ramos (mañana, 25 personas) y Martín Vega (lunes).
     Finder enTarjetaDe(String nombre, String texto) => find.descendant(
       of: find.ancestor(of: find.text(nombre), matching: find.byType(Card)),

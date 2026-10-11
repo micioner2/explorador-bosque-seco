@@ -1,3 +1,4 @@
+import 'package:explorador_bosque_seco/core/almacen/almacen_local.dart';
 import 'package:explorador_bosque_seco/core/reloj.dart';
 import 'package:explorador_bosque_seco/features/mapa/data/ruta_repository_demo.dart';
 import 'package:explorador_bosque_seco/features/mapa/domain/ruta.dart';
@@ -43,6 +44,10 @@ void main() {
         relojProvider.overrideWithValue(() => DateTime(2026, 10, 10, 10)),
         rutaRepositoryProvider.overrideWithValue(_RutaCorta()),
         puntosRepositoryProvider.overrideWithValue(_PasaporteVacio()),
+        // El celular está vinculado al grupo v1: el mapa muestra su avance.
+        almacenLocalProvider.overrideWithValue(
+          AlmacenMemoria({'turista.visitaVinculada': 'v1'}),
+        ),
       ],
     );
     addTearDown(container.dispose);
@@ -78,5 +83,11 @@ void main() {
     final progreso = container.read(mapaViewModelProvider);
     expect(progreso.completada, isTrue);
     expect(progreso.siguiente, isNull);
+  });
+
+  test('los sellos de otro grupo no cuentan en el mapa', () {
+    pasaporte().registrarEscaneo(visitaId: 'otro', puntoId: 'entrada');
+
+    expect(container.read(mapaViewModelProvider).visitados, 0);
   });
 }

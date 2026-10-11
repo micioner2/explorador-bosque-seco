@@ -320,5 +320,9 @@
   "cierreAccion": "Close the day",
   "cierreHecho": "Day closed at {hora} by {guia}",
   "cierreHechoDetalle": "Saved on this phone · waiting to sync",
-  "cierreDesactualizado": "There were changes after closing: update it before leaving."
+  "cierreDesactualizado": "There were changes after closing: update it before leaving.",
+
+  "pasaporteSinGrupo": "No stamps yet",
+  "pasaporteSinGrupoDetalle": "Scan your group's QR: the guide shows it to you at the checkpoint. Then each stop on the trail gives you a stamp.",
+  "pasaporteEscanearGrupo": "Scan the group's QR"
 }

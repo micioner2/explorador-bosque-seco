@@ -1,13 +1,18 @@
 import '../domain/visita.dart';
 
-/// Visitas de demostración: con ellas empieza el celular cuando la app se
-/// compila sin servidor (ver `VisitasRepositoryLocal`).
+/// Visitas de demostración, calculadas a partir de la hora actual para que
+/// la demo se vea igual a cualquier hora: dos grupos dentro de su horario y
+/// uno que debió salir hace 30 minutos (alerta "sigue dentro"). Se usan
+/// cuando la app se compila sin servidor (ver `VisitasRepositoryLocal`).
 class VisitasRepositoryDemo {
   const VisitasRepositoryDemo();
 
-  List<Visita> visitasDelDia(DateTime dia) {
-    DateTime a(int hora, [int minuto = 0]) =>
-        DateTime(dia.year, dia.month, dia.day, hora, minuto);
+  /// Minutos que lleva atrasado el grupo de la alerta.
+  static const atraso = Duration(minutes: 30);
+
+  List<Visita> visitasDe(DateTime ahora) {
+    DateTime hace(int minutos) => ahora.subtract(Duration(minutes: minutos));
+    DateTime en(int minutos) => ahora.add(Duration(minutes: minutos));
 
     // Documentos inventados para la demostración.
     var dni = 45120300;
@@ -33,8 +38,8 @@ class VisitasRepositoryDemo {
           persona('Mateo Torres', 9, Procedencia.piura),
         ],
         actividades: const [Actividad.senderismo, Actividad.fotografia],
-        fechaEntrada: a(8),
-        salidaPrevista: a(16),
+        fechaEntrada: hace(180),
+        salidaPrevista: en(300),
         guiaId: 'g1',
         nombreGuia: 'María Quispe',
       ),
@@ -46,8 +51,8 @@ class VisitasRepositoryDemo {
           persona('Sofía Rojas', 26, Procedencia.lima),
         ],
         actividades: const [Actividad.aves],
-        fechaEntrada: a(6, 30),
-        salidaPrevista: a(18),
+        fechaEntrada: hace(90),
+        salidaPrevista: en(360),
         guiaId: 'g2',
         nombreGuia: 'Juan Chunga',
       ),
@@ -60,8 +65,8 @@ class VisitasRepositoryDemo {
           persona('Emma Schmidt', 31, Procedencia.extranjero),
         ],
         actividades: const [Actividad.fotografia],
-        fechaEntrada: a(7),
-        salidaPrevista: a(11),
+        fechaEntrada: hace(300),
+        salidaPrevista: ahora.subtract(atraso),
         guiaId: 'g1',
         nombreGuia: 'María Quispe',
       ),

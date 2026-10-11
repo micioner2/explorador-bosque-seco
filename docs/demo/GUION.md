@@ -15,9 +15,10 @@ control.** Toda la demo se hace en **modo avión** (salvo el paso de WhatsApp).
 - [ ] Permisos de cámara y ubicación ya concedidos (ábrelos una vez antes).
 - [ ] Mapa base: si se corrió `tool/descargar_teselas.py`, se ven calles y
       relieve; si no, la ruta sobre fondo liso (igual funciona).
-- [ ] Abre la app por primera vez **el mismo día de la demo** (o borra sus
-      datos: Ajustes del celular → Apps → Bosque Seco → Borrar datos). Los
-      grupos de ejemplo de "Hoy" se crean con la fecha de la primera vez.
+- [ ] Los grupos y reservas de ejemplo se calculan con la hora del celular:
+      siempre habrá un grupo atrasado 30 minutos y una reserva por llegar.
+      Para empezar desde cero: Ajustes del celular → Apps → Bosque Seco →
+      Borrar datos.
 
 ## 1. El turista planifica (con señal) — 1 min
 

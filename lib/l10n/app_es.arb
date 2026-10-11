@@ -619,5 +619,9 @@
     }
   },
   "cierreHechoDetalle": "Guardado en el celular · pendiente de sincronizar",
-  "cierreDesactualizado": "Hubo cambios después del cierre: actualízalo antes de irte."
+  "cierreDesactualizado": "Hubo cambios después del cierre: actualízalo antes de irte.",
+
+  "pasaporteSinGrupo": "Aún no tienes sellos",
+  "pasaporteSinGrupoDetalle": "Escanea el QR de tu grupo: te lo muestra el guía en el puesto de control. Luego cada punto de la ruta te da un sello.",
+  "pasaporteEscanearGrupo": "Escanear el QR del grupo"
 }
