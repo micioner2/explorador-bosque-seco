@@ -142,13 +142,10 @@
     }
   },
 
-  "escanearTitulo": "Escanear punto",
-  "escanearInstruccion": "Apunta al QR del punto turístico",
+  "escanearTitulo": "Escanear QR",
+  "escanearInstruccion": "Apunta al QR de tu grupo o de un punto de la ruta",
   "escanearSinSenal": "Funciona sin señal: el sello se guarda en tu celular.",
-  "escanearSimular": "Simular escaneo (demo)",
-  "escanearGanado": "¡Sello obtenido! +1 punto",
   "escanearGanadoDetalle": "Queda pendiente hasta que tengas señal.",
-  "escanearYaRegistrado": "Este punto ya está en tu pasaporte",
   "verPasaporte": "Ver pasaporte",
 
   "hoyTitulo": "Puesto de control",
@@ -501,5 +498,41 @@
     }
   },
   "guiaUltimaVez": "Fuiste el último guía en este celular",
-  "guiaOtro": "¿Eres otro guía?"
+  "guiaOtro": "¿Eres otro guía?",
+
+  "escanearSinGrupo": "Paso 1: escanea el QR de tu grupo. Te lo muestra el guía en el puesto de control.",
+  "escanearConGrupo": "Celular vinculado a tu grupo",
+  "escanearGrupoListo": "¡Listo! Tu celular quedó vinculado a tu grupo",
+  "escanearGrupoYaEstaba": "Ya estás vinculado a este grupo",
+  "escanearGrupoDetalle": "Ahora escanea el QR de cada punto de la ruta para ganar sellos.",
+  "escanearGanadoEn": "¡Sello de {punto}! +1 punto",
+  "@escanearGanadoEn": {
+    "placeholders": {
+      "punto": {"type": "String"}
+    }
+  },
+  "escanearRepetido": "Ya tienes el sello de {punto}",
+  "@escanearRepetido": {
+    "placeholders": {
+      "punto": {"type": "String"}
+    }
+  },
+  "escanearRepetidoDetalle": "Cada punto suma una sola vez por visita.",
+  "escanearFaltaGrupo": "Primero vincula tu grupo",
+  "escanearFaltaGrupoDetalle": "Escanea el QR que te muestra el guía y luego vuelve a escanear {punto}.",
+  "@escanearFaltaGrupoDetalle": {
+    "placeholders": {
+      "punto": {"type": "String"}
+    }
+  },
+  "escanearPuntoAjeno": "Este código no es de esta ruta",
+  "escanearQrAjeno": "Este QR no es de Bosque Seco",
+  "escanearAjenoDetalle": "Escanea el cartel de un punto de la ruta o el QR de tu grupo.",
+  "escanearEscribirCodigo": "¿No lee? Escribe el código",
+  "escanearCodigoTitulo": "Código del punto",
+  "escanearCodigoAyuda": "Está debajo del QR del cartel. Ejemplo: mirador",
+  "escanearCodigoAccion": "Listo",
+  "escanearSinCamara": "No se pudo abrir la cámara",
+  "escanearSinCamaraDetalle": "Da permiso de cámara a la app en los ajustes del celular, o escribe el código del punto.",
+  "escanearCamara": "Cámara para leer el QR"
 }

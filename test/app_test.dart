@@ -65,15 +65,40 @@ void main() {
     await abrirApp(tester);
 
     await tocar(tester, find.text('Escanear QR'));
-    await tocar(tester, find.text('Simular escaneo (demo)'));
-    expect(find.text('¡Sello obtenido! +1 punto'), findsOneWidget);
+    expect(find.textContaining('escanea el QR de tu grupo'), findsOneWidget);
 
-    await tocar(tester, find.text('Simular escaneo (demo)'));
-    expect(find.text('Este punto ya está en tu pasaporte'), findsOneWidget);
+    // Sin grupo, el punto no suma: primero hay que vincular el celular.
+    await escanearCodigo(tester, 'bosqueseco:punto:mirador');
+    expect(find.text('Primero vincula tu grupo'), findsOneWidget);
+
+    await escanearCodigo(tester, 'bosqueseco:visita:v-demo');
+    expect(
+      find.text('¡Listo! Tu celular quedó vinculado a tu grupo'),
+      findsOneWidget,
+    );
+    expect(find.text('Celular vinculado a tu grupo'), findsOneWidget);
+
+    await escanearCodigo(tester, 'bosqueseco:punto:mirador');
+    expect(find.text('¡Sello de Mirador! +1 punto'), findsOneWidget);
+
+    // Escrito a mano, el código del cartel también vale.
+    await escanearCodigo(tester, 'mirador');
+    expect(find.text('Ya tienes el sello de Mirador'), findsOneWidget);
 
     await tocar(tester, find.text('Ver pasaporte'));
     expect(find.text('Mi pasaporte'), findsOneWidget);
     expect(find.text('2 pendientes'), findsOneWidget);
+  });
+
+  testWidgets('un QR que no es de la app se explica', (tester) async {
+    await abrirApp(tester);
+    await tocar(tester, find.text('Escanear QR'));
+
+    await escanearCodigo(tester, 'https://ejemplo.com');
+    expect(find.text('Este QR no es de Bosque Seco'), findsOneWidget);
+
+    await escanearCodigo(tester, 'cascada');
+    expect(find.text('Este código no es de esta ruta'), findsOneWidget);
   });
 
   testWidgets('canjear pide confirmación y descuenta los puntos', (

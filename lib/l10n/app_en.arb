@@ -70,13 +70,10 @@
   "canjeConfirmarDetalle": "You will use {puntos, plural, =1{1 point} other{{puntos} points}} for {descuento}% off {producto}.",
   "canjeCupon": "Coupon created: {producto}",
 
-  "escanearTitulo": "Scan a stop",
-  "escanearInstruccion": "Point at the QR code of the stop",
+  "escanearTitulo": "Scan QR",
+  "escanearInstruccion": "Point at your group's QR or a stop's QR",
   "escanearSinSenal": "Works with no signal: the stamp is saved on your phone.",
-  "escanearSimular": "Simulate scan (demo)",
-  "escanearGanado": "Stamp earned! +1 point",
   "escanearGanadoDetalle": "It stays pending until you have signal.",
-  "escanearYaRegistrado": "This stop is already in your passport",
   "verPasaporte": "View passport",
 
   "hoyTitulo": "Control post",
@@ -265,5 +262,26 @@
   "whatsappMensaje": "Hi, I saw “{servicio}” in the Bosque Seco app. I'd like information to visit {espacio}.",
   "guiaContinuarComo": "Continue as {nombre}",
   "guiaUltimaVez": "You were the last guide on this phone",
-  "guiaOtro": "Are you another guide?"
+  "guiaOtro": "Are you another guide?",
+
+  "escanearSinGrupo": "Step 1: scan your group's QR. The guide shows it to you at the checkpoint.",
+  "escanearConGrupo": "Phone linked to your group",
+  "escanearGrupoListo": "Done! Your phone is linked to your group",
+  "escanearGrupoYaEstaba": "You are already linked to this group",
+  "escanearGrupoDetalle": "Now scan the QR at each stop of the trail to earn stamps.",
+  "escanearGanadoEn": "{punto} stamp! +1 point",
+  "escanearRepetido": "You already have the {punto} stamp",
+  "escanearRepetidoDetalle": "Each stop counts only once per visit.",
+  "escanearFaltaGrupo": "Link your group first",
+  "escanearFaltaGrupoDetalle": "Scan the QR the guide shows you, then scan {punto} again.",
+  "escanearPuntoAjeno": "This code is not from this trail",
+  "escanearQrAjeno": "This QR is not from Bosque Seco",
+  "escanearAjenoDetalle": "Scan the sign at a stop of the trail or your group's QR.",
+  "escanearEscribirCodigo": "Not reading? Type the code",
+  "escanearCodigoTitulo": "Stop code",
+  "escanearCodigoAyuda": "It is under the QR on the sign. Example: mirador",
+  "escanearCodigoAccion": "Done",
+  "escanearSinCamara": "The camera could not be opened",
+  "escanearSinCamaraDetalle": "Allow camera access for the app in your phone settings, or type the stop code.",
+  "escanearCamara": "Camera to read the QR"
 }

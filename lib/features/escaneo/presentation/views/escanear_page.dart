@@ -7,13 +7,13 @@ import '../../../../core/router/rutas.dart';
 import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colores_app.dart';
-import '../../../puntos/domain/pasaporte.dart';
-import '../../../puntos/presentation/view_models/pasaporte_view_model.dart';
+import '../../domain/resultado_escaneo.dart';
+import '../view_models/escaneo_view_model.dart';
+import 'visor_camara.dart';
 
-/// Lector de QR de los puntos turísticos.
-///
-/// Siguiente paso: integrar `mobile_scanner`. Mientras tanto, el botón de
-/// demostración registra el punto "mirador" con la misma lógica real.
+/// Un solo lector para todo: el QR del grupo vincula el celular del
+/// turista con su visita, y el QR de cada punto de la ruta da su sello.
+/// Funciona en modo avión.
 class EscanearPage extends ConsumerStatefulWidget {
   const EscanearPage({super.key});
 
@@ -22,19 +22,22 @@ class EscanearPage extends ConsumerStatefulWidget {
 }
 
 class _EscanearPageState extends ConsumerState<EscanearPage> {
-  /// Resultado del último escaneo; se muestra en la misma pantalla.
-  ResultadoRegistro? _resultado;
+  void _procesar(String texto) =>
+      ref.read(escaneoViewModelProvider.notifier).procesar(texto);
 
-  void _registrarDemo() {
-    final resultado = ref
-        .read(pasaporteViewModelProvider.notifier)
-        .registrarEscaneo(visitaId: 'v-demo', puntoId: 'mirador');
-    setState(() => _resultado = resultado);
+  Future<void> _escribirCodigo() async {
+    final codigo = await showDialog<String>(
+      context: context,
+      builder: (context) => const _DialogoCodigo(),
+    );
+    if (codigo != null && codigo.trim().isNotEmpty) _procesar(codigo);
   }
 
   @override
   Widget build(BuildContext context) {
-    final resultado = _resultado;
+    final resultado = ref.watch(escaneoViewModelProvider);
+    final vinculado = ref.watch(vinculoViewModelProvider) != null;
+    final visor = ref.watch(visorCamaraProvider);
 
     // La cámara siempre se usa sobre fondo oscuro, también en modo claro.
     return Theme(
@@ -50,44 +53,64 @@ class _EscanearPageState extends ConsumerState<EscanearPage> {
               backgroundColor: fondo,
             ),
             body: SafeArea(
-              child: Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(AppEspacios.xl),
-                  child: Column(
-                    children: [
-                      const _Visor(),
-                      const SizedBox(height: AppEspacios.xl),
-                      Text(
-                        l10n.escanearInstruccion,
-                        textAlign: TextAlign.center,
-                        style: context.textos.titleMedium,
-                      ),
-                      const SizedBox(height: AppEspacios.s),
-                      Text(
-                        l10n.escanearSinSenal,
-                        textAlign: TextAlign.center,
-                        style: context.textos.bodyMedium?.copyWith(
-                          color: context.esquema.onSurfaceVariant,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(AppEspacios.l),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _EstadoGrupo(vinculado: vinculado),
+                    const SizedBox(height: AppEspacios.l),
+                    Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 320),
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                              AppEspacios.radio,
+                            ),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                visor(context, _procesar),
+                                const IgnorePointer(child: _Marco()),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(height: AppEspacios.xl),
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 250),
-                        child: resultado == null
-                            ? const SizedBox.shrink()
-                            : Padding(
-                                padding: const EdgeInsets.only(
-                                  bottom: AppEspacios.xl,
-                                ),
-                                child: _PanelResultado(resultado: resultado),
-                              ),
+                    ),
+                    const SizedBox(height: AppEspacios.l),
+                    Text(
+                      l10n.escanearInstruccion,
+                      textAlign: TextAlign.center,
+                      style: context.textos.titleMedium,
+                    ),
+                    const SizedBox(height: AppEspacios.xs),
+                    Text(
+                      l10n.escanearSinSenal,
+                      textAlign: TextAlign.center,
+                      style: context.textos.bodyMedium?.copyWith(
+                        color: context.esquema.onSurfaceVariant,
                       ),
-                      OutlinedButton(
-                        onPressed: _registrarDemo,
-                        child: Text(l10n.escanearSimular),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: AppEspacios.l),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: resultado == null
+                          ? const SizedBox.shrink()
+                          : _PanelResultado(
+                              key: ValueKey(resultado),
+                              resultado: resultado,
+                            ),
+                    ),
+                    const SizedBox(height: AppEspacios.s),
+                    TextButton.icon(
+                      onPressed: _escribirCodigo,
+                      icon: const Icon(Icons.keyboard_outlined),
+                      label: Text(l10n.escanearEscribirCodigo),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -98,33 +121,62 @@ class _EscanearPageState extends ConsumerState<EscanearPage> {
   }
 }
 
-/// Marco donde se encuadra el QR.
-class _Visor extends StatelessWidget {
-  const _Visor();
+/// Si el celular ya está vinculado a un grupo, o qué hacer primero.
+class _EstadoGrupo extends StatelessWidget {
+  const _EstadoGrupo({required this.vinculado});
+
+  final bool vinculado;
 
   @override
   Widget build(BuildContext context) {
-    final color = context.colores.sobreAviso;
+    final l10n = context.l10n;
+    final esquema = context.esquema;
+    final fondo = vinculado
+        ? esquema.primaryContainer
+        : esquema.surfaceContainerHighest;
+    final frente = vinculado ? esquema.onPrimaryContainer : esquema.onSurface;
 
-    return ExcludeSemantics(
-      child: SizedBox(
-        width: 240,
-        height: 240,
-        child: CustomPaint(
-          painter: _PintorVisor(color),
-          child: Icon(
-            Icons.qr_code_2,
-            size: 96,
-            color: color.withValues(alpha: 0.6),
-          ),
+    return MergeSemantics(
+      child: Container(
+        decoration: BoxDecoration(
+          color: fondo,
+          borderRadius: BorderRadius.circular(AppEspacios.radioChico),
+        ),
+        padding: const EdgeInsets.all(AppEspacios.m),
+        child: Row(
+          children: [
+            Icon(vinculado ? Icons.groups : Icons.qr_code_2, color: frente),
+            const SizedBox(width: AppEspacios.m),
+            Expanded(
+              child: Text(
+                vinculado ? l10n.escanearConGrupo : l10n.escanearSinGrupo,
+                style: context.textos.bodyMedium?.copyWith(color: frente),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _PintorVisor extends CustomPainter {
-  const _PintorVisor(this.color);
+/// Esquinas que marcan dónde encuadrar el QR, sobre la cámara.
+class _Marco extends StatelessWidget {
+  const _Marco();
+
+  @override
+  Widget build(BuildContext context) {
+    return ExcludeSemantics(
+      child: Padding(
+        padding: const EdgeInsets.all(AppEspacios.xl),
+        child: CustomPaint(painter: _PintorMarco(context.colores.sobreAviso)),
+      ),
+    );
+  }
+}
+
+class _PintorMarco extends CustomPainter {
+  const _PintorMarco(this.color);
 
   final Color color;
 
@@ -155,28 +207,70 @@ class _PintorVisor extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_PintorVisor anterior) => anterior.color != color;
+  bool shouldRepaint(_PintorMarco anterior) => anterior.color != color;
 }
 
-/// Respuesta inmediata al escanear: se ganó el sello o ya estaba.
+/// Respuesta inmediata al escanear: qué pasó y qué hacer después.
 class _PanelResultado extends StatelessWidget {
-  const _PanelResultado({required this.resultado});
+  const _PanelResultado({required this.resultado, super.key});
 
-  final ResultadoRegistro resultado;
+  final ResultadoEscaneo resultado;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final esquema = context.esquema;
     final textos = context.textos;
-    final ganado = resultado is PuntoGanado;
-    final frente = ganado ? esquema.onPrimaryContainer : esquema.onSurface;
+    final exito = switch (resultado) {
+      GrupoVinculado() || SelloGanado() => true,
+      _ => false,
+    };
+    final frente = exito ? esquema.onPrimaryContainer : esquema.onSurface;
+
+    final (IconData icono, String titulo, String detalle) = switch (resultado) {
+      GrupoVinculado(:final yaEstaba) => (
+        Icons.groups,
+        yaEstaba ? l10n.escanearGrupoYaEstaba : l10n.escanearGrupoListo,
+        l10n.escanearGrupoDetalle,
+      ),
+      SelloGanado(:final punto) => (
+        Icons.verified,
+        l10n.escanearGanadoEn(punto.nombre),
+        l10n.escanearGanadoDetalle,
+      ),
+      SelloRepetido(:final punto) => (
+        Icons.info_outline,
+        l10n.escanearRepetido(punto.nombre),
+        l10n.escanearRepetidoDetalle,
+      ),
+      FaltaGrupo(:final punto) => (
+        Icons.group_add_outlined,
+        l10n.escanearFaltaGrupo,
+        l10n.escanearFaltaGrupoDetalle(punto.nombre),
+      ),
+      PuntoAjeno() => (
+        Icons.help_outline,
+        l10n.escanearPuntoAjeno,
+        l10n.escanearAjenoDetalle,
+      ),
+      QrAjeno() => (
+        Icons.help_outline,
+        l10n.escanearQrAjeno,
+        l10n.escanearAjenoDetalle,
+      ),
+    };
+
+    final accion = switch (resultado) {
+      GrupoVinculado() => (l10n.verRuta, Rutas.mapa),
+      SelloGanado() || SelloRepetido() => (l10n.verPasaporte, Rutas.pasaporte),
+      _ => null,
+    };
 
     return Semantics(
       liveRegion: true,
       child: Container(
         decoration: BoxDecoration(
-          color: ganado
+          color: exito
               ? esquema.primaryContainer
               : esquema.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppEspacios.radio),
@@ -188,38 +282,80 @@ class _PanelResultado extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  ganado ? Icons.verified : Icons.info_outline,
-                  size: 28,
-                  color: frente,
-                ),
+                Icon(icono, size: 28, color: frente),
                 const SizedBox(width: AppEspacios.m),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(switch (resultado) {
-                        PuntoGanado() => l10n.escanearGanado,
-                        PuntoYaRegistrado() => l10n.escanearYaRegistrado,
-                      }, style: textos.titleSmall?.copyWith(color: frente)),
-                      if (ganado)
-                        Text(
-                          l10n.escanearGanadoDetalle,
-                          style: textos.bodyMedium?.copyWith(color: frente),
-                        ),
+                      Text(
+                        titulo,
+                        style: textos.titleSmall?.copyWith(color: frente),
+                      ),
+                      Text(
+                        detalle,
+                        style: textos.bodyMedium?.copyWith(color: frente),
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: AppEspacios.m),
-            FilledButton(
-              onPressed: () => context.go(Rutas.pasaporte),
-              child: Text(l10n.verPasaporte),
-            ),
+            if (accion != null) ...[
+              const SizedBox(height: AppEspacios.m),
+              FilledButton(
+                onPressed: () => context.go(accion.$2),
+                child: Text(accion.$1),
+              ),
+            ],
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Plan B si la cámara no lee el cartel: escribir el código del punto.
+class _DialogoCodigo extends StatefulWidget {
+  const _DialogoCodigo();
+
+  @override
+  State<_DialogoCodigo> createState() => _DialogoCodigoState();
+}
+
+class _DialogoCodigoState extends State<_DialogoCodigo> {
+  final _codigo = TextEditingController();
+
+  @override
+  void dispose() {
+    _codigo.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return AlertDialog(
+      title: Text(l10n.escanearCodigoTitulo),
+      content: TextField(
+        controller: _codigo,
+        autofocus: true,
+        autocorrect: false,
+        textInputAction: TextInputAction.done,
+        decoration: InputDecoration(helperText: l10n.escanearCodigoAyuda),
+        onSubmitted: (texto) => Navigator.of(context).pop(texto),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.cancelar),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(_codigo.text),
+          child: Text(l10n.escanearCodigoAccion),
+        ),
+      ],
     );
   }
 }

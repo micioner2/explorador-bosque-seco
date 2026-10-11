@@ -69,6 +69,18 @@ lo que no se puede romper.
   reservados. Si la reserva se canceló mientras tanto, el grupo se registra
   sin ella.
 
+## Escaneo (`lib/features/escaneo/domain/`)
+
+- **R16.** Un solo botón "Escanear QR" para todo (`LecturaQr.desde`):
+  `bosqueseco:visita:<id>` es el QR del grupo y vincula el celular del
+  turista a esa visita (se guarda en el celular); `bosqueseco:punto:<id>`
+  es el cartel de un punto. El código del punto también se puede escribir
+  a mano ("mirador") si la cámara no lee.
+- Sin grupo vinculado, un punto no da sello (`FaltaGrupo`): los puntos son
+  del grupo (R1, R9). Un punto que no es de la ruta no da sello.
+- Los carteles imprimibles salen de `tool/qr_puntos.py`
+  (`docs/demo/qr-puntos.html`).
+
 ## Ruta (`lib/features/mapa/domain/`)
 
 - **R10.** Un punto de la ruta cuenta como visitado si tiene sello, pendiente

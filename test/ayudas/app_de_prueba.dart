@@ -2,6 +2,7 @@ import 'package:explorador_bosque_seco/app.dart';
 import 'package:explorador_bosque_seco/core/l10n/l10n.dart';
 import 'package:explorador_bosque_seco/core/reloj.dart';
 import 'package:explorador_bosque_seco/core/theme/app_theme.dart';
+import 'package:explorador_bosque_seco/features/escaneo/presentation/views/visor_camara.dart';
 import 'package:explorador_bosque_seco/features/preferencias/data/preferencias_repository_memoria.dart';
 import 'package:explorador_bosque_seco/features/preferencias/domain/preferencias.dart';
 import 'package:explorador_bosque_seco/features/sesion/data/sesion_repository_demo.dart';
@@ -42,6 +43,12 @@ class SesionViewModelFijo extends SesionViewModel {
   Sesion build() => _inicial;
 }
 
+/// En las pruebas no hay cámara: se escanea escribiendo el código, como
+/// haría el turista si la cámara no lee el cartel.
+final sinCamara = visorCamaraProvider.overrideWithValue(
+  (context, alLeer) => const SizedBox.expand(),
+);
+
 /// Abre la app completa con idioma, apariencia y hora fijos, para que las
 /// pruebas no dependan del celular ni del reloj de quien las corre.
 Future<void> abrirApp(
@@ -53,6 +60,7 @@ Future<void> abrirApp(
     ProviderScope(
       overrides: [
         relojProvider.overrideWithValue(() => mediodia),
+        sinCamara,
         preferenciasRepositoryProvider.overrideWithValue(
           PreferenciasRepositoryMemoria(
             Preferencias(idioma: idioma, modoTema: modoTema),
@@ -97,6 +105,7 @@ Future<void> montarPantalla(
     ProviderScope(
       overrides: [
         relojProvider.overrideWithValue(() => mediodia),
+        sinCamara,
         sesionViewModelProvider.overrideWith(
           () => SesionViewModelFijo(sesion ?? sesionDePrueba),
         ),
@@ -124,4 +133,11 @@ Future<void> tocar(WidgetTester tester, Finder elemento) async {
   }
   await tester.tap(elemento);
   await tester.pumpAndSettle();
+}
+
+/// Escanea [codigo] escribiéndolo en "¿No lee? Escribe el código".
+Future<void> escanearCodigo(WidgetTester tester, String codigo) async {
+  await tocar(tester, find.text('¿No lee? Escribe el código'));
+  await tester.enterText(find.byType(TextField), codigo);
+  await tocar(tester, find.text('Listo'));
 }

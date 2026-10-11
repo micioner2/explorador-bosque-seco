@@ -20,6 +20,7 @@ dependencies:
   http: ^1.6.0
   # La versión de intl la fija flutter_localizations (SDK de Flutter).
   intl: any
+  mobile_scanner: ^7.1.4
   qr_flutter: ^4.1.0
   shared_preferences: ^2.5.5
   supabase_flutter: ^2.18.2
