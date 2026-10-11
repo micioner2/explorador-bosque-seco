@@ -100,6 +100,14 @@ lo que no se puede romper.
   menos de 18, 18–29, 30–44, 45–59, 60 o más. Puntos más visitados sin
   duplicados, de mayor a menor.
 
+## Cierre del día (`lib/features/reportes/domain/cierre_dia.dart`)
+
+- **R17.** "Cerrar el día" en Reporte reemplaza la firma del cuaderno:
+  guarda en el celular las cifras del día (grupos, visitantes, grupos sin
+  salida y detalle por guía), quién cerró y a qué hora. Se puede cerrar con
+  grupos sin salida (pueden acampar), pero se advierte. Si después cambia
+  algo, el cierre queda desactualizado y se vuelve a cerrar.
+
 ## Textos
 
 - Las reglas no guardan textos de interfaz. Los `enum` (procedencia,

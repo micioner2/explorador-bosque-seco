@@ -6,9 +6,11 @@ import '../../../../core/l10n/l10n.dart';
 import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/acciones_barra.dart';
+import '../../../../shared/widgets/dialogo_confirmar.dart';
 import '../../../../shared/widgets/tarjeta_cifra.dart';
 import '../../../sesion/presentation/views/boton_sesion.dart';
 import '../../../visitas/domain/visita.dart';
+import '../../domain/cierre_dia.dart';
 import '../../domain/reporte_diario.dart';
 import '../view_models/reporte_view_model.dart';
 
@@ -20,6 +22,26 @@ class ReportePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final reporte = ref.watch(reporteViewModelProvider);
+    final cierre = ref.watch(cierreViewModelProvider);
+
+    Future<void> cerrarDia() async {
+      final detalle = [
+        l10n.cierreConfirmarDetalle(
+          reporte.totalGrupos,
+          reporte.totalVisitantes,
+        ),
+        if (reporte.gruposSinSalida > 0)
+          l10n.cierreSinSalida(reporte.gruposSinSalida),
+      ].join('\n\n');
+      final aceptado = await confirmar(
+        context,
+        titulo: l10n.cierreConfirmarTitulo,
+        detalle: detalle,
+        accion: l10n.cierreAccion,
+      );
+      if (!aceptado) return;
+      ref.read(cierreViewModelProvider.notifier).cerrarDia();
+    }
 
     return Scaffold(
       appBar: BarraAsociacion(
@@ -68,7 +90,28 @@ class ReportePage extends ConsumerWidget {
                 rango.texto(l10n): ?reporte.porRangoEdad[rango],
             },
           ),
+          if (reporte.porGuia.isNotEmpty) ...[
+            const SizedBox(height: AppEspacios.m),
+            _PorGuia(porGuia: reporte.porGuia),
+          ],
           const SizedBox(height: AppEspacios.l),
+          if (cierre != null) ...[
+            _CierreHecho(
+              cierre: cierre,
+              desactualizado: cierre.desactualizado(reporte),
+            ),
+            const SizedBox(height: AppEspacios.m),
+          ],
+          if (cierre == null || cierre.desactualizado(reporte)) ...[
+            FilledButton.icon(
+              onPressed: cerrarDia,
+              icon: const Icon(Icons.task_alt),
+              label: Text(
+                cierre == null ? l10n.cierreBoton : l10n.cierreActualizar,
+              ),
+            ),
+            const SizedBox(height: AppEspacios.s),
+          ],
           OutlinedButton.icon(
             onPressed: () => ScaffoldMessenger.of(
               context,
@@ -139,6 +182,102 @@ class _Seccion extends StatelessWidget {
                   ),
                 ),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Grupos y personas que registró cada guía en el día.
+class _PorGuia extends StatelessWidget {
+  const _PorGuia({required this.porGuia});
+
+  final List<ResumenGuia> porGuia;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppEspacios.s),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppEspacios.l),
+              child: Text(
+                l10n.reportePorGuia,
+                style: context.textos.titleSmall,
+              ),
+            ),
+            for (final guia in porGuia)
+              ListTile(
+                leading: const Icon(Icons.badge_outlined),
+                title: Text(guia.nombreGuia),
+                subtitle: Text(
+                  l10n.reporteGuiaDetalle(guia.grupos, guia.personas),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Constancia del cierre: quién cerró y a qué hora. Si hubo cambios
+/// después, lo advierte.
+class _CierreHecho extends StatelessWidget {
+  const _CierreHecho({required this.cierre, required this.desactualizado});
+
+  final CierreDia cierre;
+  final bool desactualizado;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final esquema = context.esquema;
+    final textos = context.textos;
+    final hora = TimeOfDay.fromDateTime(cierre.cerradoEn).format(context);
+    final (fondo, frente) = desactualizado
+        ? (context.colores.aviso, context.colores.sobreAviso)
+        : (esquema.primaryContainer, esquema.onPrimaryContainer);
+
+    return Semantics(
+      liveRegion: true,
+      child: Container(
+        decoration: BoxDecoration(
+          color: fondo,
+          borderRadius: BorderRadius.circular(AppEspacios.radio),
+        ),
+        padding: const EdgeInsets.all(AppEspacios.l),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              desactualizado ? Icons.warning_amber : Icons.task_alt,
+              color: frente,
+            ),
+            const SizedBox(width: AppEspacios.m),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.cierreHecho(hora, cierre.cerradoPor),
+                    style: textos.titleSmall?.copyWith(color: frente),
+                  ),
+                  Text(
+                    desactualizado
+                        ? l10n.cierreDesactualizado
+                        : l10n.cierreHechoDetalle,
+                    style: textos.bodyMedium?.copyWith(color: frente),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

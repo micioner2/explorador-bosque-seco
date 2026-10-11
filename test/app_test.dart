@@ -1,4 +1,3 @@
-import 'package:explorador_bosque_seco/features/mapa/presentation/views/mapa_page.dart';
 import 'package:explorador_bosque_seco/features/preferencias/domain/preferencias.dart';
 import 'package:explorador_bosque_seco/features/visitas/presentation/views/hoy_page.dart';
 import 'package:flutter/material.dart';
@@ -667,5 +666,24 @@ void main() {
       Theme.of(tester.element(find.byType(Scaffold).first)).brightness,
       Brightness.dark,
     );
+  });
+
+  testWidgets('el guía cierra el día desde Reporte', (tester) async {
+    await abrirApp(tester);
+    await entrarAlPuesto(tester);
+    await tocar(tester, find.text('Reporte'));
+
+    await tester.scrollUntilVisible(find.text('Cerrar el día'), 200);
+    expect(find.text('Por guía'), findsOneWidget);
+    await tocar(tester, find.text('Cerrar el día'));
+    expect(find.text('¿Cerrar el día?'), findsOneWidget);
+    expect(find.textContaining('3 grupos siguen sin salida'), findsOneWidget);
+    await tocar(tester, enDialogo('Cerrar el día'));
+
+    expect(
+      find.textContaining('por María Quispe'),
+      findsOneWidget,
+    );
+    expect(find.text('Cerrar el día'), findsNothing);
   });
 }

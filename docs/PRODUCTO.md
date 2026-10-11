@@ -200,6 +200,7 @@ datos).
 | Cuenta de la asociación | Correo y contraseña que crea el portal web para cada asociación. La comparten sus guías autorizados. |
 | Guía | Persona autorizada por la asociación. Elige su nombre al entrar y los grupos que registra quedan a su nombre. |
 | Reserva | Aviso de que un grupo llegará: quién, día, hora y cuántas personas. Está pendiente, cancelada o ingresada. |
+| R17 | "Cerrar el día" guarda en el celular las cifras del día, el detalle por guía, quién cerró y a qué hora. Se advierte si hay grupos sin salida; si algo cambia después, el cierre queda desactualizado. | `CierreDia` |
 | Ingreso | Momento en que el grupo de una reserva llega y se registra como visita. |
 
 ## 11. Equipo

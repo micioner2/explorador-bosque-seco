@@ -584,5 +584,40 @@
       "n": {"type": "int"}
     }
   },
-  "mapaCentrar": "Ver toda la ruta"
+  "mapaCentrar": "Ver toda la ruta",
+
+  "reportePorGuia": "Por guía",
+  "reporteGuiaDetalle": "{grupos, plural, =1{1 grupo} other{{grupos} grupos}} · {personas, plural, =1{1 persona} other{{personas} personas}}",
+  "@reporteGuiaDetalle": {
+    "placeholders": {
+      "grupos": {"type": "int"},
+      "personas": {"type": "int"}
+    }
+  },
+  "cierreBoton": "Cerrar el día",
+  "cierreActualizar": "Actualizar el cierre",
+  "cierreConfirmarTitulo": "¿Cerrar el día?",
+  "cierreConfirmarDetalle": "Quedan registrados {grupos, plural, =1{1 grupo} other{{grupos} grupos}} y {visitantes, plural, =1{1 visitante} other{{visitantes} visitantes}}, con tu nombre como responsable del cierre.",
+  "@cierreConfirmarDetalle": {
+    "placeholders": {
+      "grupos": {"type": "int"},
+      "visitantes": {"type": "int"}
+    }
+  },
+  "cierreSinSalida": "{n, plural, =1{1 grupo sigue} other{{n} grupos siguen}} sin salida marcada. Si acampan, está bien; si no, marca su salida en Hoy.",
+  "@cierreSinSalida": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "cierreAccion": "Cerrar el día",
+  "cierreHecho": "Día cerrado a las {hora} por {guia}",
+  "@cierreHecho": {
+    "placeholders": {
+      "hora": {"type": "String"},
+      "guia": {"type": "String"}
+    }
+  },
+  "cierreHechoDetalle": "Guardado en el celular · pendiente de sincronizar",
+  "cierreDesactualizado": "Hubo cambios después del cierre: actualízalo antes de irte."
 }

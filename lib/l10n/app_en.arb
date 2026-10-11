@@ -308,5 +308,17 @@
   "mapaGpsEnRuta": "You are on the trail",
   "mapaTuUbicacion": "Your location",
   "mapaDescripcion": "Trail map with {n} stops. The list below shows them in order.",
-  "mapaCentrar": "Show the whole trail"
+  "mapaCentrar": "Show the whole trail",
+
+  "reportePorGuia": "By guide",
+  "reporteGuiaDetalle": "{grupos, plural, =1{1 group} other{{grupos} groups}} · {personas, plural, =1{1 person} other{{personas} people}}",
+  "cierreBoton": "Close the day",
+  "cierreActualizar": "Update the closing",
+  "cierreConfirmarTitulo": "Close the day?",
+  "cierreConfirmarDetalle": "{grupos, plural, =1{1 group} other{{grupos} groups}} and {visitantes, plural, =1{1 visitor} other{{visitantes} visitors}} will be recorded, with you as responsible for the closing.",
+  "cierreSinSalida": "{n, plural, =1{1 group has} other{{n} groups have}} no exit marked. If camping, that's fine; if not, mark their exit in Today.",
+  "cierreAccion": "Close the day",
+  "cierreHecho": "Day closed at {hora} by {guia}",
+  "cierreHechoDetalle": "Saved on this phone · waiting to sync",
+  "cierreDesactualizado": "There were changes after closing: update it before leaving."
 }
