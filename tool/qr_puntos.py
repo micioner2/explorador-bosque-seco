@@ -1,7 +1,9 @@
-"""Genera los carteles con el QR de cada punto, listos para imprimir (A4):
+"""Genera los QR de cada punto para escanearlos en la demo (carteles A4 e
+imágenes PNG sueltas, listas para imprimir o mostrar en pantalla):
 
-- docs/demo/qr-puntos.html: ruta de El Angolo y un QR de grupo de prueba.
-- docs/demo/qr-puntos/sede.html y sede-*.png: ruta de demostración en la
+- docs/demo/qr-puntos.html + docs/demo/qr-puntos/angolo-*.png: ruta de
+  El Angolo (la que trae la app por defecto) y el QR del grupo de prueba.
+- docs/demo/qr-puntos/sede.html + sede-*.png: ruta de demostración en la
   sede de la presentación.
 
 Uso (desde la raíz del repositorio):
@@ -36,6 +38,14 @@ PUNTOS = [
 # Grupo de prueba para la demostración con un solo celular.
 GRUPO_PRUEBA = 'v-demo'
 
+# Carpeta donde van las imágenes PNG sueltas.
+CARPETA = pathlib.Path('docs/demo/qr-puntos')
+
+NOTA_PUNTO = ('Abre EcoRumbo, toca «Escanear QR» y gana tu sello. '
+              'Funciona sin señal.')
+NOTA_GRUPO = ('Vincula el celular a un grupo sin registrarlo antes. En el '
+              'bosque, este QR lo muestra el guía al registrar al grupo.')
+
 
 PLANTILLA = '''<!doctype html>
 <html lang="es">
@@ -68,6 +78,7 @@ PLANTILLA = '''<!doctype html>
 '''
 
 AVISO = ('Imprime esta página (Ctrl + P) en A4: salen dos carteles por hoja. '
+         'Las mismas imágenes sueltas están en docs/demo/qr-puntos/. '
          'Generada con <code>tool/qr_puntos.py</code>.')
 
 
@@ -76,8 +87,13 @@ def svg(texto: str) -> str:
     return qr.svg_inline(scale=10, border=2, dark='#000', light='#fff')
 
 
+def guardar_png(texto: str, archivo: pathlib.Path) -> None:
+    """Imagen PNG suelta del QR, para mostrarla o imprimirla una por una."""
+    segno.make(texto, error='m').save(str(archivo), scale=12, border=3)
+
+
 def cartel(orden: str, titulo: str, texto: str, codigo: str, nota: str,
-           ruta: str = RUTA) -> str:
+           ruta: str) -> str:
     return f'''
   <section class="cartel">
     <p class="orden">{html.escape(orden)}</p>
@@ -94,47 +110,40 @@ def pagina(carteles: list[str], aviso: str) -> str:
         '{carteles}', ''.join(carteles))
 
 
-def main() -> None:
-    carteles = [
-        cartel(
-            f'Punto {i} de {len(PUNTOS)}',
-            nombre,
-            f'bosqueseco:punto:{pid}',
-            pid,
-            'Abre Bosque Seco, toca «Escanear QR» y gana tu sello. '
-            'Funciona sin señal.',
-        )
-        for i, (pid, nombre) in enumerate(PUNTOS, start=1)
-    ]
-    carteles.append(
-        cartel(
-            'Solo para la demostración',
-            'QR de grupo de prueba',
-            f'bosqueseco:visita:{GRUPO_PRUEBA}',
-            f'bosqueseco:visita:{GRUPO_PRUEBA}',
-            'Vincula el celular a un grupo sin registrarlo antes. En el '
-            'bosque, este QR lo muestra el guía al registrar al grupo.',
-        )
-    )
-    destino = pathlib.Path('docs/demo/qr-puntos.html')
-    destino.write_text(pagina(carteles, AVISO), encoding='utf-8')
-    print(f'Listo: {destino}')
-
-    carpeta = pathlib.Path('docs/demo/qr-puntos')
-    carpeta.mkdir(parents=True, exist_ok=True)
-    carteles_sede = []
-    for i, (pid, nombre) in enumerate(PUNTOS_SEDE, start=1):
+def carteles_de_puntos(nombre_ruta: str, puntos: list[tuple[str, str]],
+                        prefijo: str) -> list[str]:
+    """Un cartel por punto y, de paso, su PNG suelto en CARPETA."""
+    carteles = []
+    for i, (pid, nombre) in enumerate(puntos, start=1):
         texto = f'bosqueseco:punto:{pid}'
-        segno.make(texto, error='m').save(
-            carpeta / f'sede-{i}-{pid}.png', scale=12, border=3)
-        carteles_sede.append(cartel(
-            f'Punto {i} de {len(PUNTOS_SEDE)}', nombre, texto, pid,
-            'Abre Bosque Seco, toca «Escanear QR» y gana tu sello. '
-            'Funciona sin señal.', ruta=RUTA_SEDE))
-    (carpeta / 'sede.html').write_text(
+        guardar_png(texto, CARPETA / f'{prefijo}-{i}-{pid}.png')
+        carteles.append(cartel(
+            f'Punto {i} de {len(puntos)}', nombre, texto, pid,
+            NOTA_PUNTO, nombre_ruta))
+    return carteles
+
+
+def main() -> None:
+    CARPETA.mkdir(parents=True, exist_ok=True)
+
+    # Ruta de El Angolo (la de la app por defecto) + QR del grupo de prueba.
+    texto_grupo = f'bosqueseco:visita:{GRUPO_PRUEBA}'
+    guardar_png(texto_grupo, CARPETA / 'grupo-v-demo.png')
+    carteles = carteles_de_puntos(RUTA, PUNTOS, 'angolo')
+    carteles.append(cartel(
+        'Solo para la demostración', 'QR de grupo de prueba',
+        texto_grupo, texto_grupo, NOTA_GRUPO, RUTA))
+    pathlib.Path('docs/demo/qr-puntos.html').write_text(
+        pagina(carteles, AVISO), encoding='utf-8')
+    print(f'Listo: docs/demo/qr-puntos.html + {len(PUNTOS)} PNG de El Angolo '
+          'y el QR del grupo')
+
+    # Ruta de la sede de la presentación.
+    carteles_sede = carteles_de_puntos(RUTA_SEDE, PUNTOS_SEDE, 'sede')
+    (CARPETA / 'sede.html').write_text(
         pagina(carteles_sede, AVISO + ' Elige «Sede de la presentación» en '
                'Ajustes → Ruta de la demo.'), encoding='utf-8')
-    print(f'Listo: {carpeta}/sede.html y {len(PUNTOS_SEDE)} PNG')
+    print(f'Listo: {CARPETA}/sede.html + {len(PUNTOS_SEDE)} PNG de la sede')
 
 
 if __name__ == '__main__':
