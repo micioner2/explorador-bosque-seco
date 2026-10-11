@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/escaneo/presentation/views/escanear_page.dart';
 import '../../features/explorar/presentation/views/explorar_page.dart';
 import '../../features/mapa/presentation/views/mapa_page.dart';
+import '../../features/preferencias/presentation/views/ajustes_page.dart';
 import '../../features/puntos/presentation/views/pasaporte_page.dart';
 import '../../features/reportes/presentation/views/reporte_page.dart';
 import '../../features/visitas/presentation/views/hoy_page.dart';
@@ -47,6 +48,10 @@ GoRouter crearRouter() => GoRouter(
     GoRoute(
       path: Rutas.escanear,
       builder: (context, state) => const EscanearPage(),
+    ),
+    GoRoute(
+      path: Rutas.ajustes,
+      builder: (context, state) => const AjustesPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) =>

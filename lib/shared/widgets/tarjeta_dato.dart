@@ -1,42 +1,56 @@
 import 'package:flutter/material.dart';
 
-import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_espacios.dart';
+import '../../core/theme/colores_app.dart';
 
 /// Tarjeta pequeña con una etiqueta y un valor (por ejemplo, "Pago:
-/// Efectivo · Yape" o "Dentro: 8").
+/// Efectivo · Yape"). Crece con el texto: no tiene alto fijo.
 class TarjetaDato extends StatelessWidget {
-  const TarjetaDato({super.key, required this.etiqueta, required this.valor});
+  const TarjetaDato({
+    super.key,
+    required this.etiqueta,
+    required this.valor,
+    this.icono,
+  });
 
   final String etiqueta;
   final String valor;
+  final IconData? icono;
 
   @override
   Widget build(BuildContext context) {
+    final esquema = context.esquema;
+    final icono = this.icono;
+
     return Card(
-      margin: EdgeInsets.zero,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              etiqueta.toUpperCase(),
-              style: const TextStyle(
-                fontSize: 11,
-                letterSpacing: 0.4,
-                color: AppColors.textoSecundario,
+        padding: const EdgeInsets.all(AppEspacios.m),
+        child: MergeSemantics(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (icono != null) ...[
+                Icon(icono, size: 22, color: esquema.primary),
+                const SizedBox(width: 10),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      etiqueta.toUpperCase(),
+                      semanticsLabel: etiqueta,
+                      style: context.textos.labelSmall?.copyWith(
+                        color: esquema.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(valor, style: context.textos.titleSmall),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              valor,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: AppColors.negroGrisaceo,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

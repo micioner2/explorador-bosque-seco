@@ -1,0 +1,11 @@
+# Traducciones de la app (español e inglés). Flutter genera
+# lib/l10n/app_localizations*.dart a partir de los archivos .arb.
+arb-dir: lib/l10n
+template-arb-file: app_es.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false
+# Español primero: es el idioma por defecto si el celular usa otro idioma.
+preferred-supported-locales: [es]
+# El código generado pasa por dart format: el CI revisa el formato de lib/.
+format: true

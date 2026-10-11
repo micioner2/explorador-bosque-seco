@@ -1,10 +1,12 @@
 import 'package:explorador_bosque_seco/features/visitas/domain/visita.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+Visitante persona({String nombre = 'Ana Torres', int edad = 34}) =>
+    Visitante(nombre: nombre, edad: edad, procedencia: Procedencia.piura);
+
 Visita visita({
-  String nombre = 'Ana Torres',
-  int edad = 34,
-  int grupo = 4,
+  List<Visitante>? integrantes,
+  Iterable<Actividad> actividades = const [Actividad.senderismo],
   DateTime? entrada,
   DateTime? salidaPrevista,
 }) {
@@ -12,29 +14,36 @@ Visita visita({
   return Visita(
     id: 'v1',
     asociacionId: 'a1',
-    nombreResponsable: nombre,
-    edad: edad,
-    procedencia: Procedencia.piura,
-    tamanoGrupo: grupo,
-    actividad: Actividad.senderismo,
+    integrantes: integrantes ?? [persona()],
+    actividades: actividades,
     fechaEntrada: e,
     salidaPrevista: salidaPrevista ?? e.add(const Duration(hours: 8)),
   );
 }
 
 void main() {
-  group('Validaciones del registro', () {
+  group('Validaciones de cada integrante', () {
     test('rechaza nombre vacío', () {
-      expect(() => visita(nombre: '  '), throwsArgumentError);
+      expect(() => persona(nombre: '  '), throwsArgumentError);
     });
 
     test('rechaza edad fuera de rango', () {
-      expect(() => visita(edad: -1), throwsArgumentError);
-      expect(() => visita(edad: 150), throwsArgumentError);
+      expect(() => persona(edad: -1), throwsArgumentError);
+      expect(() => persona(edad: 150), throwsArgumentError);
     });
 
-    test('rechaza grupo vacío', () {
-      expect(() => visita(grupo: 0), throwsArgumentError);
+    test('quita los espacios sobrantes del nombre', () {
+      expect(persona(nombre: '  Ana Torres ').nombre, 'Ana Torres');
+    });
+  });
+
+  group('Validaciones del grupo', () {
+    test('rechaza un grupo sin integrantes', () {
+      expect(() => visita(integrantes: const []), throwsArgumentError);
+    });
+
+    test('rechaza un grupo sin actividades', () {
+      expect(() => visita(actividades: const []), throwsArgumentError);
     });
 
     test('la salida prevista debe ser posterior a la entrada', () {
@@ -43,6 +52,57 @@ void main() {
         () => visita(entrada: entrada, salidaPrevista: entrada),
         throwsArgumentError,
       );
+    });
+  });
+
+  group('Grupo con un solo QR', () {
+    final grupo = visita(
+      integrantes: [
+        persona(nombre: 'Ana Torres'),
+        persona(nombre: 'Carlos Torres', edad: 36),
+        persona(nombre: 'Lucía Torres', edad: 12),
+      ],
+      actividades: const [Actividad.senderismo, Actividad.aves],
+    );
+
+    test('el tamaño del grupo es la cantidad de integrantes', () {
+      expect(grupo.tamanoGrupo, 3);
+    });
+
+    test('el primer integrante es el responsable', () {
+      expect(grupo.nombreResponsable, 'Ana Torres');
+    });
+
+    test('el grupo puede hacer varias actividades', () {
+      expect(grupo.actividades, {Actividad.senderismo, Actividad.aves});
+    });
+
+    test('elegir dos veces la misma actividad la cuenta una sola vez', () {
+      final repetida = visita(
+        actividades: const [Actividad.aves, Actividad.aves],
+      );
+
+      expect(repetida.actividades, hasLength(1));
+    });
+
+    test('todo el grupo comparte un único QR, que identifica a la visita', () {
+      expect(grupo.codigoQr, 'bosqueseco:visita:v1');
+    });
+
+    test('los integrantes no se pueden modificar después de registrar', () {
+      expect(() => grupo.integrantes.add(persona()), throwsUnsupportedError);
+      expect(
+        () => grupo.actividades.add(Actividad.campamento),
+        throwsUnsupportedError,
+      );
+    });
+
+    test('al marcar la salida se conservan integrantes y actividades', () {
+      final salio = grupo.marcarSalida(DateTime(2026, 10, 10, 15));
+
+      expect(salio.tamanoGrupo, 3);
+      expect(salio.actividades, grupo.actividades);
+      expect(salio.codigoQr, grupo.codigoQr);
     });
   });
 

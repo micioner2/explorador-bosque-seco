@@ -1,0 +1,279 @@
+{
+  "@@locale": "es",
+
+  "appTitulo": "Bosque Seco",
+  "cancelar": "Cancelar",
+  "ajustes": "Ajustes",
+  "modoAsociacion": "Modo asociación",
+  "modoTurista": "Modo turista",
+
+  "navExplorar": "Explorar",
+  "navMapa": "Mapa",
+  "navPasaporte": "Pasaporte",
+  "navHoy": "Hoy",
+  "navRegistrar": "Registrar",
+  "navReporte": "Reporte",
+  "escanearQr": "Escanear QR",
+
+  "avisoSinSenal": "Sin señal · tu ruta está guardada en el celular",
+
+  "explorarLema": "Tu guía en el bosque seco, también sin señal.",
+  "explorarAntesDeIr": "Antes de ir",
+  "datoPago": "Pago",
+  "datoSenal": "Señal",
+  "datoAcceso": "Acceso",
+  "datoIngreso": "Ingreso",
+  "datoIngresoConGuia": "Con guía",
+  "explorarRuta": "La ruta",
+  "rutaResumen": "{puntos, plural, =1{1 punto} other{{puntos} puntos}} · {distancia} · {duracion}",
+  "@rutaResumen": {
+    "placeholders": {
+      "puntos": {"type": "int"},
+      "distancia": {"type": "String"},
+      "duracion": {"type": "String"}
+    }
+  },
+  "verRuta": "Ver ruta",
+  "explorarAtractivos": "Atractivos",
+  "masUnPunto": "+1 punto",
+  "explorarServicios": "Servicios de la comunidad",
+  "contactarWhatsapp": "Contactar por WhatsApp",
+  "whatsappNumero": "WhatsApp: {numero}",
+  "@whatsappNumero": {
+    "placeholders": {
+      "numero": {"type": "String"}
+    }
+  },
+  "tipoGuiado": "Guiado",
+  "tipoAlimentacion": "Alimentación",
+  "tipoHospedaje": "Hospedaje",
+  "tipoTransporte": "Transporte",
+
+  "mapaSiguientePunto": "Siguiente punto",
+  "mapaDesdeAnterior": "desde el punto anterior",
+  "mapaAPie": "a pie, aprox.",
+  "mapaAvance": "{visitados} de {total} puntos",
+  "@mapaAvance": {
+    "placeholders": {
+      "visitados": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "mapaRutaCompletada": "¡Ruta completada!",
+  "mapaRutaCompletadaDetalle": "Visitaste todos los puntos. Revisa tus sellos en el pasaporte.",
+  "mapaEsquema": "Esquema de la ruta · no está a escala",
+  "mapaRecorrido": "Recorrido",
+  "mapaTotal": "{distancia} · {duracion} en total",
+  "@mapaTotal": {
+    "placeholders": {
+      "distancia": {"type": "String"},
+      "duracion": {"type": "String"}
+    }
+  },
+  "mapaInicio": "Inicio de la ruta",
+  "estadoVisitado": "Visitado",
+  "estadoPendiente": "Pendiente de sincronizar",
+  "estadoSiguiente": "Siguiente",
+
+  "pasaporteTitulo": "Mi pasaporte",
+  "pasaportePuntos": "{n, plural, =1{punto} other{puntos}}",
+  "@pasaportePuntos": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "pasaporteConfirmados": "{n, plural, =1{1 confirmado} other{{n} confirmados}}",
+  "@pasaporteConfirmados": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "pasaportePendientes": "{n, plural, =1{1 pendiente} other{{n} pendientes}}",
+  "@pasaportePendientes": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "pasaporteCanjeados": "{n, plural, =1{1 ya canjeado} other{{n} ya canjeados}}",
+  "@pasaporteCanjeados": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "pasaporteDisponibles": "{n, plural, =1{1 punto para canjear} other{{n} puntos para canjear}}",
+  "@pasaporteDisponibles": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "pasaportePendientesNota": "Los puntos pendientes se confirman al recuperar la señal.",
+  "pasaporteSellos": "Mis sellos",
+  "selloPorVisitar": "Por visitar",
+  "selloConfirmado": "Confirmado",
+  "selloPendiente": "Pendiente",
+  "pasaporteCanje": "Canjea en la tienda de la comunidad",
+  "productoOferta": "{puntos, plural, =1{1 punto} other{{puntos} puntos}} = {descuento}% de descuento",
+  "@productoOferta": {
+    "placeholders": {
+      "puntos": {"type": "int"},
+      "descuento": {"type": "int"}
+    }
+  },
+  "productoFaltan": "{n, plural, =1{Te falta 1 punto} other{Te faltan {n} puntos}}",
+  "@productoFaltan": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "canjear": "Canjear",
+  "canjeConfirmarTitulo": "¿Canjear tus puntos?",
+  "canjeConfirmarDetalle": "Usarás {puntos, plural, =1{1 punto} other{{puntos} puntos}} para un {descuento}% de descuento en {producto}.",
+  "@canjeConfirmarDetalle": {
+    "placeholders": {
+      "puntos": {"type": "int"},
+      "descuento": {"type": "int"},
+      "producto": {"type": "String"}
+    }
+  },
+  "canjeCupon": "Cupón generado: {producto}",
+  "@canjeCupon": {
+    "placeholders": {
+      "producto": {"type": "String"}
+    }
+  },
+
+  "escanearTitulo": "Escanear punto",
+  "escanearInstruccion": "Apunta al QR del punto turístico",
+  "escanearSinSenal": "Funciona sin señal: el sello se guarda en tu celular.",
+  "escanearSimular": "Simular escaneo (demo)",
+  "escanearGanado": "¡Sello obtenido! +1 punto",
+  "escanearGanadoDetalle": "Queda pendiente hasta que tengas señal.",
+  "escanearYaRegistrado": "Este punto ya está en tu pasaporte",
+  "verPasaporte": "Ver pasaporte",
+
+  "hoyTitulo": "Puesto de control",
+  "hoyDentro": "Dentro",
+  "hoySalieron": "Salieron",
+  "hoyTotal": "Total",
+  "hoyDentroDelBosque": "Dentro del bosque",
+  "hoySinGrupos": "No hay grupos dentro",
+  "hoySinGruposDetalle": "Los grupos que registres aparecerán aquí.",
+  "hoyAlerta": "{n, plural, =1{1 grupo pasó su hora de salida} other{{n} grupos pasaron su hora de salida}}",
+  "@hoyAlerta": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "hoySigueDentro": "Sigue dentro",
+  "hoyDebiaSalir": "Debía salir a las {hora}",
+  "@hoyDebiaSalir": {
+    "placeholders": {
+      "hora": {"type": "String"}
+    }
+  },
+  "hoySalidaPrevista": "Salida prevista: {hora}",
+  "@hoySalidaPrevista": {
+    "placeholders": {
+      "hora": {"type": "String"}
+    }
+  },
+  "hoyGrupo": "{n, plural, =1{1 persona} other{{n} personas}} · {actividades}",
+  "@hoyGrupo": {
+    "placeholders": {
+      "n": {"type": "int"},
+      "actividades": {"type": "String"}
+    }
+  },
+  "marcarSalida": "Marcar salida",
+  "verQr": "Ver QR",
+  "salidaConfirmarTitulo": "¿Marcar la salida?",
+  "salidaConfirmarDetalle": "{nombre} ({n, plural, =1{1 persona} other{{n} personas}}) ya salió del bosque.",
+  "@salidaConfirmarDetalle": {
+    "placeholders": {
+      "nombre": {"type": "String"},
+      "n": {"type": "int"}
+    }
+  },
+  "salidaMarcada": "Salida de {nombre} registrada",
+  "@salidaMarcada": {
+    "placeholders": {
+      "nombre": {"type": "String"}
+    }
+  },
+
+  "registrarTitulo": "Registrar grupo",
+  "registrarIntegrantes": "Integrantes ({n})",
+  "@registrarIntegrantes": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "registrarAyuda": "Agrega a cada persona. Al final se genera un solo QR para todo el grupo.",
+  "registrarNombre": "Nombre y apellido",
+  "registrarEdad": "Edad",
+  "registrarProcedencia": "Procedencia",
+  "registrarAgregarIntegrante": "Agregar integrante",
+  "registrarQuitarIntegrante": "Quitar a {nombre}",
+  "@registrarQuitarIntegrante": {
+    "placeholders": {
+      "nombre": {"type": "String"}
+    }
+  },
+  "registrarResponsable": "Responsable",
+  "registrarIntegranteDetalle": "{edad, plural, =1{1 año} other{{edad} años}} · {procedencia}",
+  "@registrarIntegranteDetalle": {
+    "placeholders": {
+      "edad": {"type": "int"},
+      "procedencia": {"type": "String"}
+    }
+  },
+  "registrarActividades": "Actividades del grupo",
+  "registrarActividadesAyuda": "Elige una o varias. Si alguien hará otras actividades, regístralo en otro grupo.",
+  "registrarBoton": "Registrar grupo y generar QR",
+  "validarActividad": "Elige al menos una actividad",
+  "qrTitulo": "QR del grupo",
+  "qrInstruccion": "Un solo código para todo el grupo. Cada integrante lo escanea con la app.",
+  "qrSemantica": "Código QR del grupo de {nombre}",
+  "@qrSemantica": {
+    "placeholders": {
+      "nombre": {"type": "String"}
+    }
+  },
+  "listo": "Listo",
+  "validarNombre": "Ingresa el nombre",
+  "validarEdadNumero": "Ingresa la edad en números",
+  "validarEdadRango": "Edad fuera de rango",
+  "procedenciaPiura": "Piura",
+  "procedenciaLima": "Lima",
+  "procedenciaOtraRegion": "Otra región",
+  "procedenciaExtranjero": "Extranjero",
+  "actividadSenderismo": "Senderismo",
+  "actividadAves": "Avistamiento de aves",
+  "actividadFotografia": "Fotografía",
+  "actividadCampamento": "Campamento",
+
+  "reporteTitulo": "Reporte del día",
+  "reporteVisitantes": "Visitantes",
+  "reporteGrupos": "Grupos",
+  "reporteProcedencia": "Procedencia",
+  "reporteEdades": "Edades",
+  "reporteSinRegistros": "Sin registros hoy",
+  "reportePdf": "Descargar PDF",
+  "reportePdfAviso": "El PDF oficial se genera en el panel web con estos datos.",
+  "edadMenores": "Menos de 18",
+  "edad18a29": "18 a 29",
+  "edad30a44": "30 a 44",
+  "edad45a59": "45 a 59",
+  "edadMayores": "60 o más",
+
+  "ajustesIdioma": "Idioma",
+  "idiomaEspanol": "Español",
+  "idiomaIngles": "English",
+  "ajustesApariencia": "Apariencia",
+  "temaSistema": "Automático",
+  "temaSistemaDetalle": "Igual que tu celular",
+  "temaClaro": "Claro",
+  "temaClaroDetalle": "Se lee mejor al sol",
+  "temaOscuro": "Oscuro",
+  "temaOscuroDetalle": "Descansa la vista de noche"
+}

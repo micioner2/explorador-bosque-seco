@@ -4,6 +4,7 @@ abstract final class Rutas {
   static const mapa = '/mapa';
   static const pasaporte = '/pasaporte';
   static const escanear = '/escanear';
+  static const ajustes = '/ajustes';
 
   static const asociacionHoy = '/asociacion';
   static const asociacionRegistrar = '/asociacion/registrar';

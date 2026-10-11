@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'core/l10n/l10n.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'features/preferencias/domain/preferencias.dart';
+import 'features/preferencias/presentation/view_models/preferencias_view_model.dart';
 
-/// Raíz de la aplicación.
-class BosqueSecoApp extends StatefulWidget {
+/// Raíz de la aplicación. Aplica el idioma y la apariencia que la persona
+/// eligió en Ajustes.
+class BosqueSecoApp extends ConsumerStatefulWidget {
   const BosqueSecoApp({super.key});
 
   @override
-  State<BosqueSecoApp> createState() => _BosqueSecoAppState();
+  ConsumerState<BosqueSecoApp> createState() => _BosqueSecoAppState();
 }
 
-class _BosqueSecoAppState extends State<BosqueSecoApp> {
+class _BosqueSecoAppState extends ConsumerState<BosqueSecoApp> {
   late final GoRouter _router = crearRouter();
 
   @override
@@ -23,10 +28,24 @@ class _BosqueSecoAppState extends State<BosqueSecoApp> {
 
   @override
   Widget build(BuildContext context) {
+    final preferencias = ref.watch(preferenciasViewModelProvider);
+    final idioma = preferencias.idioma;
+
     return MaterialApp.router(
-      title: 'Bosque Seco',
+      onGenerateTitle: (context) => context.l10n.appTitulo,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.claro,
+      darkTheme: AppTheme.oscuro,
+      themeMode: switch (preferencias.modoTema) {
+        ModoTema.sistema => ThemeMode.system,
+        ModoTema.claro => ThemeMode.light,
+        ModoTema.oscuro => ThemeMode.dark,
+      },
+      // Sin idioma elegido se usa el del celular; si no está traducido,
+      // Flutter toma el primero de la lista (español).
+      locale: idioma == null ? null : Locale(idioma.codigo),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: _router,
     );
   }

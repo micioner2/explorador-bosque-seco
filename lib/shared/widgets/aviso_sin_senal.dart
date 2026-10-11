@@ -1,33 +1,41 @@
 import 'package:flutter/material.dart';
 
-import '../../core/theme/app_colors.dart';
+import '../../core/l10n/l10n.dart';
+import '../../core/theme/app_espacios.dart';
+import '../../core/theme/colores_app.dart';
 
 /// Aviso que recuerda al turista que su información está guardada en el
 /// celular y que funciona sin señal.
 class AvisoSinSenal extends StatelessWidget {
-  const AvisoSinSenal({
-    super.key,
-    this.mensaje = 'Sin señal · tu ruta está guardada en el celular',
-  });
+  const AvisoSinSenal({super.key, this.mensaje});
 
-  final String mensaje;
+  /// Texto del aviso. Si no se indica, se usa el mensaje general.
+  final String? mensaje;
 
   @override
   Widget build(BuildContext context) {
+    final colores = context.colores;
+
     return Container(
       width: double.infinity,
-      color: AppColors.amarilloCrema,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: colores.aviso,
+        borderRadius: BorderRadius.circular(AppEspacios.radioChico),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppEspacios.l,
+        vertical: AppEspacios.m,
+      ),
       child: Row(
         children: [
-          const Icon(Icons.wifi_off, color: AppColors.marronTierra, size: 20),
-          const SizedBox(width: 8),
+          Icon(Icons.wifi_off, color: colores.sobreAviso, size: 20),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
-              mensaje,
-              style: const TextStyle(
-                color: AppColors.marronTierra,
-                fontWeight: FontWeight.w500,
+              mensaje ?? context.l10n.avisoSinSenal,
+              style: context.textos.bodyMedium?.copyWith(
+                color: colores.sobreAviso,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),

@@ -30,29 +30,49 @@ void main() {
   VisitasViewModel viewModel() =>
       container.read(visitasViewModelProvider.notifier);
 
-  test('registrar agrega la visita con la hora actual', () {
+  List<Visitante> familia(int personas) => [
+    for (var i = 1; i <= personas; i++)
+      Visitante(
+        nombre: i == 1 ? '  Ana Torres ' : 'Integrante $i',
+        edad: 20 + i,
+        procedencia: Procedencia.piura,
+      ),
+  ];
+
+  test('registrar agrega la visita del grupo con la hora actual', () {
     final visita = viewModel().registrar(
-      nombreResponsable: '  Ana Torres ',
-      edad: 34,
-      procedencia: Procedencia.piura,
-      tamanoGrupo: 4,
-      actividad: Actividad.senderismo,
+      integrantes: familia(4),
+      actividades: const [Actividad.senderismo, Actividad.fotografia],
     );
 
     expect(container.read(visitasViewModelProvider), [visita]);
     expect(visita.nombreResponsable, 'Ana Torres');
+    expect(visita.tamanoGrupo, 4);
+    expect(visita.actividades, {Actividad.senderismo, Actividad.fotografia});
     expect(visita.fechaEntrada, ahora);
+  });
+
+  test('un grupo de cinco personas queda en una sola visita', () {
+    viewModel().registrar(
+      integrantes: familia(5),
+      actividades: const [Actividad.aves],
+    );
+
+    expect(container.read(visitasViewModelProvider), hasLength(1));
+    expect(container.read(resumenDelDiaProvider).personasDentro, 5);
   });
 
   test('registrar con datos inválidos no agrega nada', () {
     expect(
       () => viewModel().registrar(
-        nombreResponsable: 'Ana',
-        edad: 34,
-        procedencia: Procedencia.piura,
-        tamanoGrupo: 0,
-        actividad: Actividad.senderismo,
+        integrantes: const [],
+        actividades: const [Actividad.senderismo],
       ),
+      throwsArgumentError,
+    );
+    expect(
+      () =>
+          viewModel().registrar(integrantes: familia(2), actividades: const []),
       throwsArgumentError,
     );
     expect(container.read(visitasViewModelProvider), isEmpty);
@@ -60,11 +80,8 @@ void main() {
 
   test('marcar salida actualiza el resumen del día', () {
     final visita = viewModel().registrar(
-      nombreResponsable: 'Ana',
-      edad: 34,
-      procedencia: Procedencia.piura,
-      tamanoGrupo: 4,
-      actividad: Actividad.aves,
+      integrantes: familia(4),
+      actividades: const [Actividad.aves],
     );
     expect(container.read(resumenDelDiaProvider).personasDentro, 4);
 

@@ -33,6 +33,10 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Traducciones generadas desde lib/l10n/*.arb (las crea `flutter pub get`
+# o `flutter gen-l10n`; el CI también las genera)
+/lib/l10n/app_localizations*.dart
+
 # Symbolication related
 app.*.symbols
 

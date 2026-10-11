@@ -6,11 +6,15 @@ Visita visita(String id, {required int grupo, required int salidaHora}) =>
     Visita(
       id: id,
       asociacionId: 'a1',
-      nombreResponsable: 'Grupo $id',
-      edad: 30,
-      procedencia: Procedencia.piura,
-      tamanoGrupo: grupo,
-      actividad: Actividad.senderismo,
+      integrantes: [
+        for (var i = 1; i <= grupo; i++)
+          Visitante(
+            nombre: 'Persona $i del grupo $id',
+            edad: 30,
+            procedencia: Procedencia.piura,
+          ),
+      ],
+      actividades: const [Actividad.senderismo],
       fechaEntrada: DateTime(2026, 10, 10, 7),
       salidaPrevista: DateTime(2026, 10, 10, salidaHora),
     );

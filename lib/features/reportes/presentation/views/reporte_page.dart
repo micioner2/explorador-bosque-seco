@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../shared/widgets/tarjeta_dato.dart';
+import '../../../../core/l10n/etiquetas_dominio.dart';
+import '../../../../core/l10n/l10n.dart';
+import '../../../../core/theme/app_espacios.dart';
+import '../../../../core/theme/colores_app.dart';
+import '../../../../shared/widgets/acciones_barra.dart';
+import '../../../../shared/widgets/tarjeta_cifra.dart';
+import '../../../visitas/domain/visita.dart';
+import '../../domain/reporte_diario.dart';
 import '../view_models/reporte_view_model.dart';
 
 /// Reporte de cierre del día (base del PDF que pide AIDER).
@@ -11,49 +17,60 @@ class ReportePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final reporte = ref.watch(reporteViewModelProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Reporte del día')),
+      appBar: BarraAsociacion(titulo: l10n.reporteTitulo),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppEspacios.l),
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: TarjetaDato(
-                  etiqueta: 'Visitantes',
-                  valor: '${reporte.totalVisitantes}',
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: TarjetaCifra(
+                    icono: Icons.groups_outlined,
+                    etiqueta: l10n.reporteVisitantes,
+                    valor: '${reporte.totalVisitantes}',
+                    destacada: true,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TarjetaDato(
-                  etiqueta: 'Grupos',
-                  valor: '${reporte.totalGrupos}',
+                const SizedBox(width: AppEspacios.s),
+                Expanded(
+                  child: TarjetaCifra(
+                    icono: Icons.hiking,
+                    etiqueta: l10n.reporteGrupos,
+                    valor: '${reporte.totalGrupos}',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+          const SizedBox(height: AppEspacios.m),
           _Seccion(
-            titulo: 'Procedencia',
+            titulo: l10n.reporteProcedencia,
             filas: {
-              for (final e in reporte.porProcedencia.entries)
-                e.key.etiqueta: e.value,
+              for (final procedencia in Procedencia.values)
+                procedencia.texto(l10n): ?reporte.porProcedencia[procedencia],
             },
           ),
+          const SizedBox(height: AppEspacios.m),
           _Seccion(
-            titulo: 'Edades (responsable del grupo)',
+            titulo: l10n.reporteEdades,
             filas: {
-              for (final e in reporte.porRangoEdad.entries)
-                e.key.etiqueta: e.value,
+              for (final rango in RangoEdad.values)
+                rango.texto(l10n): ?reporte.porRangoEdad[rango],
             },
           ),
-          const SizedBox(height: 16),
-          FilledButton.icon(
-            onPressed: () {},
+          const SizedBox(height: AppEspacios.l),
+          OutlinedButton.icon(
+            onPressed: () => ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(l10n.reportePdfAviso))),
             icon: const Icon(Icons.picture_as_pdf_outlined),
-            label: const Text('Descargar PDF'),
+            label: Text(l10n.reportePdf),
           ),
         ],
       ),
@@ -61,6 +78,7 @@ class ReportePage extends ConsumerWidget {
   }
 }
 
+/// Tarjeta con barras horizontales: una fila por categoría.
 class _Seccion extends StatelessWidget {
   const _Seccion({required this.titulo, required this.filas});
 
@@ -69,36 +87,52 @@ class _Seccion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final esquema = context.esquema;
+    final textos = context.textos;
     final maximo = filas.values.fold<int>(1, (m, v) => v > m ? v : m);
+
     return Card(
-      margin: const EdgeInsets.only(top: 12),
       child: Padding(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(AppEspacios.l),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(titulo, style: const TextStyle(fontWeight: FontWeight.w700)),
-            const SizedBox(height: 8),
-            if (filas.isEmpty) const Text('Sin registros hoy'),
+            Semantics(
+              header: true,
+              child: Text(titulo, style: textos.titleSmall),
+            ),
+            const SizedBox(height: AppEspacios.s),
+            if (filas.isEmpty)
+              Text(
+                context.l10n.reporteSinRegistros,
+                style: textos.bodyMedium?.copyWith(
+                  color: esquema.onSurfaceVariant,
+                ),
+              ),
             for (final fila in filas.entries)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    SizedBox(width: 110, child: Text(fila.key)),
-                    Expanded(
-                      child: LinearProgressIndicator(
-                        value: fila.value / maximo,
-                        minHeight: 10,
-                        color: AppColors.verdeInstitucional,
-                        backgroundColor: AppColors.verdeSuave,
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: MergeSemantics(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(fila.key, style: textos.bodyMedium),
+                          ),
+                          Text('${fila.value}', style: textos.titleSmall),
+                        ],
                       ),
-                    ),
-                    SizedBox(
-                      width: 32,
-                      child: Text('${fila.value}', textAlign: TextAlign.end),
-                    ),
-                  ],
+                      const SizedBox(height: AppEspacios.xs),
+                      ExcludeSemantics(
+                        child: LinearProgressIndicator(
+                          value: fila.value / maximo,
+                          minHeight: 10,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],

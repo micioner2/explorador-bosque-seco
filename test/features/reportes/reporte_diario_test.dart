@@ -5,22 +5,29 @@ import 'package:flutter_test/flutter_test.dart';
 
 final dia = DateTime(2026, 10, 10);
 
+/// Grupo con un integrante por cada edad indicada, todos de la misma
+/// [procedencia] salvo los que se pasen en [otros].
 Visita visita(
   String id, {
   required Procedencia procedencia,
-  required int edad,
-  required int grupo,
+  required List<int> edades,
+  List<Visitante> otros = const [],
   DateTime? entrada,
 }) {
   final e = entrada ?? DateTime(2026, 10, 10, 8);
   return Visita(
     id: id,
     asociacionId: 'a1',
-    nombreResponsable: 'Responsable $id',
-    edad: edad,
-    procedencia: procedencia,
-    tamanoGrupo: grupo,
-    actividad: Actividad.senderismo,
+    integrantes: [
+      for (final edad in edades)
+        Visitante(
+          nombre: 'Persona de $edad años ($id)',
+          edad: edad,
+          procedencia: procedencia,
+        ),
+      ...otros,
+    ],
+    actividades: const [Actividad.senderismo],
     fechaEntrada: e,
     salidaPrevista: e.add(const Duration(hours: 6)),
   );
@@ -35,14 +42,25 @@ Escaneo escaneo(String id, String visitaId, String puntoId) => Escaneo(
 
 void main() {
   final visitas = [
-    visita('v1', procedencia: Procedencia.piura, edad: 34, grupo: 4),
-    visita('v2', procedencia: Procedencia.lima, edad: 25, grupo: 2),
-    visita('v3', procedencia: Procedencia.piura, edad: 61, grupo: 1),
+    // Familia de Piura con dos menores y una invitada del extranjero.
+    visita(
+      'v1',
+      procedencia: Procedencia.piura,
+      edades: [34, 36, 12],
+      otros: [
+        Visitante(
+          nombre: 'Emma Schmidt',
+          edad: 31,
+          procedencia: Procedencia.extranjero,
+        ),
+      ],
+    ),
+    visita('v2', procedencia: Procedencia.lima, edades: [25, 27]),
+    visita('v3', procedencia: Procedencia.piura, edades: [61]),
     visita(
       'ayer',
-      procedencia: Procedencia.extranjero,
-      edad: 40,
-      grupo: 5,
+      procedencia: Procedencia.otraRegion,
+      edades: [40, 41, 42, 43, 44],
       entrada: DateTime(2026, 10, 9, 8),
     ),
   ];
@@ -66,16 +84,26 @@ void main() {
     expect(reporte.totalGrupos, 3);
   });
 
-  test('agrupa visitantes por procedencia', () {
-    expect(reporte.porProcedencia[Procedencia.piura], 5);
+  test('cuenta la procedencia de cada integrante, no la del grupo', () {
+    expect(reporte.porProcedencia[Procedencia.piura], 4);
     expect(reporte.porProcedencia[Procedencia.lima], 2);
-    expect(reporte.porProcedencia.containsKey(Procedencia.extranjero), isFalse);
+    expect(reporte.porProcedencia[Procedencia.extranjero], 1);
+    expect(reporte.porProcedencia.containsKey(Procedencia.otraRegion), isFalse);
   });
 
-  test('agrupa responsables por rango de edad', () {
-    expect(reporte.porRangoEdad[RangoEdad.de30a44], 1);
-    expect(reporte.porRangoEdad[RangoEdad.de18a29], 1);
+  test('cuenta la edad de cada integrante en su rango', () {
+    expect(reporte.porRangoEdad[RangoEdad.menores], 1);
+    expect(reporte.porRangoEdad[RangoEdad.de18a29], 2);
+    expect(reporte.porRangoEdad[RangoEdad.de30a44], 3);
     expect(reporte.porRangoEdad[RangoEdad.mayores], 1);
+    expect(reporte.porRangoEdad.containsKey(RangoEdad.de45a59), isFalse);
+  });
+
+  test('procedencias y edades suman el total de visitantes', () {
+    int sumar(Iterable<int> valores) => valores.fold(0, (a, b) => a + b);
+
+    expect(sumar(reporte.porProcedencia.values), reporte.totalVisitantes);
+    expect(sumar(reporte.porRangoEdad.values), reporte.totalVisitantes);
   });
 
   test('ordena los puntos más visitados sin contar duplicados', () {

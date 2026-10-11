@@ -13,15 +13,20 @@ class VisitasRepositoryDemo implements VisitasRepository {
     DateTime a(int hora, [int minuto = 0]) =>
         DateTime(dia.year, dia.month, dia.day, hora, minuto);
 
+    Visitante persona(String nombre, int edad, Procedencia procedencia) =>
+        Visitante(nombre: nombre, edad: edad, procedencia: procedencia);
+
     return [
       Visita(
         id: 'v1',
         asociacionId: 'demo',
-        nombreResponsable: 'Ana Torres',
-        edad: 34,
-        procedencia: Procedencia.piura,
-        tamanoGrupo: 4,
-        actividad: Actividad.senderismo,
+        integrantes: [
+          persona('Ana Torres', 34, Procedencia.piura),
+          persona('Carlos Torres', 36, Procedencia.piura),
+          persona('Lucía Torres', 12, Procedencia.piura),
+          persona('Mateo Torres', 9, Procedencia.piura),
+        ],
+        actividades: const [Actividad.senderismo, Actividad.fotografia],
         fechaEntrada: a(8),
         salidaPrevista: a(16),
         guia: 'Guía 1',
@@ -29,11 +34,11 @@ class VisitasRepositoryDemo implements VisitasRepository {
       Visita(
         id: 'v2',
         asociacionId: 'demo',
-        nombreResponsable: 'Luis Paredes',
-        edad: 27,
-        procedencia: Procedencia.lima,
-        tamanoGrupo: 2,
-        actividad: Actividad.aves,
+        integrantes: [
+          persona('Luis Paredes', 27, Procedencia.lima),
+          persona('Sofía Rojas', 26, Procedencia.lima),
+        ],
+        actividades: const [Actividad.aves],
         fechaEntrada: a(6, 30),
         salidaPrevista: a(18),
         guia: 'Guía 2',
@@ -41,11 +46,12 @@ class VisitasRepositoryDemo implements VisitasRepository {
       Visita(
         id: 'v3',
         asociacionId: 'demo',
-        nombreResponsable: 'Grupo Ramírez',
-        edad: 52,
-        procedencia: Procedencia.otraRegion,
-        tamanoGrupo: 3,
-        actividad: Actividad.fotografia,
+        integrantes: [
+          persona('Jorge Ramírez', 52, Procedencia.otraRegion),
+          persona('Elena Ramírez', 49, Procedencia.otraRegion),
+          persona('Emma Schmidt', 31, Procedencia.extranjero),
+        ],
+        actividades: const [Actividad.fotografia],
         fechaEntrada: a(7),
         salidaPrevista: a(11),
         guia: 'Guía 1',

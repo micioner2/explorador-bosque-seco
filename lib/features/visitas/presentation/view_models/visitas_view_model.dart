@@ -15,25 +15,20 @@ class VisitasViewModel extends Notifier<List<Visita>> {
     return ref.watch(visitasRepositoryProvider).visitasDelDia(hoy);
   }
 
-  /// Registra una visita nueva. Lanza [ArgumentError] si los datos no son
+  /// Registra la visita de un grupo: una sola visita (y un solo QR) para
+  /// todos sus integrantes. Lanza [ArgumentError] si los datos no son
   /// válidos (las reglas viven en [Visita]).
   Visita registrar({
-    required String nombreResponsable,
-    required int edad,
-    required Procedencia procedencia,
-    required int tamanoGrupo,
-    required Actividad actividad,
+    required Iterable<Visitante> integrantes,
+    required Iterable<Actividad> actividades,
     Duration duracionPrevista = const Duration(hours: 8),
   }) {
     final entrada = _ahora;
     final visita = Visita(
       id: 'v-${entrada.microsecondsSinceEpoch}',
       asociacionId: 'demo',
-      nombreResponsable: nombreResponsable.trim(),
-      edad: edad,
-      procedencia: procedencia,
-      tamanoGrupo: tamanoGrupo,
-      actividad: actividad,
+      integrantes: integrantes,
+      actividades: actividades,
       fechaEntrada: entrada,
       salidaPrevista: entrada.add(duracionPrevista),
     );

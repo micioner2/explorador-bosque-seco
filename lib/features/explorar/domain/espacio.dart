@@ -1,14 +1,6 @@
-/// Tipo de servicio que ofrece la comunidad.
-enum TipoServicio {
-  guiado('Guiado'),
-  alimentacion('Alimentación'),
-  hospedaje('Hospedaje'),
-  transporte('Transporte');
-
-  const TipoServicio(this.etiqueta);
-
-  final String etiqueta;
-}
+/// Tipo de servicio que ofrece la comunidad. Su texto visible se traduce
+/// en `core/l10n/etiquetas_dominio.dart`.
+enum TipoServicio { guiado, alimentacion, hospedaje, transporte }
 
 /// Punto turístico de una ruta. Cada uno tiene su QR.
 class Atractivo {

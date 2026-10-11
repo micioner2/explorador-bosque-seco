@@ -1,17 +1,14 @@
 import '../../puntos/domain/escaneo.dart';
 import '../../visitas/domain/visita.dart';
 
-/// Rango de edad usado en el reporte.
+/// Rango de edad usado en el reporte: menos de 18, 18 a 29, 30 a 44,
+/// 45 a 59 y 60 o más.
 enum RangoEdad {
-  menores('Menos de 18'),
-  de18a29('18 a 29'),
-  de30a44('30 a 44'),
-  de45a59('45 a 59'),
-  mayores('60 o más');
-
-  const RangoEdad(this.etiqueta);
-
-  final String etiqueta;
+  menores,
+  de18a29,
+  de30a44,
+  de45a59,
+  mayores;
 
   static RangoEdad de(int edad) {
     if (edad < 18) return RangoEdad.menores;
@@ -35,8 +32,8 @@ class ReporteDiario {
 
   /// Calcula el reporte de [dia] a partir de las visitas y escaneos.
   ///
-  /// Los visitantes se cuentan por persona (tamaño del grupo). La edad y
-  /// procedencia son las del responsable del grupo.
+  /// Los visitantes se cuentan por persona: cada integrante de un grupo
+  /// suma con su propia edad y procedencia.
   factory ReporteDiario.calcular({
     required DateTime dia,
     required Iterable<Visita> visitas,
@@ -54,16 +51,18 @@ class ReporteDiario {
       totalGrupos++;
       totalVisitantes += visita.tamanoGrupo;
       idsVisitas.add(visita.id);
-      porProcedencia.update(
-        visita.procedencia,
-        (n) => n + visita.tamanoGrupo,
-        ifAbsent: () => visita.tamanoGrupo,
-      );
-      porRangoEdad.update(
-        RangoEdad.de(visita.edad),
-        (n) => n + 1,
-        ifAbsent: () => 1,
-      );
+      for (final integrante in visita.integrantes) {
+        porProcedencia.update(
+          integrante.procedencia,
+          (n) => n + 1,
+          ifAbsent: () => 1,
+        );
+        porRangoEdad.update(
+          RangoEdad.de(integrante.edad),
+          (n) => n + 1,
+          ifAbsent: () => 1,
+        );
+      }
     }
 
     final porPunto = <String, int>{};
