@@ -24,18 +24,41 @@ lo que no se puede romper.
 
 ## Visitas (`lib/features/visitas/domain/`)
 
-- **R5.** Nombre no vacío, edad entre 0 y 120, grupo de al menos 1 y salida
+- **R5.** Cada integrante (`Visitante`): nombre no vacío y edad entre 0 y
+  120. Cada visita: al menos un integrante, al menos una actividad y salida
   prevista posterior a la entrada.
 - **R6.** "Sigue dentro" = sin salida marcada y ya pasó la salida prevista.
 - **R7.** La salida se marca una sola vez y no puede ser antes de la entrada.
-- Procedencias: Piura, Lima, Otra región, Extranjero.
+- **R9.** Una visita es un grupo que entra junto y hace **las mismas
+  actividades** (una o varias). Cada integrante se registra por separado,
+  pero todo el grupo comparte **un solo QR** (`Visita.codigoQr`). El primer
+  integrante es el responsable. Quien haga otras actividades se registra en
+  otra visita, con otro QR.
+- Como el QR es del grupo, los puntos también: R1 da 1 punto por visita y
+  punto turístico, no por persona.
+- Procedencias: Piura, Lima, Otra región, Extranjero (de cada integrante).
 - Actividades: Senderismo, Avistamiento de aves, Fotografía, Campamento.
+
+## Ruta (`lib/features/mapa/domain/`)
+
+- **R10.** Un punto de la ruta cuenta como visitado si tiene sello, pendiente
+  o confirmado. El siguiente punto es el primero sin sello en el orden de la
+  ruta; con todos visitados, la ruta está completa.
+- Una ruta tiene al menos un punto, sin repetir, y cada tramo guarda su
+  distancia y su tiempo desde el punto anterior (nunca negativos).
 
 ## Reporte (`lib/features/reportes/domain/`)
 
-- **R8.** Visitantes = suma de personas de los grupos del día. Procedencia por
-  personas. Edad del responsable en rangos: menos de 18, 18–29, 30–44, 45–59,
-  60 o más. Puntos más visitados sin duplicados, de mayor a menor.
+- **R8.** Visitantes = suma de integrantes de los grupos del día. Cada
+  integrante cuenta con **su propia** procedencia y su propio rango de edad:
+  menos de 18, 18–29, 30–44, 45–59, 60 o más. Puntos más visitados sin
+  duplicados, de mayor a menor.
+
+## Textos
+
+- Las reglas no guardan textos de interfaz. Los `enum` (procedencia,
+  actividad, rango de edad, tipo de servicio) se traducen al español y al
+  inglés en `lib/core/l10n/etiquetas_dominio.dart`.
 
 ## Actores
 

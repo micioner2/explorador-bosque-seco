@@ -1,7 +1,7 @@
 ---
 name: verificar-calidad
 description: Ejecuta las mismas validaciones del CI (dart format, flutter analyze y flutter test) y corrige lo que falle. Úsala antes de hacer commit, al terminar un cambio o cuando el CI de GitHub Actions falle.
-allowed-tools: Bash(flutter pub get) Bash(dart format *) Bash(flutter analyze) Bash(flutter test *) Bash(flutter test)
+allowed-tools: Bash(flutter pub get) Bash(flutter gen-l10n) Bash(dart format *) Bash(flutter analyze) Bash(flutter test *) Bash(flutter test)
 ---
 
 # Verificar calidad como el CI
@@ -11,6 +11,10 @@ pasos. Ejecútalos en este orden y no des el trabajo por terminado hasta que
 los tres pasen.
 
 1. **Dependencias:** `flutter pub get`
+   - También genera las traducciones (`lib/l10n/app_localizations*.dart`).
+     Si editaste un `.arb`, corre además `flutter gen-l10n`.
+   - El CI usa `--enforce-lockfile`: si cambiaste `pubspec.yaml`, sube
+     también el `pubspec.lock` actualizado.
 2. **Formato:** `dart format lib test`
    - Aplica el formato; luego revisa con `git diff` qué cambió.
 3. **Análisis:** `flutter analyze`
@@ -25,6 +29,11 @@ los tres pasen.
 4. **Pruebas:** `flutter test`
    - Si una prueba falla, corrige el código, no la prueba, salvo que la regla
      haya cambiado a propósito (y entonces actualiza `docs/PRODUCTO.md`).
+   - `accesibilidad_test.dart` falla por contraste bajo, botones de menos de
+     48 px, botones de icono sin `tooltip` o textos que se desbordan con
+     letra grande: corrige la pantalla.
+   - `traducciones_test.dart` falla si un texto está en un `.arb` y no en el
+     otro: agrega la traducción que falta.
 
 ## Si el CI de GitHub falla y en local pasa
 

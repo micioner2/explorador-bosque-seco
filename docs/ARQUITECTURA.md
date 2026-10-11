@@ -55,8 +55,47 @@ Cambiar los datos de demostración por la base local o la API solo toca la
 capa `data` y el *provider* del repositorio: ni las pantallas ni las reglas
 cambian.
 
+## Interfaz: tema, idiomas y preferencias
+
+La capa `views` no decide colores ni textos; los pide.
+
+| Tema | Dónde vive | Cómo se usa en una vista |
+|---|---|---|
+| Colores (claro y oscuro) | `core/theme/app_theme.dart` arma dos `ThemeData` con la paleta de `AppColors`. Lo que Material no cubre (cabecera, aviso sin señal, barra de la asociación) está en `ColoresApp`, una `ThemeExtension`. | `context.esquema.primary`, `context.colores.aviso` |
+| Medidas | `core/theme/app_espacios.dart` | `AppEspacios.l` |
+| Textos (español e inglés) | `lib/l10n/app_es.arb` (plantilla) y `app_en.arb`. Flutter genera `AppLocalizations` con `flutter gen-l10n` (configurado en `l10n.yaml`). | `context.l10n.navExplorar` |
+| Textos de los `enum` del dominio | `core/l10n/etiquetas_dominio.dart`: el dominio sigue siendo Dart puro y sin textos de interfaz. | `actividad.texto(l10n)` |
+| Distancias y duraciones | `core/l10n/formato.dart` | `formatearDistancia(1200, 'es')` → `1,2 km` |
+
+**Preferencias** (`features/preferencias`) es una funcionalidad más, con sus
+capas: `Preferencias` (idioma y modo de tema) en `domain`,
+`PreferenciasRepositoryLocal` (`shared_preferences`) en `data` y
+`PreferenciasViewModel` en `presentation`. `app.dart` observa ese ViewModel y
+aplica `locale` y `themeMode`. Como el almacenamiento se abre de forma
+asíncrona, `main.dart` lo carga antes de arrancar y sustituye el Provider del
+repositorio; sin esa sustitución (pruebas) se usa uno en memoria.
+
+Los archivos `lib/l10n/app_localizations*.dart` son generados: no se suben
+al repositorio. Los crea `flutter pub get` (por `generate: true` en
+`pubspec.yaml`) y el CI los regenera.
+
+**Contenido de la asociación.** Los nombres de atractivos, servicios y
+tarifas vienen de los repositorios y se muestran tal como se cargaron.
+Traducirlos requiere columnas por idioma en la base de datos; es una decisión
+pendiente con el proyecto web.
+
 ## Pruebas
 
 - `test/features/*/` prueba el dominio (reglas puras) y los ViewModels con
   `ProviderContainer`, sustituyendo repositorios y reloj por dobles de prueba.
-- `test/app_test.dart` prueba la navegación principal con widgets.
+- `test/app_test.dart` prueba los recorridos principales con widgets:
+  navegación, escaneo, canje, registro de un grupo con su QR, cambio de
+  idioma y de tema.
+- `test/accesibilidad_test.dart` revisa cada pantalla en claro y oscuro
+  (contraste de texto, áreas táctiles de 48 px, etiquetas para lector de
+  pantalla) y que no se desborde en un celular pequeño con letra grande, en
+  español e inglés.
+- `test/core/theme/app_theme_test.dart` calcula el contraste WCAG de cada
+  pareja texto/fondo de los dos temas.
+- `test/l10n/traducciones_test.dart` compara los dos `.arb`: mismas claves,
+  mismas variables y ningún texto vacío.

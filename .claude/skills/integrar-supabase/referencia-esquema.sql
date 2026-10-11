@@ -64,23 +64,36 @@ create table productos (
 
 -- Operación (datos personales: RLS estricto) --------------------------------
 
+-- Una visita es un grupo que entra junto y hace las mismas actividades (R9).
 create table visitas (
   id uuid primary key default gen_random_uuid(),
-  token uuid not null unique default gen_random_uuid(),  -- va en el QR personal
+  token uuid not null unique default gen_random_uuid(),  -- va en el QR único del grupo
   asociacion_id uuid not null references asociaciones(id),
   espacio_id text not null references espacios(id),
-  nombre_responsable text not null check (length(trim(nombre_responsable)) > 0),
-  dni text,
-  edad int not null check (edad between 0 and 120),                    -- R5
-  procedencia text not null check (procedencia in ('piura','lima','otraRegion','extranjero')),
-  tamano_grupo int not null check (tamano_grupo >= 1),
-  actividad text not null,
+  actividades text[] not null                                          -- R9: una o varias
+    check (cardinality(actividades) >= 1
+      and actividades <@ array['senderismo','aves','fotografia','campamento']),
   guia text,
   fecha_entrada timestamptz not null default now(),
   salida_prevista timestamptz not null,
   fecha_salida timestamptz,
   check (salida_prevista > fecha_entrada),
   check (fecha_salida is null or fecha_salida >= fecha_entrada)        -- R7
+);
+
+-- Cada integrante del grupo, registrado por separado (R5). El reporte cuenta
+-- la edad y la procedencia de cada uno (R8). Una visita debe tener al menos
+-- un integrante: se valida al registrar (visita e integrantes en una sola
+-- transacción).
+create table visitantes (
+  id uuid primary key default gen_random_uuid(),
+  visita_id uuid not null references visitas(id) on delete cascade,
+  orden int not null default 0,                -- 0 = responsable del grupo
+  nombre text not null check (length(trim(nombre)) > 0),
+  dni text,
+  edad int not null check (edad between 0 and 120),                    -- R5
+  procedencia text not null check (procedencia in ('piura','lima','otraRegion','extranjero')),
+  unique (visita_id, orden)
 );
 
 create table escaneos (
@@ -147,6 +160,7 @@ alter table puntos       enable row level security;
 alter table servicios    enable row level security;
 alter table productos    enable row level security;
 alter table visitas      enable row level security;
+alter table visitantes   enable row level security;
 alter table escaneos     enable row level security;
 alter table canjes       enable row level security;
 
@@ -157,7 +171,7 @@ create policy "catalogo publico" on puntos       for select using (true);
 create policy "catalogo publico" on servicios    for select using (true);
 create policy "catalogo publico" on productos    for select using (true);
 
--- Visitas, escaneos y canjes: definir con el equipo según cómo se autentica la
+-- Visitas, visitantes, escaneos y canjes: definir con el equipo según cómo se autentica la
 -- asociación (Supabase Auth) y cómo el turista presenta el token de su visita
 -- (por ejemplo, funciones RPC que reciben el token). No crear políticas
 -- abiertas para estas tablas.

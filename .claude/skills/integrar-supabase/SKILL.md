@@ -33,10 +33,18 @@ Usa como base `referencia-esquema.sql` (en esta carpeta). Lo esencial:
   `UNIQUE (visita_id, punto_id)`, que es la regla R1 en la base de datos.
 - El canje es una **función SQL** (`canjear_producto`) que valida puntos y
   descuenta en una sola transacción (R2 y R3).
+- Una **visita es un grupo**: sus integrantes van en `visitantes` (uno por
+  persona, con su edad y procedencia) y sus actividades en
+  `visitas.actividades` (una o varias). El `token` de la visita es lo que va
+  en el **QR único del grupo** (R9). Visita e integrantes se insertan en una
+  sola transacción para que no quede un grupo vacío.
 - **RLS activado en todas las tablas.** Catálogo (`espacios`, `rutas`,
   `puntos`, `servicios`, `productos`) con lectura pública; `visitas`,
-  `escaneos` y `canjes` solo para la asociación dueña o el titular del token
-  de la visita. Nunca expongas DNI ni edad públicamente.
+  `visitantes`, `escaneos` y `canjes` solo para la asociación dueña o el
+  titular del token de la visita. Nunca expongas DNI ni edad públicamente.
+- **Idiomas:** el esquema guarda el contenido en un solo idioma. Si se
+  decide traducir nombres y descripciones, hay que agregar columnas por
+  idioma (por ejemplo `nombre_en`) y acordarlo con el proyecto web.
 
 ## 4. Repositorios (capa `data`)
 

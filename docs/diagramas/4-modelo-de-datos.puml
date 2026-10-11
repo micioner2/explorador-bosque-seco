@@ -59,18 +59,24 @@ class Servicio {
 
 class Visita {
   id
+  token (QR único del grupo)
   asociacionId
   espacioId
-  nombre
-  edad
-  dni
-  procedencia
-  tamanoGrupo
-  actividad
+  actividades : una o varias
   guiaId
   fechaEntrada
   salidaPrevista
   fechaSalida
+}
+
+class Visitante {
+  id
+  visitaId
+  orden (0 = responsable)
+  nombre
+  edad
+  dni
+  procedencia
 }
 
 class Escaneo {
@@ -113,6 +119,7 @@ Espacio "1" -- "*" Ruta
 Ruta "1" -- "*" Punto
 Espacio "1" -- "*" Visita
 Servicio "1" -- "*" Visita : guía
+Visita "1" -- "1..*" Visitante : integrantes
 Visita "1" -- "*" Escaneo
 Punto "1" -- "*" Escaneo
 Visita "1" -- "0..1" Opinion

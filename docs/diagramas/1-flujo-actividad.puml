@@ -15,14 +15,15 @@ start
 
 |Asociación|
 :Abre la PWA en modo asociación;
-:Registra al visitante
-(nombre, edad, DNI, procedencia,
-grupo, actividad, guía, fecha de salida);
+:Registra a cada integrante del grupo
+(nombre, edad, DNI, procedencia)
+y las actividades de todos
+(una o varias), guía y fecha de salida;
 :El sistema crea la VISITA
-y genera un QR personal;
+y genera un único QR del grupo;
 
 |Turista|
-:Escanea su QR personal;
+:Cada integrante escanea el QR del grupo;
 :La PWA se abre vinculada a su visita
 (sin cuenta ni contraseña);
 :Toca "Descargar ruta"

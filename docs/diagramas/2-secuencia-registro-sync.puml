@@ -12,12 +12,12 @@ database "Almacenamiento\nlocal (celular)" as L
 database "Supabase\n(Postgres)" as F
 
 == Registro en la asociación (con señal) ==
-E -> PA : Llena datos del visitante
-PA -> F : Crear visita
+E -> PA : Registra a cada integrante\ny las actividades del grupo
+PA -> F : Crear visita con sus integrantes
 F --> PA : visitaId
-PA --> E : Muestra QR personal (visitaId)
+PA --> E : Muestra el QR único del grupo (visitaId)
 
-T -> PT : Escanea QR personal
+T -> PT : Escanea el QR del grupo
 PT -> L : Guarda visitaId
 T -> PT : "Descargar ruta"
 PT -> F : Pide mapa, puntos, fotos, servicios

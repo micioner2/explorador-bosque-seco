@@ -25,6 +25,9 @@ datos (Supabase).
 | Dart | 3.10 |
 | flutter_riverpod | ^3.3.2 |
 | go_router | ^17.4.0 |
+| flutter_localizations + intl | las del SDK de Flutter (`intl: any`) |
+| shared_preferences | ^2.5.5 |
+| qr_flutter | ^4.1.0 |
 | Java (Android) | 17 |
 
 Las versiones mayores nuevas de paquetes suelen exigir Dart 3.12: **no las
@@ -34,7 +37,8 @@ soporte Dart 3.10.
 ## Comandos
 
 ```bash
-flutter pub get                 # dependencias
+flutter pub get                 # dependencias (también genera las traducciones)
+flutter gen-l10n                # regenerar traducciones tras editar un .arb
 dart format lib test            # formato (el CI falla si hay cambios)
 flutter analyze                 # análisis estático (el CI falla con infos)
 flutter test                    # pruebas
@@ -56,7 +60,8 @@ lib/features/<funcionalidad>/
 └── presentation/
     ├── view_models/         # Notifier/Provider de Riverpod
     └── views/               # pantallas (solo dibujan y delegan)
-lib/core/                    # router (go_router), tema, reloj inyectable
+lib/core/                    # router (go_router), tema, l10n, reloj inyectable
+lib/l10n/                    # textos: app_es.arb (plantilla) y app_en.arb
 lib/shared/widgets/          # widgets reutilizables
 ```
 
@@ -76,8 +81,42 @@ Reglas que no se rompen:
    lógica, para poder probarla.
 7. **Rutas en `lib/core/router/rutas.dart`.** No escribas rutas como texto
    suelto.
+8. **Ningún texto visible va escrito en una vista.** Se agrega a
+   `lib/l10n/app_es.arb` **y** a `app_en.arb`, y se lee con `context.l10n`.
+   El dominio no guarda textos de interfaz: los `enum` se traducen en
+   `lib/core/l10n/etiquetas_dominio.dart`.
+9. **Los colores salen del tema, no de constantes.** Usa `context.esquema`
+   (`ColorScheme`) y `context.colores` (`ColoresApp`); así cada pantalla
+   funciona en modo claro y oscuro. `AppColors` es la paleta cruda y solo la
+   usa `lib/core/theme/` (única excepción: el fondo blanco del QR, que debe
+   verse igual en los dos temas).
 
 Para crear una funcionalidad nueva usa la skill `/nueva-funcionalidad`.
+
+## Diseño de la interfaz
+
+La app la usan turistas al sol y personas de campo con poca experiencia
+digital. Antes de dibujar una pantalla:
+
+- **Tema:** `lib/core/theme/` (`AppTheme.claro` / `AppTheme.oscuro`,
+  `AppEspacios` para márgenes y radios). Toda pareja texto/fondo cumple
+  contraste AA; al agregar un color, súmalo a
+  `test/core/theme/app_theme_test.dart`.
+- **Componentes:** revisa `lib/shared/widgets/` antes de crear uno
+  (`TituloSeccion`, `TarjetaDato`, `TarjetaCifra`, `EtiquetaEstado`,
+  `EstadoVacio`, `Encabezado`, `BarraAsociacion`, `confirmar`).
+- **Modos:** el turista ve la barra verde; la asociación, la marrón
+  (`BarraAsociacion`), con el botón para volver al modo turista.
+- **El color nunca va solo:** todo estado lleva texto o icono (visitado,
+  pendiente, sigue dentro).
+- **Acciones que no se deshacen** (canjear, marcar salida) piden
+  confirmación con `confirmar(...)`.
+- **Letra grande y celulares chicos:** nada de altos fijos para texto; usa
+  `Wrap`, `Expanded` o `Flexible`. Los formularios van en
+  `SingleChildScrollView` (un `ListView` descarta los campos que salen de la
+  pantalla y deja de validarlos).
+- **Lectores de pantalla:** agrupa con `MergeSemantics`, oculta lo
+  decorativo con `ExcludeSemantics` y pon `tooltip` a los botones de icono.
 
 ## Offline-first (crítico para el reto)
 
@@ -102,8 +141,10 @@ funcionar en modo avión:
 - Genéricos explícitos cuando no se infieren (`context.push<void>(...)`).
 - Widgets privados (`_MiWidget`) en el mismo archivo de la vista que los usa;
   si se reutilizan, van a `lib/shared/widgets/`.
-- Colores solo desde `AppColors` (`lib/core/theme/app_colors.dart`).
-- Textos para personas de campo: frases cortas, botones grandes (mín. 48 px).
+- Colores desde el tema (`context.esquema`, `context.colores`); los valores
+  nuevos se agregan a `AppColors` y se asignan en `app_theme.dart`.
+- Textos para personas de campo: frases cortas, botones grandes (mín. 48 px),
+  siempre en los dos archivos `.arb`.
 
 ## Pruebas
 
@@ -113,6 +154,13 @@ funcionar en modo avión:
   `relojProvider` (ver `test/features/visitas/visitas_view_model_test.dart`).
 - Los nombres de las pruebas describen el comportamiento en español:
   `'escanear dos veces el mismo punto no suma de nuevo'`.
+- Las pruebas de pantalla usan `test/ayudas/app_de_prueba.dart` (`abrirApp`,
+  `montarPantalla`, `tocar`), que fija idioma, tema y hora.
+- **Toda pantalla nueva se agrega a `test/accesibilidad_test.dart`**: revisa
+  contraste, botones de 48 px y etiquetas en claro y oscuro, y que no se
+  desborde con letra grande en español e inglés.
+- `test/l10n/traducciones_test.dart` falla si a un texto le falta su
+  traducción o cambia sus variables.
 
 ## Git y commits
 
@@ -131,8 +179,15 @@ funcionar en modo avión:
 ## Estado actual
 
 - Datos de **demostración** en todos los repositorios (`*_repository_demo.dart`).
-- Mapa y escáner son pantallas base: falta integrar `flutter_map` (teselas
-  incluidas en la app) y `mobile_scanner`.
+- **Idiomas y apariencia:** español e inglés, modo claro y oscuro, elegibles
+  en Ajustes y guardados en el celular (`shared_preferences`). El contenido
+  que carga la asociación (nombres, tarifas) aún no se traduce: el esquema de
+  Supabase no tiene columnas por idioma.
+- **Registro por grupo:** cada integrante por separado, una o varias
+  actividades y un único QR (`qr_flutter`). Falta que el turista lo lea.
+- **Ruta:** distancias, tiempos y avance listos (`features/mapa`). El mapa es
+  un esquema: falta integrar `flutter_map` (teselas incluidas en la app).
+- **Escáner:** falta integrar `mobile_scanner`; hoy se simula el escaneo.
 - **Supabase pendiente:** el equipo entregará las credenciales. No inventes
   URL ni claves; ver la skill `/integrar-supabase`.
 
@@ -150,6 +205,8 @@ funcionar en modo avión:
 
 - No subas credenciales, `.env` ni `google-services.json` al repositorio.
 - No pongas lógica de negocio en vistas ni en repositorios.
+- No escribas textos visibles ni colores fijos en las vistas (reglas 8 y 9).
+- No subas `lib/l10n/app_localizations*.dart`: se generan solos.
 - No uses `DateTime.now()` dentro de reglas o ViewModels.
 - No agregues paquetes sin revisar compatibilidad con Dart 3.10.
 - No cambies la versión de Flutter del CI (`.github/workflows/ci.yml`).

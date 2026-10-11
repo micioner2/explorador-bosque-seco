@@ -11,14 +11,14 @@ actor AIDER as A
 rectangle "Plataforma PWA - Bosque Seco" {
   usecase "Explorar lugares, rutas\ny servicios" as UC1
   usecase "Contactar guía\npor WhatsApp" as UC2
-  usecase "Vincular visita\ncon QR personal" as UC3
+  usecase "Vincular visita\ncon el QR del grupo" as UC3
   usecase "Descargar ruta\npara uso sin señal" as UC4
   usecase "Ver mapa con GPS" as UC5
   usecase "Escanear QR de punto\ny ganar sello" as UC6
   usecase "Dejar opinión" as UC7
   usecase "Compartir insignia" as UC8
 
-  usecase "Registrar visitante" as UC9
+  usecase "Registrar grupo\n(integrante por integrante,\nun solo QR)" as UC9
   usecase "Marcar salida" as UC10
   usecase "Ver quién sigue dentro" as UC11
   usecase "Generar reporte PDF diario" as UC12

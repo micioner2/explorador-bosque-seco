@@ -52,7 +52,15 @@ ya existe (por ejemplo, el canje en `puntos`), agrégala ahí en vez de crear ot
 
 - `ConsumerWidget` (o `ConsumerStatefulWidget` si tiene formulario).
 - Solo `ref.watch(<x>ViewModelProvider)` y llamadas a métodos del ViewModel.
-- Colores desde `AppColors`; textos cortos; botones de al menos 48 px.
+- **Textos:** ninguno escrito en la vista. Agrégalos a `lib/l10n/app_es.arb`
+  y a `app_en.arb`, corre `flutter gen-l10n` y úsalos con `context.l10n`.
+  Los `enum` nuevos del dominio se traducen en
+  `lib/core/l10n/etiquetas_dominio.dart`.
+- **Colores:** desde el tema (`context.esquema`, `context.colores`), nunca
+  fijos, para que la pantalla funcione en modo claro y oscuro.
+- Textos cortos; botones de al menos 48 px; márgenes de `AppEspacios`.
+- Revisa `lib/shared/widgets/` antes de crear un componente. Lee la sección
+  "Diseño de la interfaz" de `CLAUDE.md`.
 - Widgets privados (`_Algo`) en el mismo archivo.
 
 ## 6. Ruta
@@ -67,6 +75,8 @@ ya existe (por ejemplo, el canje en `puntos`), agrégala ahí en vez de crear ot
 - Prueba del ViewModel con `ProviderContainer`, sustituyendo el repositorio y
   `relojProvider` con `overrideWithValue`.
 - Si cambia la navegación, ajusta `test/app_test.dart`.
+- Agrega la pantalla nueva a la lista de `test/accesibilidad_test.dart`
+  (contraste, botones de 48 px, letra grande, claro/oscuro, español/inglés).
 
 ## 8. Cerrar
 
