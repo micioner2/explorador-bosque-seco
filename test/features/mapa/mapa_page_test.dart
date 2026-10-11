@@ -21,16 +21,17 @@ void main() {
     expect(find.text('Buscando tu ubicación (GPS)…'), findsOneWidget);
   });
 
-  testWidgets('sin grupo vinculado, el mapa invita a escanear el QR del grupo', (
-    tester,
-  ) async {
-    await montarPantalla(tester, const MapaPage(), grupo: null);
+  testWidgets(
+    'sin grupo vinculado, el mapa invita a escanear el QR del grupo',
+    (tester) async {
+      await montarPantalla(tester, const MapaPage(), grupo: null);
 
-    expect(find.text('Escanea el QR de tu grupo'), findsOneWidget);
-    expect(find.text('Escanear el QR del grupo'), findsOneWidget);
-    // La ruta y los puntos no aparecen hasta escanear.
-    expect(find.byType(FlutterMap), findsNothing);
-  });
+      expect(find.text('Escanea el QR de tu grupo'), findsOneWidget);
+      expect(find.text('Escanear el QR del grupo'), findsOneWidget);
+      // La ruta y los puntos no aparecen hasta escanear.
+      expect(find.byType(FlutterMap), findsNothing);
+    },
+  );
 
   testWidgets('el mapa se abre en pantalla completa', (tester) async {
     await montarPantalla(tester, const MapaPage());

@@ -66,6 +66,18 @@ class _BosqueSecoAppState extends ConsumerState<BosqueSecoApp> {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: _router,
+      // Android 15+ dibuja la app detrás de la barra de botones del
+      // sistema. Se deja ese espacio libre en todas las pantallas para que
+      // los botones del celular no tapen el contenido.
+      builder: (context, child) => ColoredBox(
+        color: Theme.of(context).colorScheme.surface,
+        child: SafeArea(
+          top: false,
+          left: false,
+          right: false,
+          child: child ?? const SizedBox.shrink(),
+        ),
+      ),
     );
   }
 }
