@@ -283,5 +283,18 @@
   "escanearCodigoAccion": "Done",
   "escanearSinCamara": "The camera could not be opened",
   "escanearSinCamaraDetalle": "Allow camera access for the app in your phone settings, or type the stop code.",
-  "escanearCamara": "Camera to read the QR"
+  "escanearCamara": "Camera to read the QR",
+
+  "registrarDni": "DNI (Peruvian ID)",
+  "registrarPasaporte": "Passport or foreign ID card",
+  "registrarPais": "Country",
+  "validarDocumentoVacio": "Enter the ID number",
+  "validarDni": "The DNI has 8 digits",
+  "validarPasaporte": "5 to 15 letters or numbers",
+  "validarPais": "Enter the country",
+  "registrarDocumento": "ID {documento}",
+  "registrarSalida": "Expected exit",
+  "registrarSalidaAyuda": "If they camp, choose the day they leave the forest.",
+  "registrarSalidaCambiar": "Change exit",
+  "registrarSalidaInvalida": "The exit must be later than now"
 }

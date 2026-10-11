@@ -43,6 +43,7 @@ void main() {
     for (var i = 1; i <= personas; i++)
       Visitante(
         nombre: i == 1 ? '  Ana Torres ' : 'Integrante $i',
+        documento: '4000000$i',
         edad: 20 + i,
         procedencia: Procedencia.piura,
       ),

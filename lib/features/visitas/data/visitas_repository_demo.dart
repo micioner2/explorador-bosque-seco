@@ -13,8 +13,18 @@ class VisitasRepositoryDemo implements VisitasRepository {
     DateTime a(int hora, [int minuto = 0]) =>
         DateTime(dia.year, dia.month, dia.day, hora, minuto);
 
+    // Documentos inventados para la demostración.
+    var dni = 45120300;
     Visitante persona(String nombre, int edad, Procedencia procedencia) =>
-        Visitante(nombre: nombre, edad: edad, procedencia: procedencia);
+        Visitante(
+          nombre: nombre,
+          documento: procedencia == Procedencia.extranjero
+              ? 'C01X00T47'
+              : '${dni++}',
+          edad: edad,
+          procedencia: procedencia,
+          pais: 'Alemania',
+        );
 
     return [
       Visita(

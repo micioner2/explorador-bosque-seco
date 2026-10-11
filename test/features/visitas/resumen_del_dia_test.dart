@@ -10,6 +10,7 @@ Visita visita(String id, {required int grupo, required int salidaHora}) =>
         for (var i = 1; i <= grupo; i++)
           Visitante(
             nombre: 'Persona $i del grupo $id',
+            documento: '40000000',
             edad: 30,
             procedencia: Procedencia.piura,
           ),

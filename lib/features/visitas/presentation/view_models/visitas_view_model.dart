@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/id.dart';
 import '../../../../core/reloj.dart';
 import '../../../sesion/presentation/view_models/sesion_view_model.dart';
 import '../../data/visitas_repository_demo.dart';
@@ -23,18 +24,18 @@ class VisitasViewModel extends Notifier<List<Visita>> {
   Visita registrar({
     required Iterable<Visitante> integrantes,
     required Iterable<Actividad> actividades,
-    Duration duracionPrevista = const Duration(hours: 8),
+    DateTime? salidaPrevista,
     String? reservaId,
   }) {
     final (:cuenta, :guia) = ref.read(sesionViewModelProvider).quienRegistra();
     final entrada = _ahora;
     final visita = Visita(
-      id: 'v-${entrada.microsecondsSinceEpoch}',
+      id: nuevoId(),
       asociacionId: cuenta.asociacionId,
       integrantes: integrantes,
       actividades: actividades,
       fechaEntrada: entrada,
-      salidaPrevista: entrada.add(duracionPrevista),
+      salidaPrevista: salidaPrevista ?? entrada.add(Visita.duracionPorDefecto),
       guiaId: guia.id,
       nombreGuia: guia.nombre,
       reservaId: reservaId,

@@ -24,9 +24,13 @@ lo que no se puede romper.
 
 ## Visitas (`lib/features/visitas/domain/`)
 
-- **R5.** Cada integrante (`Visitante`): nombre no vacío y edad entre 0 y
-  120. Cada visita: al menos un integrante, al menos una actividad y salida
-  prevista posterior a la entrada.
+- **R5.** Protocolo del SERNANP (seguridad y rescate): cada integrante
+  (`Visitante`) se identifica con nombre no vacío, documento, edad entre 0 y
+  120 y procedencia. Peruanos: DNI de 8 dígitos. Extranjeros: pasaporte o
+  carné de extranjería (5 a 15 letras o números) y país. No hay registro
+  simplificado para grupos. Cada visita: al menos un integrante, al menos
+  una actividad, fecha de ingreso y salida prevista posterior a la entrada
+  (8 h por defecto; si acampan, el guía elige otro día).
 - **R6.** "Sigue dentro" = sin salida marcada y ya pasó la salida prevista.
 - **R7.** La salida se marca una sola vez y no puede ser antes de la entrada.
 - **R9.** Una visita es un grupo que entra junto y hace **las mismas

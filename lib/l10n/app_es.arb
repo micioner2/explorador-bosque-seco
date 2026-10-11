@@ -534,5 +534,23 @@
   "escanearCodigoAccion": "Listo",
   "escanearSinCamara": "No se pudo abrir la cámara",
   "escanearSinCamaraDetalle": "Da permiso de cámara a la app en los ajustes del celular, o escribe el código del punto.",
-  "escanearCamara": "Cámara para leer el QR"
+  "escanearCamara": "Cámara para leer el QR",
+
+  "registrarDni": "DNI",
+  "registrarPasaporte": "Pasaporte o carné de extranjería",
+  "registrarPais": "País",
+  "validarDocumentoVacio": "Ingresa el número de documento",
+  "validarDni": "El DNI tiene 8 dígitos",
+  "validarPasaporte": "Entre 5 y 15 letras o números",
+  "validarPais": "Ingresa el país",
+  "registrarDocumento": "Doc. {documento}",
+  "@registrarDocumento": {
+    "placeholders": {
+      "documento": {"type": "String"}
+    }
+  },
+  "registrarSalida": "Salida prevista",
+  "registrarSalidaAyuda": "Si acampan, elige el día en que salen del bosque.",
+  "registrarSalidaCambiar": "Cambiar salida",
+  "registrarSalidaInvalida": "La salida debe ser después de ahora"
 }

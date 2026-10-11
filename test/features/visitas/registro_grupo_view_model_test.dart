@@ -42,6 +42,7 @@ void main() {
 
   void agregar(String nombre, {int edad = 30}) => viewModel().agregarIntegrante(
     nombre: nombre,
+    documento: '40000000',
     edad: edad,
     procedencia: Procedencia.piura,
   );
@@ -210,5 +211,16 @@ void main() {
       expect(reserva()?.pendiente, isTrue);
       expect(borrador().reservaId, reservaId);
     });
+  });
+
+  test('si el grupo acampa, se registra con la salida elegida', () {
+    agregar('Rosa Castillo');
+    viewModel().alternarActividad(Actividad.campamento);
+    final manana = DateTime(2026, 10, 11, 10);
+    viewModel().elegirSalida(manana);
+
+    final visita = viewModel().registrar();
+
+    expect(visita.salidaPrevista, manana);
   });
 }

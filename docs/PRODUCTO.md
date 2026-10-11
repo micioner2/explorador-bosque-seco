@@ -134,7 +134,7 @@ Actores reales (según el mentor de AIDER):
 | R2 | Solo los puntos **confirmados** por el servidor se pueden canjear. | `Pasaporte.puntosDisponibles` |
 | R3 | Un canje descuenta los puntos requeridos; sin puntos suficientes, falla. | `Pasaporte.canjear` |
 | R4 | Un producto requiere más de 0 puntos y un descuento entre 1 % y 100 %. | `Producto` |
-| R5 | Cada integrante requiere nombre y edad entre 0 y 120. Una visita requiere al menos un integrante, al menos una actividad y salida prevista posterior a la entrada. | `Visitante`, `Visita` |
+| R5 | Cada integrante requiere nombre, documento (DNI de 8 dígitos si es peruano; pasaporte o carné de extranjería y país si es extranjero), edad entre 0 y 120 y procedencia (protocolo del SERNANP). Una visita requiere al menos un integrante, al menos una actividad y salida prevista posterior a la entrada (el guía la cambia si acampan). | `Visitante`, `Visita` |
 | R6 | "Sigue dentro" = no marcó salida y ya pasó la hora prevista. | `Visita.sigueDentro` |
 | R7 | La salida se marca una sola vez y no puede ser anterior a la entrada. | `Visita.marcarSalida` |
 | R8 | El reporte cuenta personas: cada integrante suma con su propia procedencia y su propio rango de edad. Ordena los puntos más visitados sin duplicados. | `ReporteDiario` |

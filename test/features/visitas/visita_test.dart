@@ -1,8 +1,12 @@
 import 'package:explorador_bosque_seco/features/visitas/domain/visita.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Visitante persona({String nombre = 'Ana Torres', int edad = 34}) =>
-    Visitante(nombre: nombre, edad: edad, procedencia: Procedencia.piura);
+Visitante persona({String nombre = 'Ana Torres', int edad = 34}) => Visitante(
+  nombre: nombre,
+  documento: '40000000',
+  edad: edad,
+  procedencia: Procedencia.piura,
+);
 
 Visita visita({
   List<Visitante>? integrantes,
@@ -34,6 +38,65 @@ void main() {
 
     test('quita los espacios sobrantes del nombre', () {
       expect(persona(nombre: '  Ana Torres ').nombre, 'Ana Torres');
+    });
+
+    test('un visitante peruano se identifica con su DNI de 8 dígitos', () {
+      Visitante conDni(String dni) => Visitante(
+        nombre: 'Ana Torres',
+        documento: dni,
+        edad: 34,
+        procedencia: Procedencia.lima,
+      );
+
+      expect(conDni('4512 0300').documento, '45120300');
+      expect(() => conDni(''), throwsArgumentError);
+      expect(() => conDni('4512030'), throwsArgumentError);
+      expect(() => conDni('AB120300'), throwsArgumentError);
+    });
+
+    test('quien viene del extranjero da su pasaporte y su país', () {
+      final emma = Visitante(
+        nombre: 'Emma Schmidt',
+        documento: 'c01x-00t47',
+        edad: 31,
+        procedencia: Procedencia.extranjero,
+        pais: ' Alemania ',
+      );
+
+      expect(emma.documento, 'C01X00T47');
+      expect(emma.pais, 'Alemania');
+      expect(
+        () => Visitante(
+          nombre: 'Emma Schmidt',
+          documento: 'C01X00T47',
+          edad: 31,
+          procedencia: Procedencia.extranjero,
+        ),
+        throwsArgumentError,
+      );
+    });
+
+    test('un visitante peruano no guarda país', () {
+      expect(persona().pais, isNull);
+    });
+
+    test('revisar el documento explica qué está mal', () {
+      expect(
+        Visitante.revisarDocumento(' ', Procedencia.piura),
+        ProblemaDocumento.vacio,
+      );
+      expect(
+        Visitante.revisarDocumento('123', Procedencia.piura),
+        ProblemaDocumento.dniInvalido,
+      );
+      expect(
+        Visitante.revisarDocumento('12', Procedencia.extranjero),
+        ProblemaDocumento.documentoInvalido,
+      );
+      expect(
+        Visitante.revisarDocumento('45120300', Procedencia.otraRegion),
+        isNull,
+      );
     });
   });
 

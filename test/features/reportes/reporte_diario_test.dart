@@ -22,8 +22,12 @@ Visita visita(
       for (final edad in edades)
         Visitante(
           nombre: 'Persona de $edad años ($id)',
+          documento: procedencia == Procedencia.extranjero
+              ? 'C1234567'
+              : '40000000',
           edad: edad,
           procedencia: procedencia,
+          pais: 'Chile',
         ),
       ...otros,
     ],
@@ -50,8 +54,10 @@ void main() {
       otros: [
         Visitante(
           nombre: 'Emma Schmidt',
+          documento: 'C01X00T47',
           edad: 31,
           procedencia: Procedencia.extranjero,
+          pais: 'Alemania',
         ),
       ],
     ),

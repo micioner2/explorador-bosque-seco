@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/l10n/etiquetas_dominio.dart';
+import '../../../../core/l10n/formato.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/reloj.dart';
 import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/acciones_barra.dart';
@@ -19,9 +21,11 @@ import 'qr_grupo_dialog.dart';
 
 /// Registro de un grupo en una sola pantalla (reemplaza al cuaderno).
 ///
-/// El encargado agrega a cada integrante con su nombre, edad y procedencia,
-/// elige una o varias actividades para todo el grupo y, al registrar, se
-/// genera un único QR que todos escanean.
+/// El guía agrega a cada integrante con su nombre, documento, edad y
+/// procedencia (lo que exige el SERNANP), elige una o varias actividades
+/// para todo el grupo y, al registrar, se genera un único QR que todos
+/// escanean. La procedencia y el país se conservan entre integrantes: en
+/// un grupo suelen repetirse.
 class RegistrarVisitantePage extends ConsumerStatefulWidget {
   const RegistrarVisitantePage({super.key});
 
@@ -34,7 +38,9 @@ class _RegistrarVisitantePageState
     extends ConsumerState<RegistrarVisitantePage> {
   final _formKey = GlobalKey<FormState>();
   final _nombre = TextEditingController();
+  final _documento = TextEditingController();
   final _edad = TextEditingController();
+  final _pais = TextEditingController();
   final _focoNombre = FocusNode();
   Procedencia _procedencia = Procedencia.piura;
   bool _faltaActividad = false;
@@ -43,7 +49,11 @@ class _RegistrarVisitantePageState
       ref.read(registroGrupoViewModelProvider.notifier);
 
   bool get _hayDatosSinAgregar =>
-      _nombre.text.trim().isNotEmpty || _edad.text.isNotEmpty;
+      _nombre.text.trim().isNotEmpty ||
+      _documento.text.trim().isNotEmpty ||
+      _edad.text.isNotEmpty;
+
+  bool get _extranjero => _procedencia == Procedencia.extranjero;
 
   @override
   void initState() {
@@ -64,24 +74,59 @@ class _RegistrarVisitantePageState
   @override
   void dispose() {
     _nombre.dispose();
+    _documento.dispose();
     _edad.dispose();
+    _pais.dispose();
     _focoNombre.dispose();
     super.dispose();
   }
 
   /// Pasa lo escrito a la lista del grupo. Devuelve `false` si falta algo.
-  /// La procedencia se conserva: en un grupo suele repetirse.
+  /// La procedencia y el país se conservan: en un grupo suelen repetirse.
   bool _agregarIntegrante() {
     if (!(_formKey.currentState?.validate() ?? false)) return false;
     _viewModel.agregarIntegrante(
       nombre: _nombre.text,
+      documento: _documento.text,
       edad: int.parse(_edad.text),
       procedencia: _procedencia,
+      pais: _pais.text,
     );
     _formKey.currentState?.reset();
     _nombre.clear();
+    _documento.clear();
     _edad.clear();
     return true;
+  }
+
+  String? _validarDocumento(String? valor) {
+    final l10n = context.l10n;
+    return switch (Visitante.revisarDocumento(valor ?? '', _procedencia)) {
+      null => null,
+      ProblemaDocumento.vacio => l10n.validarDocumentoVacio,
+      ProblemaDocumento.dniInvalido => l10n.validarDni,
+      ProblemaDocumento.documentoInvalido => l10n.validarPasaporte,
+    };
+  }
+
+  /// Fecha y hora en que el grupo saldrá: si acampan, otro día.
+  Future<void> _cambiarSalida(DateTime actual) async {
+    final ahora = ref.read(relojProvider)();
+    final dia = await showDatePicker(
+      context: context,
+      initialDate: actual,
+      firstDate: DateTime(ahora.year, ahora.month, ahora.day),
+      lastDate: ahora.add(const Duration(days: 30)),
+    );
+    if (dia == null || !mounted) return;
+    final hora = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(actual),
+    );
+    if (hora == null) return;
+    _viewModel.elegirSalida(
+      DateTime(dia.year, dia.month, dia.day, hora.hour, hora.minute),
+    );
   }
 
   void _alTocarAgregar() {
@@ -102,7 +147,16 @@ class _RegistrarVisitantePageState
       return;
     }
     FocusScope.of(context).unfocus();
-    final visita = _viewModel.registrar();
+    final Visita visita;
+    try {
+      visita = _viewModel.registrar();
+    } on ArgumentError {
+      // La salida elegida ya pasó: el borrador se conserva para corregirla.
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.registrarSalidaInvalida)),
+      );
+      return;
+    }
     await mostrarQrGrupo(context, visita);
   }
 
@@ -114,6 +168,7 @@ class _RegistrarVisitantePageState
     final borrador = ref.watch(registroGrupoViewModelProvider);
     final guia = ref.watch(sesionViewModelProvider.select((s) => s.guia));
     final reserva = ref.watch(reservaEnAtencionProvider);
+    final salida = ref.watch(salidaPrevistaProvider);
     // La pantalla puede estar abierta en otra pestaña cuando llega el grupo.
     ref.listen(reservaEnAtencionProvider, (antes, ahora) {
       if (ahora?.id != antes?.id) _proponerNombre(ahora);
@@ -201,6 +256,22 @@ class _RegistrarVisitantePageState
                       ),
                       const SizedBox(height: AppEspacios.m),
                       TextFormField(
+                        controller: _documento,
+                        decoration: InputDecoration(
+                          labelText: _extranjero
+                              ? l10n.registrarPasaporte
+                              : l10n.registrarDni,
+                          prefixIcon: const Icon(Icons.badge_outlined),
+                        ),
+                        keyboardType: _extranjero
+                            ? TextInputType.text
+                            : TextInputType.number,
+                        textCapitalization: TextCapitalization.characters,
+                        textInputAction: TextInputAction.next,
+                        validator: _validarDocumento,
+                      ),
+                      const SizedBox(height: AppEspacios.m),
+                      TextFormField(
                         controller: _edad,
                         decoration: InputDecoration(
                           labelText: l10n.registrarEdad,
@@ -236,6 +307,21 @@ class _RegistrarVisitantePageState
                             ),
                         ],
                       ),
+                      if (_extranjero) ...[
+                        const SizedBox(height: AppEspacios.m),
+                        TextFormField(
+                          controller: _pais,
+                          decoration: InputDecoration(
+                            labelText: l10n.registrarPais,
+                            prefixIcon: const Icon(Icons.public),
+                          ),
+                          textCapitalization: TextCapitalization.words,
+                          validator: (valor) =>
+                              (valor == null || valor.trim().isEmpty)
+                              ? l10n.validarPais
+                              : null,
+                        ),
+                      ],
                       const SizedBox(height: AppEspacios.m),
                       OutlinedButton.icon(
                         onPressed: _alTocarAgregar,
@@ -280,6 +366,11 @@ class _RegistrarVisitantePageState
                   ),
                 ),
               ),
+            TituloSeccion(l10n.registrarSalida),
+            _SalidaPrevista(
+              salida: salida,
+              onCambiar: () => _cambiarSalida(salida),
+            ),
             const SizedBox(height: AppEspacios.xl),
             FilledButton.icon(
               onPressed: _registrar,
@@ -478,10 +569,8 @@ class _FilaIntegrante extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        l10n.registrarIntegranteDetalle(
-                          integrante.edad,
-                          integrante.procedencia.texto(l10n),
-                        ),
+                        '${l10n.registrarIntegranteDetalle(integrante.edad, integrante.pais ?? integrante.procedencia.texto(l10n))}'
+                        ' · ${l10n.registrarDocumento(integrante.documento)}',
                         style: textos.bodyMedium?.copyWith(
                           color: esquema.onSurfaceVariant,
                         ),
@@ -498,6 +587,35 @@ class _FilaIntegrante extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Cuándo saldrá el grupo del bosque. Por defecto, el mismo día; si
+/// acampan, el guía elige otro día.
+class _SalidaPrevista extends StatelessWidget {
+  const _SalidaPrevista({required this.salida, required this.onCambiar});
+
+  final DateTime salida;
+  final VoidCallback onCambiar;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final idioma = Localizations.localeOf(context).languageCode;
+    final cuando =
+        '${formatearFechaCorta(salida, idioma)} · '
+        '${TimeOfDay.fromDateTime(salida).format(context)}';
+
+    return Card(
+      child: ListTile(
+        minTileHeight: 64,
+        leading: const Icon(Icons.logout),
+        title: Text(cuando),
+        subtitle: Text(l10n.registrarSalidaAyuda),
+        trailing: const Icon(Icons.edit_calendar_outlined),
+        onTap: onCambiar,
       ),
     );
   }

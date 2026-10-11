@@ -328,16 +328,49 @@ void main() {
       WidgetTester tester, {
       required String nombre,
       required String edad,
+      String dni = '45120300',
     }) async {
       await tester.enterText(
         find.widgetWithText(TextFormField, 'Nombre y apellido'),
         nombre,
       );
+      await tester.enterText(find.widgetWithText(TextFormField, 'DNI'), dni);
       await tester.enterText(find.widgetWithText(TextFormField, 'Edad'), edad);
       // Al escribir, Flutter desplaza la pantalla hasta el cursor: se espera
       // a que termine antes de tocar otro botón.
       await tester.pumpAndSettle();
     }
+
+    testWidgets('pide DNI a cada persona y pasaporte y país a quien viene '
+        'del extranjero', (tester) async {
+      await abrirRegistro(tester);
+
+      await escribir(tester, nombre: 'Rosa Castillo', edad: '41', dni: '123');
+      await tocar(tester, find.text('Agregar integrante'));
+      expect(find.text('El DNI tiene 8 dígitos'), findsOneWidget);
+      expect(find.text('Integrantes (0)'), findsOneWidget);
+
+      await tocar(tester, find.text('Extranjero'));
+      expect(
+        find.widgetWithText(TextFormField, 'Pasaporte o carné de extranjería'),
+        findsOneWidget,
+      );
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Pasaporte o carné de extranjería'),
+        'C01X00T47',
+      );
+      await tocar(tester, find.text('Agregar integrante'));
+      expect(find.text('Ingresa el país'), findsOneWidget);
+
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'País'),
+        'Alemania',
+      );
+      await tester.pumpAndSettle();
+      await tocar(tester, find.text('Agregar integrante'));
+      expect(find.text('Integrantes (1)'), findsOneWidget);
+      expect(find.textContaining('Alemania · Doc. C01X00T47'), findsOneWidget);
+    });
 
     testWidgets('agrega a cada integrante y genera un solo QR para todos', (
       tester,
@@ -352,7 +385,7 @@ void main() {
 
       expect(find.text('Integrantes (2)'), findsOneWidget);
       expect(find.text('Rosa Castillo'), findsOneWidget);
-      expect(find.text('44 años · Piura'), findsOneWidget);
+      expect(find.text('44 años · Piura · Doc. 45120300'), findsOneWidget);
       // Solo la primera persona es la responsable del grupo.
       expect(find.text('Responsable'), findsOneWidget);
 
@@ -567,6 +600,10 @@ void main() {
         findsOneWidget,
       );
 
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'DNI'),
+        '45120301',
+      );
       await tester.enterText(find.widgetWithText(TextFormField, 'Edad'), '45');
       await tester.pumpAndSettle();
       await tocar(tester, find.text('Agregar integrante'));
@@ -574,6 +611,10 @@ void main() {
       await tester.enterText(
         find.widgetWithText(TextFormField, 'Nombre y apellido'),
         'Raúl Seminario',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'DNI'),
+        '45120302',
       );
       await tester.enterText(find.widgetWithText(TextFormField, 'Edad'), '47');
       await tester.pumpAndSettle();

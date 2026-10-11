@@ -5,25 +5,80 @@ enum Procedencia { piura, lima, otraRegion, extranjero }
 /// Actividad que el grupo hará en el bosque. Un grupo puede elegir varias.
 enum Actividad { senderismo, aves, fotografia, campamento }
 
+/// Qué está mal en el documento de un visitante.
+enum ProblemaDocumento {
+  /// No se escribió.
+  vacio,
+
+  /// Un visitante peruano se identifica con su DNI: 8 dígitos.
+  dniInvalido,
+
+  /// Pasaporte o carné de extranjería: de 5 a 15 letras o números.
+  documentoInvalido,
+}
+
 /// Persona que ingresa al bosque. En un grupo, cada integrante se registra
 /// por separado para que el reporte cuente edades y procedencias reales.
+///
+/// Regla R5 (protocolo del SERNANP para seguridad y rescate): cada persona
+/// se identifica con nombre, documento (DNI si es peruana; pasaporte o
+/// carné de extranjería si es extranjera), edad y procedencia. Si viene
+/// del extranjero, también su país.
 class Visitante {
   Visitante({
     required String nombre,
+    required String documento,
     required this.edad,
     required this.procedencia,
-  }) : nombre = nombre.trim() {
+    String? pais,
+  }) : nombre = nombre.trim(),
+       documento = normalizarDocumento(documento),
+       pais = procedencia == Procedencia.extranjero ? pais?.trim() : null {
     if (this.nombre.isEmpty) {
       throw ArgumentError.value(nombre, 'nombre', 'No puede estar vacío');
+    }
+    final problema = revisarDocumento(documento, procedencia);
+    if (problema != null) {
+      throw ArgumentError.value(documento, 'documento', problema.name);
     }
     if (edad < 0 || edad > 120) {
       throw ArgumentError.value(edad, 'edad', 'Edad fuera de rango');
     }
+    if (procedencia == Procedencia.extranjero && (this.pais ?? '').isEmpty) {
+      throw ArgumentError.value(pais, 'pais', 'Falta el país');
+    }
   }
 
   final String nombre;
+
+  /// DNI, pasaporte o carné de extranjería, sin espacios ni guiones.
+  final String documento;
   final int edad;
   final Procedencia procedencia;
+
+  /// País de quien viene del extranjero; `null` para visitantes peruanos.
+  final String? pais;
+
+  /// Quita espacios, puntos y guiones, y pasa a mayúsculas.
+  static String normalizarDocumento(String documento) =>
+      documento.replaceAll(RegExp(r'[\s.\-]'), '').toUpperCase();
+
+  /// `null` si [documento] sirve para alguien de [procedencia].
+  static ProblemaDocumento? revisarDocumento(
+    String documento,
+    Procedencia procedencia,
+  ) {
+    final limpio = normalizarDocumento(documento);
+    if (limpio.isEmpty) return ProblemaDocumento.vacio;
+    if (procedencia != Procedencia.extranjero) {
+      return RegExp(r'^\d{8}$').hasMatch(limpio)
+          ? null
+          : ProblemaDocumento.dniInvalido;
+    }
+    return RegExp(r'^[A-Z0-9]{5,15}$').hasMatch(limpio)
+        ? null
+        : ProblemaDocumento.documentoInvalido;
+  }
 }
 
 /// Visita registrada en el puesto de control: una persona o un grupo que
@@ -67,6 +122,10 @@ class Visita {
       );
     }
   }
+
+  /// Tiempo en el bosque cuando el guía no elige otra salida: un día de
+  /// caminata.
+  static const duracionPorDefecto = Duration(hours: 8);
 
   final String id;
   final String asociacionId;
