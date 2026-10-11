@@ -7,9 +7,10 @@ import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/preferencias/domain/preferencias.dart';
 import 'features/preferencias/presentation/view_models/preferencias_view_model.dart';
+import 'features/sesion/presentation/view_models/sesion_view_model.dart';
 
 /// Raíz de la aplicación. Aplica el idioma y la apariencia que la persona
-/// eligió en Ajustes.
+/// eligió en Ajustes, y lleva al puesto de control solo con sesión.
 class BosqueSecoApp extends ConsumerStatefulWidget {
   const BosqueSecoApp({super.key});
 
@@ -18,7 +19,9 @@ class BosqueSecoApp extends ConsumerStatefulWidget {
 }
 
 class _BosqueSecoAppState extends ConsumerState<BosqueSecoApp> {
-  late final GoRouter _router = crearRouter();
+  late final GoRouter _router = crearRouter(
+    sesion: () => ref.read(sesionViewModelProvider),
+  );
 
   @override
   void dispose() {
@@ -28,6 +31,8 @@ class _BosqueSecoAppState extends ConsumerState<BosqueSecoApp> {
 
   @override
   Widget build(BuildContext context) {
+    // Al entrar, elegir guía o salir, el router lleva a la pantalla que toca.
+    ref.listen(sesionViewModelProvider, (_, _) => _router.refresh());
     final preferencias = ref.watch(preferenciasViewModelProvider);
     final idioma = preferencias.idioma;
 

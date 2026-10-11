@@ -1,4 +1,6 @@
 import 'package:explorador_bosque_seco/core/reloj.dart';
+import 'package:explorador_bosque_seco/features/sesion/data/sesion_repository_demo.dart';
+import 'package:explorador_bosque_seco/features/sesion/presentation/view_models/sesion_view_model.dart';
 import 'package:explorador_bosque_seco/features/visitas/data/visitas_repository_demo.dart';
 import 'package:explorador_bosque_seco/features/visitas/domain/visita.dart';
 import 'package:explorador_bosque_seco/features/visitas/domain/visitas_repository.dart';
@@ -22,9 +24,16 @@ void main() {
       overrides: [
         relojProvider.overrideWithValue(() => ahora),
         visitasRepositoryProvider.overrideWithValue(_SinVisitas()),
+        sesionRepositoryProvider.overrideWithValue(
+          SesionRepositoryDemo(cuentaGuardada: SesionRepositoryDemo.cuentaDemo),
+        ),
       ],
     );
     addTearDown(container.dispose);
+    // Entró la asociación y eligió su nombre el primer guía de la lista.
+    container
+        .read(sesionViewModelProvider.notifier)
+        .elegirGuia(container.read(guiasDeLaCuentaProvider).first);
   });
 
   VisitasViewModel viewModel() =>
@@ -50,6 +59,30 @@ void main() {
     expect(visita.tamanoGrupo, 4);
     expect(visita.actividades, {Actividad.senderismo, Actividad.fotografia});
     expect(visita.fechaEntrada, ahora);
+  });
+
+  test('la visita queda a nombre de la asociación y del guía', () {
+    final visita = viewModel().registrar(
+      integrantes: familia(2),
+      actividades: const [Actividad.aves],
+    );
+
+    expect(visita.asociacionId, SesionRepositoryDemo.cuentaDemo.asociacionId);
+    expect(visita.guiaId, 'g2');
+    expect(visita.nombreGuia, 'Juan Chunga');
+  });
+
+  test('sin guía elegido no se registra (R12)', () {
+    container.read(sesionViewModelProvider.notifier).cambiarGuia();
+
+    expect(
+      () => viewModel().registrar(
+        integrantes: familia(2),
+        actividades: const [Actividad.aves],
+      ),
+      throwsStateError,
+    );
+    expect(container.read(visitasViewModelProvider), isEmpty);
   });
 
   test('un grupo de cinco personas queda en una sola visita', () {

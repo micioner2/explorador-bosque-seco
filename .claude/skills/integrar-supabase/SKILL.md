@@ -5,10 +5,14 @@ description: Conecta los repositorios de la app a Supabase (Postgres, Auth, Stor
 
 # Integrar Supabase
 
-> **Estado:** conexión hecha y probada (servidor y clave OK). **Falta crear el
-> esquema** (las tablas aún no existen) y escribir los repositorios Supabase.
-> Mientras tanto se usan los repositorios `*_repository_demo.dart`. No
-> inventes URL ni claves: las reales están en `config/supabase.json`.
+> **Estado:** conexión hecha y probada (servidor y clave OK). El portal web
+> ya creó `associations`, `profiles`, `routes`, `services` y `media`, en
+> inglés y con columnas `_es`/`_en`: **las tablas nuevas siguen esa
+> convención** (no los nombres en español de `referencia-esquema.sql`) y se
+> acuerdan con el equipo web. El acceso de la asociación ya usa Supabase
+> Auth (`features/sesion`). El resto de repositorios siguen en
+> `*_repository_demo.dart`. No inventes URL ni claves: las reales están en
+> `config/supabase.json`.
 
 ## 1. Configuración (sin subir secretos)
 
@@ -40,6 +44,19 @@ description: Conecta los repositorios de la app a Supabase (Postgres, Auth, Stor
 - Pruebas sin red con `MockClient` en `test/features/conexion/`.
 - Contra el servidor real (se omite sin configuración, como en el CI):
   `flutter test --tags supabase --dart-define-from-file=config/supabase.json`.
+
+## Acceso de la asociación (hecho)
+
+- `SesionRepositorySupabase` entra con `signInWithPassword`, lee
+  `profiles.association_id` del usuario y `associations.name`/`is_active`, y
+  guarda la cuenta en el celular. `main.dart` lo usa cuando hay cliente.
+- Sin señal, Supabase recupera su sesión del celular y no la cierra por
+  errores de red (comprobado en `gotrue` 2.27.3). Salir de la cuenta borra
+  primero la sesión del celular.
+- Pruebas sin red en `test/features/sesion/sesion_repository_supabase_test.dart`.
+- Pendiente con el equipo web: tabla de guías por asociación, valores de
+  `profiles.role`, regla RLS para que cada cuenta lea su propio perfil y
+  desactivar el registro abierto de usuarios.
 
 ## 3. Esquema y seguridad
 

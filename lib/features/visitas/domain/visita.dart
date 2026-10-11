@@ -39,7 +39,8 @@ class Visita {
     required Iterable<Actividad> actividades,
     required this.fechaEntrada,
     required this.salidaPrevista,
-    this.guia,
+    this.guiaId,
+    this.nombreGuia,
     this.fechaSalida,
   }) : integrantes = List.unmodifiable(integrantes),
        actividades = Set.unmodifiable(actividades) {
@@ -77,7 +78,12 @@ class Visita {
 
   final DateTime fechaEntrada;
   final DateTime salidaPrevista;
-  final String? guia;
+
+  /// Guía que registró al grupo y lo acompaña. Con la asociación, permite
+  /// saber quién hizo cada registro.
+  final String? guiaId;
+  final String? nombreGuia;
+
   final DateTime? fechaSalida;
 
   Visitante get responsable => integrantes.first;
@@ -110,7 +116,8 @@ class Visita {
       actividades: actividades,
       fechaEntrada: fechaEntrada,
       salidaPrevista: salidaPrevista,
-      guia: guia,
+      guiaId: guiaId,
+      nombreGuia: nombreGuia,
       fechaSalida: fecha,
     );
   }

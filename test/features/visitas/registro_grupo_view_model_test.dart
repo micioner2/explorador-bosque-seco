@@ -1,4 +1,6 @@
 import 'package:explorador_bosque_seco/core/reloj.dart';
+import 'package:explorador_bosque_seco/features/sesion/data/sesion_repository_demo.dart';
+import 'package:explorador_bosque_seco/features/sesion/presentation/view_models/sesion_view_model.dart';
 import 'package:explorador_bosque_seco/features/visitas/data/visitas_repository_demo.dart';
 import 'package:explorador_bosque_seco/features/visitas/domain/visita.dart';
 import 'package:explorador_bosque_seco/features/visitas/domain/visitas_repository.dart';
@@ -20,9 +22,15 @@ void main() {
       overrides: [
         relojProvider.overrideWithValue(() => DateTime(2026, 10, 10, 9)),
         visitasRepositoryProvider.overrideWithValue(_SinVisitas()),
+        sesionRepositoryProvider.overrideWithValue(
+          SesionRepositoryDemo(cuentaGuardada: SesionRepositoryDemo.cuentaDemo),
+        ),
       ],
     );
     addTearDown(container.dispose);
+    container
+        .read(sesionViewModelProvider.notifier)
+        .elegirGuia(container.read(guiasDeLaCuentaProvider).first);
   });
 
   RegistroGrupoViewModel viewModel() =>

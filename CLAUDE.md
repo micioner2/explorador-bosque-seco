@@ -197,9 +197,18 @@ funcionar en modo avión:
   `config/supabase.json` (ignorado por git; copia de
   `config/supabase.example.json`) y se pasan con `--dart-define-from-file`.
   Sin ese archivo la app arranca igual, con datos demo. La prueba de
-  conexión está en Ajustes → Servidor y en `test/integracion/`. **Falta
-  crear el esquema** (las tablas aún no existen) y los repositorios
-  Supabase; ver la skill `/integrar-supabase`.
+  conexión está en Ajustes → Servidor y en `test/integracion/`. El portal
+  web ya creó `associations`, `profiles`, `routes`, `services` y `media`
+  (nombres en inglés, columnas `_es`/`_en`): **las tablas nuevas deben
+  seguir esa convención** y acordarse con el equipo web. Ver la skill
+  `/integrar-supabase`.
+- **Acceso al puesto de control** (`features/sesion`): la asociación entra
+  con su cuenta de Supabase Auth (solo la primera vez necesita señal; la
+  sesión se recupera sin internet) y el guía toca su nombre. El router
+  protege el modo asociación (`redirigirSegunSesion`). Sin servidor se entra
+  con la cuenta de prueba que muestra la pantalla. Cada visita guarda la
+  asociación y el guía. Falta la tabla de guías (hoy son de demostración) y
+  el cierre diario.
 
 ## Skills del proyecto (`.claude/skills/`)
 

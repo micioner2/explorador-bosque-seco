@@ -23,9 +23,16 @@ class BotonAjustes extends StatelessWidget {
 /// turista para que se note en qué modo está la app, y siempre ofrece
 /// volver al modo turista.
 class BarraAsociacion extends StatelessWidget implements PreferredSizeWidget {
-  const BarraAsociacion({super.key, required this.titulo});
+  const BarraAsociacion({
+    super.key,
+    required this.titulo,
+    this.acciones = const [],
+  });
 
   final String titulo;
+
+  /// Botones propios de la pantalla, antes de "modo turista" y Ajustes.
+  final List<Widget> acciones;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -39,6 +46,7 @@ class BarraAsociacion extends StatelessWidget implements PreferredSizeWidget {
       foregroundColor: colores.sobreBarraAsociacion,
       title: Text(titulo),
       actions: [
+        ...acciones,
         IconButton(
           tooltip: context.l10n.modoTurista,
           icon: const Icon(Icons.hiking),

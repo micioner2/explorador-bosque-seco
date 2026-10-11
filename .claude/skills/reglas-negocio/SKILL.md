@@ -39,6 +39,19 @@ lo que no se puede romper.
 - Procedencias: Piura, Lima, Otra región, Extranjero (de cada integrante).
 - Actividades: Senderismo, Avistamiento de aves, Fotografía, Campamento.
 
+## Sesión del puesto de control (`lib/features/sesion/domain/`)
+
+- **R11.** Al modo asociación solo se entra con la cuenta de una asociación
+  activa (Supabase Auth + `profiles.association_id`). La cuenta queda
+  guardada en el celular: **nunca se cierra por falta de señal**, solo si el
+  servidor la rechaza o alguien sale de ella. Entrar sí necesita señal.
+- **R12.** Sin guía elegido no se registran visitas (`Sesion.quienRegistra`
+  lanza `StateError`). El guía debe ser de la asociación de la cuenta. Cada
+  visita guarda `asociacionId`, `guiaId` y `nombreGuia`. El guía se elige de
+  nuevo al abrir la app porque varios guías comparten el celular.
+- El router aplica las dos reglas (`redirigirSegunSesion`): sin cuenta lleva
+  al acceso; sin guía, a "¿Quién eres?".
+
 ## Ruta (`lib/features/mapa/domain/`)
 
 - **R10.** Un punto de la ruta cuenta como visitado si tiene sello, pendiente
@@ -66,7 +79,10 @@ lo que no se puede romper.
   datos para que las comunidades consigan fondos y conserven el bosque.
 - **SERNANP:** administra el área protegida y el puesto de control.
 - **Asociación turística:** sus socios ofrecen guiado, comida, hospedaje y
-  transporte. Las tarifas no son fijas: se muestran como referencia.
+  transporte. Las tarifas no son fijas: se muestran como referencia. Tiene
+  una cuenta (creada en el portal web) que comparten sus guías autorizados.
+- **Guía:** entra con la cuenta de su asociación, elige su nombre y registra
+  a los grupos que acompaña.
 - **Turista:** planifica con señal; en el bosque no tiene señal.
 
 ## Al cambiar una regla

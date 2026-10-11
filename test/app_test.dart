@@ -105,12 +105,147 @@ void main() {
     expect(find.text('2 puntos para canjear'), findsOneWidget);
   });
 
+  group('entrada al puesto de control', () {
+    Finder botonEntrar() => find.text('Entrar');
+
+    testWidgets('pide la cuenta de la asociación y luego el guía', (
+      tester,
+    ) async {
+      await abrirApp(tester);
+
+      await tocar(tester, find.byTooltip('Modo asociación'));
+      expect(find.text('PASO 1 DE 2'), findsOneWidget);
+      expect(find.text('Entra al puesto de control'), findsOneWidget);
+      expect(find.text('Solo la primera vez necesitas señal'), findsOneWidget);
+
+      await tocar(tester, find.text('Usar cuenta de prueba'));
+      await tocar(tester, botonEntrar());
+
+      expect(find.text('PASO 2 DE 2'), findsOneWidget);
+      expect(find.text('¿Quién eres?'), findsOneWidget);
+      expect(find.text('Coto de Caza El Angolo'), findsOneWidget);
+
+      await tocar(tester, find.text('María Quispe'));
+
+      expect(find.text('Puesto de control'), findsOneWidget);
+      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(
+        find.text('Hola, María Quispe. Ya puedes registrar visitas.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('explica qué falta antes de intentar entrar', (tester) async {
+      await abrirApp(tester);
+      await tocar(tester, find.byTooltip('Modo asociación'));
+
+      await tocar(tester, botonEntrar());
+      expect(find.text('Ingresa el correo de tu asociación'), findsOneWidget);
+      expect(find.text('Ingresa la contraseña'), findsOneWidget);
+
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Correo de la asociación'),
+        'demo.bosqueseco.pe',
+      );
+      await tocar(tester, botonEntrar());
+      expect(find.text('Revisa el correo: le falta la @'), findsOneWidget);
+    });
+
+    testWidgets('con la contraseña equivocada dice qué pasó y no entra', (
+      tester,
+    ) async {
+      await abrirApp(tester);
+      await tocar(tester, find.byTooltip('Modo asociación'));
+
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Correo de la asociación'),
+        'demo@bosqueseco.pe',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Contraseña'),
+        'equivocada',
+      );
+      await tester.pumpAndSettle();
+      await tocar(tester, botonEntrar());
+
+      expect(find.text('Correo o contraseña incorrectos'), findsOneWidget);
+      expect(find.text('Entra al puesto de control'), findsOneWidget);
+    });
+
+    testWidgets('la contraseña se puede mostrar para revisarla', (
+      tester,
+    ) async {
+      await abrirApp(tester);
+      await tocar(tester, find.byTooltip('Modo asociación'));
+      bool oculta() => tester
+          .widget<TextField>(
+            find.descendant(
+              of: find.widgetWithText(TextFormField, 'Contraseña'),
+              matching: find.byType(TextField),
+            ),
+          )
+          .obscureText;
+      expect(oculta(), isTrue);
+
+      await tocar(tester, find.byTooltip('Mostrar contraseña'));
+
+      expect(oculta(), isFalse);
+      expect(find.byTooltip('Ocultar contraseña'), findsOneWidget);
+    });
+
+    testWidgets('al volver del modo turista, la sesión sigue abierta', (
+      tester,
+    ) async {
+      await abrirApp(tester);
+      await entrarAlPuesto(tester);
+
+      await tocar(tester, find.byTooltip('Modo turista'));
+      expect(find.text('Coto de Caza El Angolo'), findsOneWidget);
+
+      await tocar(tester, find.byTooltip('Modo asociación'));
+      expect(find.text('Puesto de control'), findsOneWidget);
+    });
+
+    testWidgets('otro guía toma el celular sin volver a entrar', (
+      tester,
+    ) async {
+      await abrirApp(tester);
+      await entrarAlPuesto(tester);
+
+      await tocar(tester, find.byTooltip('Tu sesión'));
+      expect(find.text('María Quispe'), findsOneWidget);
+      await tocar(tester, find.text('Cambiar de guía'));
+
+      expect(find.text('¿Quién eres?'), findsOneWidget);
+      await tocar(tester, find.text('Juan Chunga'));
+      await tocar(tester, find.text('Registrar'));
+
+      expect(find.text('Registrando como'), findsOneWidget);
+      expect(find.text('Juan Chunga'), findsOneWidget);
+    });
+
+    testWidgets('salir de la cuenta pide confirmación y vuelve al modo '
+        'turista', (tester) async {
+      await abrirApp(tester);
+      await entrarAlPuesto(tester);
+
+      await tocar(tester, find.byTooltip('Tu sesión'));
+      await tocar(tester, find.text('Salir de la cuenta'));
+      expect(find.text('¿Salir de la cuenta?'), findsOneWidget);
+      await tocar(tester, enDialogo('Salir'));
+
+      expect(find.text('Coto de Caza El Angolo'), findsOneWidget);
+      await tocar(tester, find.byTooltip('Modo asociación'));
+      expect(find.text('Entra al puesto de control'), findsOneWidget);
+    });
+  });
+
   testWidgets('cambia al modo asociación y vuelve al modo turista', (
     tester,
   ) async {
     await abrirApp(tester);
 
-    await tocar(tester, find.byTooltip('Modo asociación'));
+    await entrarAlPuesto(tester);
 
     expect(find.text('Puesto de control'), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
@@ -124,7 +259,7 @@ void main() {
     tester,
   ) async {
     await abrirApp(tester);
-    await tocar(tester, find.byTooltip('Modo asociación'));
+    await entrarAlPuesto(tester);
 
     expect(find.text('1 grupo pasó su hora de salida'), findsOneWidget);
     expect(find.text('Debía salir a las 11:00'), findsOneWidget);
@@ -142,7 +277,7 @@ void main() {
   group('registro de un grupo', () {
     Future<void> abrirRegistro(WidgetTester tester) async {
       await abrirApp(tester);
-      await tocar(tester, find.byTooltip('Modo asociación'));
+      await entrarAlPuesto(tester);
       await tocar(tester, find.text('Registrar'));
     }
 
@@ -212,6 +347,15 @@ void main() {
         ),
       );
       expect(find.text('1 persona · Avistamiento de aves'), findsOneWidget);
+      // Queda a nombre del guía que lo registró.
+      final tarjeta = find.ancestor(
+        of: find.text('Rosa Castillo'),
+        matching: find.byType(Card),
+      );
+      expect(
+        find.descendant(of: tarjeta, matching: find.text('Guía: María Quispe')),
+        findsOneWidget,
+      );
 
       await tocar(tester, find.text('Ver QR').last);
       expect(find.byType(QrImageView), findsOneWidget);

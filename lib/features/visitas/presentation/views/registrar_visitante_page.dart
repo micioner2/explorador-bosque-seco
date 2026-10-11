@@ -8,7 +8,10 @@ import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/acciones_barra.dart';
 import '../../../../shared/widgets/etiqueta_estado.dart';
+import '../../../../shared/widgets/icono_circular.dart';
 import '../../../../shared/widgets/titulo_seccion.dart';
+import '../../../sesion/presentation/view_models/sesion_view_model.dart';
+import '../../../sesion/presentation/views/boton_sesion.dart';
 import '../../domain/visita.dart';
 import '../view_models/registro_grupo_view_model.dart';
 import 'qr_grupo_dialog.dart';
@@ -92,9 +95,13 @@ class _RegistrarVisitantePageState
     final esquema = context.esquema;
     final textos = context.textos;
     final borrador = ref.watch(registroGrupoViewModelProvider);
+    final guia = ref.watch(sesionViewModelProvider.select((s) => s.guia));
 
     return Scaffold(
-      appBar: BarraAsociacion(titulo: l10n.registrarTitulo),
+      appBar: BarraAsociacion(
+        titulo: l10n.registrarTitulo,
+        acciones: const [BotonSesion()],
+      ),
       // No es una lista perezosa: un formulario necesita todos sus campos
       // vivos para validarlos aunque hayan quedado fuera de la pantalla.
       body: SingleChildScrollView(
@@ -107,6 +114,16 @@ class _RegistrarVisitantePageState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (guia != null)
+              Padding(
+                padding: const EdgeInsets.only(top: AppEspacios.l),
+                child: _QuienRegistra(
+                  nombre: guia.nombre,
+                  onCambiar: ref
+                      .read(sesionViewModelProvider.notifier)
+                      .cambiarGuia,
+                ),
+              ),
             TituloSeccion(
               l10n.registrarIntegrantes(borrador.integrantes.length),
             ),
@@ -233,6 +250,59 @@ class _RegistrarVisitantePageState
               onPressed: _registrar,
               icon: const Icon(Icons.qr_code_2),
               label: Text(l10n.registrarBoton),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Guía a cuyo nombre quedará el grupo. Si otro guía toma el celular, lo
+/// cambia aquí mismo.
+class _QuienRegistra extends StatelessWidget {
+  const _QuienRegistra({required this.nombre, required this.onCambiar});
+
+  final String nombre;
+  final VoidCallback onCambiar;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final esquema = context.esquema;
+    final textos = context.textos;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppEspacios.m,
+          AppEspacios.s,
+          AppEspacios.xs,
+          AppEspacios.s,
+        ),
+        child: Row(
+          children: [
+            const IconoCircular(Icons.badge_outlined, lado: 40),
+            const SizedBox(width: AppEspacios.m),
+            Expanded(
+              child: MergeSemantics(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.registrarComo,
+                      style: textos.labelMedium?.copyWith(
+                        color: esquema.onSurfaceVariant,
+                      ),
+                    ),
+                    Text(nombre, style: textos.titleSmall),
+                  ],
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: onCambiar,
+              child: Text(l10n.cambiar, semanticsLabel: l10n.sesionCambiarGuia),
             ),
           ],
         ),

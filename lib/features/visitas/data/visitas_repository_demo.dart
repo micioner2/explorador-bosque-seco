@@ -29,7 +29,8 @@ class VisitasRepositoryDemo implements VisitasRepository {
         actividades: const [Actividad.senderismo, Actividad.fotografia],
         fechaEntrada: a(8),
         salidaPrevista: a(16),
-        guia: 'Guía 1',
+        guiaId: 'g1',
+        nombreGuia: 'María Quispe',
       ),
       Visita(
         id: 'v2',
@@ -41,7 +42,8 @@ class VisitasRepositoryDemo implements VisitasRepository {
         actividades: const [Actividad.aves],
         fechaEntrada: a(6, 30),
         salidaPrevista: a(18),
-        guia: 'Guía 2',
+        guiaId: 'g2',
+        nombreGuia: 'Juan Chunga',
       ),
       Visita(
         id: 'v3',
@@ -54,7 +56,8 @@ class VisitasRepositoryDemo implements VisitasRepository {
         actividades: const [Actividad.fotografia],
         fechaEntrada: a(7),
         salidaPrevista: a(11),
-        guia: 'Guía 1',
+        guiaId: 'g1',
+        nombreGuia: 'María Quispe',
       ),
     ];
   }

@@ -32,7 +32,7 @@ cuaderno de visitas por datos confiables.
 | Modo | Qué hace |
 |---|---|
 | **Turista** | Explora rutas, atractivos y servicios; contacta a guías por WhatsApp; ve el siguiente punto con su distancia y tiempo, también sin señal; escanea el QR de cada punto y gana puntos. |
-| **Asociación** | Registra a cada integrante de un grupo desde una sola pantalla y genera **un único QR** para todos; ve quién sigue dentro del bosque, canjea puntos y genera el reporte diario. |
+| **Asociación** | Entra con la cuenta de la asociación (solo la primera vez necesita señal) y cada guía toca su nombre. Registra a cada integrante de un grupo desde una sola pantalla y genera **un único QR** para todos, a nombre del guía; ve quién sigue dentro del bosque, canjea puntos y genera el reporte diario. |
 
 **Para todos:** la app está en **español e inglés** y tiene **modo claro y
 oscuro** (o el del celular). Se eligen en Ajustes y se guardan en el celular.
@@ -73,7 +73,7 @@ test/                               # dominio, ViewModels y widgets
 ```
 
 Funcionalidades: `explorar`, `mapa`, `escaneo`, `puntos`, `visitas`,
-`reportes`, `preferencias` y `conexion`.
+`reportes`, `preferencias`, `conexion` y `sesion`.
 
 **Stack:** Flutter 3.38.9 (Dart 3.10) · Riverpod 3 · go_router ·
 flutter_localizations (es/en) · shared_preferences · qr_flutter ·
@@ -91,6 +91,8 @@ Supabase (`supabase_flutter`).
 - El reporte diario cuenta personas, procedencia y rango de edad de cada
   integrante, y los puntos más visitados.
 - El siguiente punto de la ruta es el primero sin sello.
+- Al puesto de control solo se entra con la cuenta de la asociación, que no
+  se cierra por falta de señal; sin guía elegido no se registran visitas.
 
 ## Cómo ejecutar
 
@@ -100,6 +102,9 @@ Requisitos: Flutter **3.38.9** (canal stable) y un celular o emulador Android.
 flutter pub get      # también genera las traducciones
 flutter run          # solo datos de demostración
 ```
+
+Sin servidor, el modo asociación se abre con la **cuenta de prueba** que
+muestra la pantalla de acceso (botón "Usar cuenta de prueba").
 
 **Con Supabase:** copia `config/supabase.example.json` como
 `config/supabase.json` (no se sube al repositorio), completa la URL y la

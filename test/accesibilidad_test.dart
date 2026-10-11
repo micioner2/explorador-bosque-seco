@@ -5,6 +5,8 @@ import 'package:explorador_bosque_seco/features/preferencias/domain/preferencias
 import 'package:explorador_bosque_seco/features/preferencias/presentation/views/ajustes_page.dart';
 import 'package:explorador_bosque_seco/features/puntos/presentation/views/pasaporte_page.dart';
 import 'package:explorador_bosque_seco/features/reportes/presentation/views/reporte_page.dart';
+import 'package:explorador_bosque_seco/features/sesion/presentation/views/acceso_page.dart';
+import 'package:explorador_bosque_seco/features/sesion/presentation/views/elegir_guia_page.dart';
 import 'package:explorador_bosque_seco/features/visitas/presentation/views/hoy_page.dart';
 import 'package:explorador_bosque_seco/features/visitas/presentation/views/registrar_visitante_page.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,8 @@ const _pantallas = <String, Widget>{
   'Mapa': MapaPage(),
   'Pasaporte': PasaportePage(),
   'Escanear': EscanearPage(),
+  'Acceso': AccesoPage(),
+  'Elegir guía': ElegirGuiaPage(),
   'Hoy': HoyPage(),
   'Registrar visitante': RegistrarVisitantePage(),
   'Reporte': ReportePage(),
@@ -71,6 +75,23 @@ void main() {
         await esperarAccesible(tester);
 
         await tocar(tester, find.byTooltip('Modo asociación'));
+        await esperarAccesible(tester);
+
+        await tocar(tester, find.text('Usar cuenta de prueba'));
+        await tocar(tester, find.text('Entrar'));
+        await tocar(tester, find.text('María Quispe'));
+        await esperarAccesible(tester);
+        semantica.dispose();
+      });
+
+      testWidgets('la hoja "Tu sesión" es accesible', (tester) async {
+        final semantica = tester.ensureSemantics();
+        usarPantalla(tester, const Size(400, 2400));
+
+        await montarPantalla(tester, const HoyPage(), oscuro: oscuro);
+        await tocar(tester, find.byTooltip('Tu sesión'));
+
+        expect(find.text('Cambiar de guía'), findsOneWidget);
         await esperarAccesible(tester);
         semantica.dispose();
       });

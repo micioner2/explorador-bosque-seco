@@ -7,6 +7,7 @@ import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/acciones_barra.dart';
 import '../../../../shared/widgets/tarjeta_cifra.dart';
+import '../../../sesion/presentation/views/boton_sesion.dart';
 import '../../../visitas/domain/visita.dart';
 import '../../domain/reporte_diario.dart';
 import '../view_models/reporte_view_model.dart';
@@ -21,7 +22,10 @@ class ReportePage extends ConsumerWidget {
     final reporte = ref.watch(reporteViewModelProvider);
 
     return Scaffold(
-      appBar: BarraAsociacion(titulo: l10n.reporteTitulo),
+      appBar: BarraAsociacion(
+        titulo: l10n.reporteTitulo,
+        acciones: const [BotonSesion()],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(AppEspacios.l),
         children: [

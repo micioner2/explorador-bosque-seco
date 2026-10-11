@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/reloj.dart';
+import '../../../sesion/presentation/view_models/sesion_view_model.dart';
 import '../../data/visitas_repository_demo.dart';
 import '../../domain/resumen_del_dia.dart';
 import '../../domain/visita.dart';
@@ -16,21 +17,25 @@ class VisitasViewModel extends Notifier<List<Visita>> {
   }
 
   /// Registra la visita de un grupo: una sola visita (y un solo QR) para
-  /// todos sus integrantes. Lanza [ArgumentError] si los datos no son
-  /// válidos (las reglas viven en [Visita]).
+  /// todos sus integrantes, a nombre de la asociación y del guía de la
+  /// sesión. Lanza [ArgumentError] si los datos no son válidos (las reglas
+  /// viven en [Visita]) y [StateError] si no hay guía elegido.
   Visita registrar({
     required Iterable<Visitante> integrantes,
     required Iterable<Actividad> actividades,
     Duration duracionPrevista = const Duration(hours: 8),
   }) {
+    final (:cuenta, :guia) = ref.read(sesionViewModelProvider).quienRegistra();
     final entrada = _ahora;
     final visita = Visita(
       id: 'v-${entrada.microsecondsSinceEpoch}',
-      asociacionId: 'demo',
+      asociacionId: cuenta.asociacionId,
       integrantes: integrantes,
       actividades: actividades,
       fechaEntrada: entrada,
       salidaPrevista: entrada.add(duracionPrevista),
+      guiaId: guia.id,
+      nombreGuia: guia.nombre,
     );
     state = [...state, visita];
     return visita;

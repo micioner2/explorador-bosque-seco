@@ -9,6 +9,7 @@ import '../../../../shared/widgets/dialogo_confirmar.dart';
 import '../../../../shared/widgets/estado_vacio.dart';
 import '../../../../shared/widgets/tarjeta_cifra.dart';
 import '../../../../shared/widgets/titulo_seccion.dart';
+import '../../../sesion/presentation/views/boton_sesion.dart';
 import '../../domain/visita.dart';
 import '../view_models/visitas_view_model.dart';
 import 'qr_grupo_dialog.dart';
@@ -42,13 +43,20 @@ class HoyPage extends ConsumerWidget {
       );
       if (!aceptado || !context.mounted) return;
       ref.read(visitasViewModelProvider.notifier).marcarSalida(visita.id);
-      mensajero.showSnackBar(
-        SnackBar(content: Text(l10n.salidaMarcada(visita.nombreResponsable))),
-      );
+      // El último aviso reemplaza al anterior (por ejemplo, el saludo al
+      // guía) en vez de esperar su turno.
+      mensajero
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(l10n.salidaMarcada(visita.nombreResponsable))),
+        );
     }
 
     return Scaffold(
-      appBar: BarraAsociacion(titulo: l10n.hoyTitulo),
+      appBar: BarraAsociacion(
+        titulo: l10n.hoyTitulo,
+        acciones: const [BotonSesion()],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(AppEspacios.l),
         children: [
@@ -162,7 +170,7 @@ class _TarjetaGrupo extends StatelessWidget {
     final esquema = context.esquema;
     final textos = context.textos;
     final hora = TimeOfDay.fromDateTime(visita.salidaPrevista).format(context);
-    final guia = visita.guia;
+    final guia = visita.nombreGuia;
     final secundario = atrasada
         ? esquema.onErrorContainer
         : esquema.onSurfaceVariant;
@@ -241,7 +249,7 @@ class _TarjetaGrupo extends StatelessWidget {
                           ),
                           if (guia != null)
                             Text(
-                              guia,
+                              l10n.hoyGuia(guia),
                               style: textos.bodyMedium?.copyWith(
                                 color: secundario,
                               ),

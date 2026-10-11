@@ -70,6 +70,33 @@ cambian.
   distingue: conectado (con o sin esquema), clave rechazada, sin conexión y
   error del servidor. Nunca lanza excepciones; se muestra en Ajustes.
 
+### Sesión de la asociación (funciona sin señal)
+
+`features/sesion` maneja quién usa el puesto de control: la **cuenta de la
+asociación** y el **guía** que eligió su nombre.
+
+| Momento | ¿Señal? | Qué pasa |
+|---|---|---|
+| Entrar por primera vez | Sí | `SesionRepositorySupabase` entra con Supabase Auth, lee `profiles.association_id` y el nombre en `associations`, y los guarda en el celular (`shared_preferences`). |
+| Abrir la app después | No | `Supabase.initialize` recupera su sesión del celular sin conectarse y `cuentaGuardada()` devuelve la cuenta. Si el pase vence sin señal, Supabase **no** cierra la sesión: la renueva cuando vuelve la señal. |
+| Elegir guía, registrar | No | La lista de guías se lee del celular. Cada visita guarda la asociación y el guía. |
+| Salir de la cuenta | No | Se borra del celular primero; si no hay señal, el aviso al servidor falla y la sesión del servidor vence sola. |
+
+Este comportamiento se comprobó en el código de `gotrue` 2.27.3: solo se
+cierra la sesión si el servidor rechaza el pase, no ante un error de red.
+
+- **Navegación guiada por el estado.** `redirigirSegunSesion` (en
+  `core/router/app_router.dart`) lleva al acceso si no hay cuenta y a
+  "¿Quién eres?" si falta el guía. `app.dart` llama a `GoRouter.refresh`
+  cuando cambia la sesión: entrar, elegir guía, cambiar de guía o salir solo
+  cambian el `SesionViewModel` y el router hace el resto.
+- **Sin servidor** (`flutter run` sin configuración, pruebas y CI) se usa
+  `SesionRepositoryDemo`, que acepta solo la cuenta de prueba que muestra la
+  pantalla de acceso. `main.dart` sustituye el repositorio por el de
+  Supabase cuando hay cliente.
+- **Pendiente:** la tabla de guías en Supabase (hoy `GuiasRepositoryDemo`),
+  el rol de la cuenta en `profiles` y el cierre diario.
+
 ## Interfaz: tema, idiomas y preferencias
 
 La capa `views` no decide colores ni textos; los pide.
@@ -114,7 +141,8 @@ pendiente con el proyecto web.
   pareja texto/fondo de los dos temas.
 - `test/l10n/traducciones_test.dart` compara los dos `.arb`: mismas claves,
   mismas variables y ningún texto vacío.
-- `test/features/conexion/` simula el servidor de Supabase con `MockClient`
-  (sin red). `test/integracion/` llama al servidor real y solo corre con
+- `test/features/conexion/` y `test/features/sesion/` simulan el servidor
+  de Supabase con `MockClient` (sin red), incluidos la falta de señal, la
+  demora y salir de la cuenta sin conexión. `test/integracion/` llama al servidor real y solo corre con
   `--tags supabase --dart-define-from-file=config/supabase.json`; en el CI
   se omite.

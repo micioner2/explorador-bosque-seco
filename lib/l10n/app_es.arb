@@ -177,6 +177,12 @@
       "hora": {"type": "String"}
     }
   },
+  "hoyGuia": "Guía: {nombre}",
+  "@hoyGuia": {
+    "placeholders": {
+      "nombre": {"type": "String"}
+    }
+  },
   "hoyGrupo": "{n, plural, =1{1 persona} other{{n} personas}} · {actividades}",
   "@hoyGrupo": {
     "placeholders": {
@@ -209,6 +215,8 @@
     }
   },
   "registrarAyuda": "Agrega a cada persona. Al final se genera un solo QR para todo el grupo.",
+  "registrarComo": "Registrando como",
+  "cambiar": "Cambiar",
   "registrarNombre": "Nombre y apellido",
   "registrarEdad": "Edad",
   "registrarProcedencia": "Procedencia",
@@ -295,5 +303,66 @@
     "placeholders": {
       "codigo": {"type": "String"}
     }
-  }
+  },
+
+  "accesoPaso": "Paso {actual} de {total}",
+  "@accesoPaso": {
+    "placeholders": {
+      "actual": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "accesoTitulo": "Entra al puesto de control",
+  "accesoSubtitulo": "Usa la cuenta de tu asociación. Es la misma para todos sus guías.",
+  "accesoCorreo": "Correo de la asociación",
+  "accesoClave": "Contraseña",
+  "accesoMostrarClave": "Mostrar contraseña",
+  "accesoOcultarClave": "Ocultar contraseña",
+  "accesoEntrar": "Entrar",
+  "accesoEntrando": "Entrando…",
+  "validarCorreo": "Ingresa el correo de tu asociación",
+  "validarCorreoFormato": "Revisa el correo: le falta la @",
+  "validarClave": "Ingresa la contraseña",
+  "accesoRechazoCredenciales": "Correo o contraseña incorrectos",
+  "accesoRechazoCredencialesDetalle": "Revisa que estén bien escritos e intenta de nuevo.",
+  "accesoRechazoCuenta": "Esta cuenta no está habilitada",
+  "accesoRechazoCuentaDetalle": "Pide al administrador de tu asociación que la active para el puesto de control.",
+  "accesoRechazoSinConexion": "Sin señal para entrar",
+  "accesoRechazoSinConexionDetalle": "La primera vez necesitas internet. Busca una zona con señal o wifi e intenta de nuevo.",
+  "accesoRechazoIntentos": "Demasiados intentos",
+  "accesoRechazoIntentosDetalle": "Espera unos minutos antes de volver a intentar.",
+  "accesoRechazoServidor": "No se pudo entrar",
+  "accesoRechazoServidorDetalle": "El servidor tuvo un problema. Intenta de nuevo en un momento.",
+  "accesoSinSenalTitulo": "Solo la primera vez necesitas señal",
+  "accesoSinSenalDetalle": "Después, la app abre sin internet y guarda tus registros en el celular.",
+  "accesoOlvido": "¿Olvidaste la contraseña? Pídela al administrador de tu asociación.",
+  "accesoDemoTitulo": "Modo demostración",
+  "accesoDemoDetalle": "Esta app no tiene servidor. Entra con la cuenta de prueba: {correo} · {clave}",
+  "@accesoDemoDetalle": {
+    "placeholders": {
+      "correo": {"type": "String"},
+      "clave": {"type": "String"}
+    }
+  },
+  "accesoDemoUsar": "Usar cuenta de prueba",
+
+  "guiaTitulo": "¿Quién eres?",
+  "guiaAyuda": "Toca tu nombre. Las visitas que registres quedarán a tu nombre.",
+  "guiaSinGuias": "Tu asociación aún no tiene guías",
+  "guiaSinGuiasDetalle": "Pide al administrador que los agregue en el portal web.",
+  "guiaBienvenida": "Hola, {nombre}. Ya puedes registrar visitas.",
+  "@guiaBienvenida": {
+    "placeholders": {
+      "nombre": {"type": "String"}
+    }
+  },
+
+  "sesionTooltip": "Tu sesión",
+  "sesionAsociacion": "Asociación",
+  "sesionGuia": "Guía",
+  "sesionCambiarGuia": "Cambiar de guía",
+  "sesionSalir": "Salir de la cuenta",
+  "sesionSalirTitulo": "¿Salir de la cuenta?",
+  "sesionSalirDetalle": "Para volver a entrar necesitarás el correo, la contraseña y señal.",
+  "sesionSalirAccion": "Salir"
 }

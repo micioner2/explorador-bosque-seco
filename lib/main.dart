@@ -6,11 +6,14 @@ import 'app.dart';
 import 'core/supabase/cliente_supabase.dart';
 import 'features/preferencias/data/preferencias_repository_local.dart';
 import 'features/preferencias/data/preferencias_repository_memoria.dart';
+import 'features/sesion/data/sesion_repository_demo.dart';
+import 'features/sesion/data/sesion_repository_supabase.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final almacen = await SharedPreferences.getInstance();
-  // `null` si la app se compiló sin config/supabase.json.
+  // `null` si la app se compiló sin config/supabase.json. Si había una
+  // sesión guardada, ya quedó recuperada (sin necesitar señal).
   final clienteSupabase = await iniciarSupabase();
 
   runApp(
@@ -19,8 +22,12 @@ Future<void> main() async {
         preferenciasRepositoryProvider.overrideWithValue(
           PreferenciasRepositoryLocal(almacen),
         ),
-        if (clienteSupabase != null)
+        if (clienteSupabase != null) ...[
           clienteSupabaseProvider.overrideWithValue(clienteSupabase),
+          sesionRepositoryProvider.overrideWithValue(
+            SesionRepositorySupabase(clienteSupabase, almacen),
+          ),
+        ],
       ],
       child: const BosqueSecoApp(),
     ),
