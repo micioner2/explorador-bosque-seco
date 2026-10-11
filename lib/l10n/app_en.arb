@@ -369,5 +369,9 @@
   "escanearCuponUsadoDetalle": "A coupon is valid only once.",
   "escanearCuponTurista": "This is a discount coupon",
   "escanearCuponTuristaDetalle": "Show it at the community shop so they can validate it.",
-  "hoyValidarCupon": "Validate coupon"
+  "hoyValidarCupon": "Validate coupon",
+
+  "accesoBienvenida": "Welcome to the {asociacion} checkpoint! Now tap your name.",
+  "hoySaludo": "Hi, {guia}",
+  "hoySaludoDetalle": "{asociacion} checkpoint. Everything you record is saved on the phone."
 }

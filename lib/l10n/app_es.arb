@@ -705,5 +705,24 @@
   "escanearCuponUsadoDetalle": "Un cupón vale una sola vez.",
   "escanearCuponTurista": "Es un cupón de descuento",
   "escanearCuponTuristaDetalle": "Muéstralo en la tienda de la comunidad para que lo validen.",
-  "hoyValidarCupon": "Validar cupón"
+  "hoyValidarCupon": "Validar cupón",
+
+  "accesoBienvenida": "¡Bienvenido al puesto de control de {asociacion}! Ahora toca tu nombre.",
+  "@accesoBienvenida": {
+    "placeholders": {
+      "asociacion": {"type": "String"}
+    }
+  },
+  "hoySaludo": "Hola, {guia}",
+  "@hoySaludo": {
+    "placeholders": {
+      "guia": {"type": "String"}
+    }
+  },
+  "hoySaludoDetalle": "Puesto de control de {asociacion}. Todo lo que registres queda guardado en el celular.",
+  "@hoySaludoDetalle": {
+    "placeholders": {
+      "asociacion": {"type": "String"}
+    }
+  }
 }

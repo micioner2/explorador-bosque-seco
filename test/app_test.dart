@@ -148,6 +148,13 @@ void main() {
 
       await tocar(tester, find.text('Usar cuenta de prueba'));
 
+      expect(
+        find.text(
+          '¡Bienvenido al puesto de control de Coto de Caza El Angolo! '
+          'Ahora toca tu nombre.',
+        ),
+        findsOneWidget,
+      );
       expect(find.text('PASO 2 DE 2'), findsOneWidget);
       expect(find.text('¿Quién eres?'), findsOneWidget);
       expect(find.text('Coto de Caza El Angolo'), findsOneWidget);

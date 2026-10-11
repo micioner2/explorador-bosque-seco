@@ -10,6 +10,7 @@ import '../../../../shared/widgets/icono_circular.dart';
 import '../../../../shared/widgets/logo_app.dart';
 import '../../domain/resultado_acceso.dart';
 import '../view_models/acceso_view_model.dart';
+import '../view_models/sesion_view_model.dart';
 import 'cabecera_acceso.dart';
 
 /// Paso 1 para entrar al puesto de control: la cuenta de la asociación.
@@ -41,9 +42,17 @@ class _AccesoPageState extends ConsumerState<AccesoPage> {
   Future<void> _entrar() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     FocusScope.of(context).unfocus();
+    final mensajero = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
     final entro = await ref
         .read(accesoViewModelProvider.notifier)
         .entrar(correo: _correo.text, clave: _clave.text);
+    final cuenta = ref.read(sesionViewModelProvider).cuenta;
+    if (entro && cuenta != null) {
+      mensajero.showSnackBar(
+        SnackBar(content: Text(l10n.accesoBienvenida(cuenta.nombreAsociacion))),
+      );
+    }
     // Ofrece guardar la contraseña en el celular para la próxima vez.
     if (entro) TextInput.finishAutofillContext();
   }

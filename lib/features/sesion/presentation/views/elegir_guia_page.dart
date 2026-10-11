@@ -32,9 +32,12 @@ class ElegirGuiaPage extends ConsumerWidget {
     final viewModel = ref.read(sesionViewModelProvider.notifier);
 
     void elegir(Guia guia) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.guiaBienvenida(guia.nombre))));
+      // Reemplaza la bienvenida de la cuenta en vez de esperar su turno.
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(l10n.guiaBienvenida(guia.nombre))),
+        );
       // El router lleva solo al puesto de control.
       viewModel.elegirGuia(guia);
     }

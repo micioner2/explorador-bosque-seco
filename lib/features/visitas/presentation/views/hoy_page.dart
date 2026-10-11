@@ -13,6 +13,7 @@ import '../../../../shared/widgets/tarjeta_cifra.dart';
 import '../../../../shared/widgets/titulo_seccion.dart';
 import '../../../reservas/presentation/view_models/reservas_view_model.dart';
 import '../../../reservas/presentation/views/tarjeta_reserva.dart';
+import '../../../sesion/presentation/view_models/sesion_view_model.dart';
 import '../../../sesion/presentation/views/boton_sesion.dart';
 import '../../../sincronizacion/presentation/view_models/sincronizacion_view_model.dart';
 import '../../../sincronizacion/presentation/views/aviso_conexion.dart';
@@ -30,6 +31,7 @@ class HoyPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final resumen = ref.watch(resumenDelDiaProvider);
+    final sesion = ref.watch(sesionViewModelProvider);
     final agenda = ref.watch(agendaReservasProvider);
     final llegan = agenda.deHoy;
     final atrasadas = resumen.atrasadas;
@@ -78,6 +80,14 @@ class HoyPage extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(AppEspacios.l),
         children: [
+          if (sesion.guia case final guia?)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppEspacios.m),
+              child: _Saludo(
+                guia: guia.nombre,
+                asociacion: sesion.cuenta?.nombreAsociacion ?? '',
+              ),
+            ),
           // Siempre visible: si hay señal y cuánto falta sincronizar.
           AvisoConexion(estado: ref.watch(estadoPuestoProvider)),
           const SizedBox(height: AppEspacios.s),
@@ -366,6 +376,47 @@ class _Insignia extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Bienvenida al guía que entró: confirma quién registra y en qué puesto.
+class _Saludo extends StatelessWidget {
+  const _Saludo({required this.guia, required this.asociacion});
+
+  final String guia;
+  final String asociacion;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final esquema = context.esquema;
+
+    return MergeSemantics(
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 22,
+            backgroundColor: esquema.primaryContainer,
+            child: Icon(Icons.waving_hand, color: esquema.onPrimaryContainer),
+          ),
+          const SizedBox(width: AppEspacios.m),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.hoySaludo(guia), style: context.textos.titleMedium),
+                Text(
+                  l10n.hoySaludoDetalle(asociacion),
+                  style: context.textos.bodySmall?.copyWith(
+                    color: esquema.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
