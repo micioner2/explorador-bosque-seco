@@ -6,6 +6,9 @@ abstract final class Rutas {
   static const escanear = '/escanear';
   static const ajustes = '/ajustes';
 
+  /// QR de prueba de los puntos (para probar el escaneo y la demo).
+  static const qrPrueba = '/qr-prueba';
+
   /// Entrada al puesto de control: cuenta de la asociación y luego el guía.
   static const acceso = '/acceso';
   static const accesoGuia = '/acceso/guia';

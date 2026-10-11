@@ -1,4 +1,5 @@
 import 'package:explorador_bosque_seco/features/escaneo/presentation/views/escanear_page.dart';
+import 'package:explorador_bosque_seco/features/escaneo/presentation/views/qr_prueba_page.dart';
 import 'package:explorador_bosque_seco/features/explorar/presentation/views/explorar_page.dart';
 import 'package:explorador_bosque_seco/features/mapa/presentation/views/mapa_page.dart';
 import 'package:explorador_bosque_seco/features/preferencias/domain/preferencias.dart';
@@ -24,6 +25,7 @@ const _pantallas = <String, Widget>{
   'Mapa': MapaPage(),
   'Pasaporte': PasaportePage(),
   'Escanear': EscanearPage(),
+  'QR de prueba': QrPruebaPage(),
   'Acceso': AccesoPage(),
   'Elegir guía': ElegirGuiaPage(),
   'Hoy': HoyPage(),

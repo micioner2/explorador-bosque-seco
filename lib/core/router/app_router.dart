@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../../features/escaneo/presentation/views/escanear_page.dart';
+import '../../features/escaneo/presentation/views/qr_prueba_page.dart';
 import '../../features/explorar/presentation/views/explorar_page.dart';
 import '../../features/mapa/presentation/views/mapa_page.dart';
 import '../../features/preferencias/presentation/views/ajustes_page.dart';
@@ -62,6 +63,10 @@ GoRouter crearRouter({required Sesion Function() sesion}) => GoRouter(
     GoRoute(
       path: Rutas.ajustes,
       builder: (context, state) => const AjustesPage(),
+    ),
+    GoRoute(
+      path: Rutas.qrPrueba,
+      builder: (context, state) => const QrPruebaPage(),
     ),
     GoRoute(
       path: Rutas.acceso,

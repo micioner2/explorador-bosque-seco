@@ -377,5 +377,15 @@
 
   "mapaSimular": "Simulate my position (demo)",
   "mapaSimulada": "Demo position",
-  "mapaUsarGps": "Use GPS"
+  "mapaUsarGps": "Use GPS",
+
+  "qrPruebaTitulo": "Test QR codes",
+  "qrPruebaAbrir": "Test QR codes of the stops",
+  "qrPruebaAyuda": "Show them on another phone or download the PDF to print them and test scanning and points.",
+  "qrPruebaPunto": "Stop {orden} of {total}",
+  "qrPruebaGrupo": "Test group",
+  "qrPruebaGrupoDetalle": "Scan it first: it links the phone",
+  "qrPruebaCodigo": "Code: {codigo}",
+  "qrPruebaDescargar": "Download QR PDF",
+  "qrPruebaNota": "Open EcoRumbo, tap “Scan QR” and earn your stamp. Works without signal."
 }

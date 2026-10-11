@@ -728,5 +728,26 @@
 
   "mapaSimular": "Simular mi posición (demo)",
   "mapaSimulada": "Posición de demostración",
-  "mapaUsarGps": "Usar el GPS"
+  "mapaUsarGps": "Usar el GPS",
+
+  "qrPruebaTitulo": "QR de prueba",
+  "qrPruebaAbrir": "QR de prueba de los puntos",
+  "qrPruebaAyuda": "Muéstralos en otro celular o descarga el PDF para imprimirlos y probar el escaneo y los puntos.",
+  "qrPruebaPunto": "Punto {orden} de {total}",
+  "@qrPruebaPunto": {
+    "placeholders": {
+      "orden": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "qrPruebaGrupo": "Grupo de prueba",
+  "qrPruebaGrupoDetalle": "Escanéalo primero: vincula el celular",
+  "qrPruebaCodigo": "Código: {codigo}",
+  "@qrPruebaCodigo": {
+    "placeholders": {
+      "codigo": {"type": "String"}
+    }
+  },
+  "qrPruebaDescargar": "Descargar PDF de los QR",
+  "qrPruebaNota": "Abre EcoRumbo, toca «Escanear QR» y gana tu sello. Funciona sin señal."
 }

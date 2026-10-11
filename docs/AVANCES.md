@@ -307,6 +307,9 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
   presentar o grabar aunque el GPS no responda bajo techo.
 - Bienvenida al entrar al puesto de control y saludo al guía en Hoy; los
   botones del sistema ya no tapan el contenido (Android 15).
+- **QR de prueba en la app:** Ajustes → "QR de prueba de los puntos" muestra
+  el QR del grupo de prueba y de cada punto de la ruta elegida, y "Descargar
+  PDF de los QR" los guarda o comparte para imprimirlos (sin señal).
 - **Cupón con QR:** al canjear puntos sale un cupón con su QR ("Mis
   cupones"); en el puesto, "Validar cupón" lo lee sin señal y no deja
   usarlo dos veces.
@@ -352,7 +355,8 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
 3. **Modo turista:** se abre directamente.
 4. **Modo asociación:** ícono de tienda → "Usar cuenta de prueba" (entra
    con un toque) → elegir un guía.
-5. Para probar el escaneo, abrir los carteles de
+5. Para probar el escaneo: Ajustes → "QR de prueba de los puntos" (en otro
+   celular o con el PDF impreso), o los carteles de
    [`demo/qr-puntos.html`](demo/qr-puntos.html) (bosque) o
    [`demo/qr-puntos/sede.html`](demo/qr-puntos/sede.html) (sede) en otra
    pantalla o imprimirlos.

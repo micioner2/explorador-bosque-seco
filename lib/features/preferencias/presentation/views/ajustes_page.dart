@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/router/rutas.dart';
 import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/titulo_seccion.dart';
@@ -126,6 +128,12 @@ class AjustesPage extends ConsumerWidget {
             onPressed: centrarRutaAqui,
             icon: const Icon(Icons.my_location),
             label: Text(l10n.rutaCentrarAqui),
+          ),
+          const SizedBox(height: AppEspacios.s),
+          OutlinedButton.icon(
+            onPressed: () => context.push<void>(Rutas.qrPrueba),
+            icon: const Icon(Icons.qr_code_2),
+            label: Text(l10n.qrPruebaAbrir),
           ),
           TituloSeccion(l10n.ajustesServidor),
           const _TarjetaConexion(),
