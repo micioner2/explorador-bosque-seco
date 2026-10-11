@@ -133,12 +133,6 @@
       "producto": {"type": "String"}
     }
   },
-  "canjeCupon": "Cupón generado: {producto}",
-  "@canjeCupon": {
-    "placeholders": {
-      "producto": {"type": "String"}
-    }
-  },
 
   "escanearTitulo": "Escanear QR",
   "escanearInstruccion": "Apunta al QR de tu grupo o de un punto de la ruta",
@@ -671,5 +665,41 @@
     "placeholders": {
       "servicio": {"type": "String"}
     }
-  }
+  },
+
+  "cuponTitulo": "Tu cupón",
+  "cuponDetalle": "{porcentaje}% de descuento en {producto}. Muéstralo en la tienda de la comunidad: lo validan sin señal.",
+  "@cuponDetalle": {
+    "placeholders": {
+      "porcentaje": {"type": "int"},
+      "producto": {"type": "String"}
+    }
+  },
+  "cuponQrSemantica": "Código QR del cupón de {producto}",
+  "@cuponQrSemantica": {
+    "placeholders": {
+      "producto": {"type": "String"}
+    }
+  },
+  "cuponMisCupones": "Mis cupones",
+  "cuponVer": "Ver QR",
+  "cuponVerDe": "Ver el QR del cupón de {producto}",
+  "@cuponVerDe": {
+    "placeholders": {
+      "producto": {"type": "String"}
+    }
+  },
+  "escanearCuponValido": "Cupón válido: {porcentaje}% en {producto}",
+  "@escanearCuponValido": {
+    "placeholders": {
+      "porcentaje": {"type": "int"},
+      "producto": {"type": "String"}
+    }
+  },
+  "escanearCuponValidoDetalle": "Aplica el descuento. El cupón quedó usado en este puesto.",
+  "escanearCuponUsado": "Este cupón ya se usó",
+  "escanearCuponUsadoDetalle": "Un cupón vale una sola vez.",
+  "escanearCuponTurista": "Es un cupón de descuento",
+  "escanearCuponTuristaDetalle": "Muéstralo en la tienda de la comunidad para que lo validen.",
+  "hoyValidarCupon": "Validar cupón"
 }

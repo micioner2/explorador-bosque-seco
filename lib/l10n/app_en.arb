@@ -66,7 +66,6 @@
   "canjear": "Redeem",
   "canjeConfirmarTitulo": "Redeem your points?",
   "canjeConfirmarDetalle": "You will use {puntos, plural, =1{1 point} other{{puntos} points}} for {descuento}% off {producto}.",
-  "canjeCupon": "Coupon created: {producto}",
 
   "escanearTitulo": "Scan QR",
   "escanearInstruccion": "Point at your group's QR or a stop's QR",
@@ -352,5 +351,19 @@
   "sincronizarRechazado": "The server did not accept the data. Everything is still saved on the phone.",
   "sincronizarSinTablas": "The server is not ready to receive data yet.",
 
-  "contactarWhatsappDe": "Contact “{servicio}” on WhatsApp"
+  "contactarWhatsappDe": "Contact “{servicio}” on WhatsApp",
+
+  "cuponTitulo": "Your coupon",
+  "cuponDetalle": "{porcentaje}% off {producto}. Show it at the community shop: they validate it without signal.",
+  "cuponQrSemantica": "QR code of the {producto} coupon",
+  "cuponMisCupones": "My coupons",
+  "cuponVer": "Show QR",
+  "cuponVerDe": "Show the QR of the {producto} coupon",
+  "escanearCuponValido": "Valid coupon: {porcentaje}% off {producto}",
+  "escanearCuponValidoDetalle": "Apply the discount. The coupon is now used at this checkpoint.",
+  "escanearCuponUsado": "This coupon was already used",
+  "escanearCuponUsadoDetalle": "A coupon is valid only once.",
+  "escanearCuponTurista": "This is a discount coupon",
+  "escanearCuponTuristaDetalle": "Show it at the community shop so they can validate it.",
+  "hoyValidarCupon": "Validate coupon"
 }

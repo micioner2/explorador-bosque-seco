@@ -110,7 +110,14 @@ void main() {
 
     await tocar(tester, enDialogo('Canjear'));
 
-    expect(find.text('Cupón generado: Miel de algarrobo'), findsOneWidget);
+    // El cupón sale con su QR para mostrarlo en la tienda.
+    expect(find.text('Tu cupón'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Código QR del cupón de Miel de algarrobo'),
+      findsOneWidget,
+    );
+    await tocar(tester, find.widgetWithText(FilledButton, 'Listo'));
+
     expect(find.text('0 puntos para canjear'), findsOneWidget);
     expect(find.text('Te faltan 2 puntos'), findsOneWidget);
     expect(botonCanjear, findsNothing);
@@ -699,5 +706,19 @@ void main() {
 
     expect(boton, findsOneWidget);
     expect(tester.getSize(boton).height, greaterThanOrEqualTo(48));
+  });
+
+  testWidgets('la tienda valida el cupón en el puesto una sola vez', (
+    tester,
+  ) async {
+    await abrirApp(tester);
+    await entrarAlPuesto(tester);
+
+    await tocar(tester, find.byTooltip('Validar cupón'));
+    await escanearCodigo(tester, 'bosqueseco:cupon:c-123:miel:10');
+    expect(find.text('Cupón válido: 10% en Miel de algarrobo'), findsOneWidget);
+
+    await escanearCodigo(tester, 'bosqueseco:cupon:c-123:miel:10');
+    expect(find.text('Este cupón ya se usó'), findsOneWidget);
   });
 }

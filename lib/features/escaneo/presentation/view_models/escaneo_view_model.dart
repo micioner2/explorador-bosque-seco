@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../mapa/presentation/view_models/mapa_view_model.dart';
+import '../../../puntos/domain/cupon.dart';
 import '../../../puntos/domain/pasaporte.dart';
 import '../../../puntos/presentation/view_models/pasaporte_view_model.dart';
+import '../../../sesion/presentation/view_models/sesion_view_model.dart';
 import '../../data/vinculo_repository_local.dart';
 import '../../domain/lectura_qr.dart';
 import '../../domain/resultado_escaneo.dart';
@@ -56,6 +58,23 @@ class EscaneoViewModel extends Notifier<ResultadoEscaneo?> {
           PuntoGanado() => SelloGanado(punto),
           PuntoYaRegistrado() => SelloRepetido(punto),
         };
+      case QrDeCupon(:final id, :final productoId, :final porcentaje):
+        // Solo el puesto de control valida cupones.
+        if (!ref.read(sesionViewModelProvider).iniciada) {
+          return const CuponDelTurista();
+        }
+        final validacion = ref
+            .read(cuponesUsadosViewModelProvider.notifier)
+            .validar(id: id, productoId: productoId, porcentaje: porcentaje);
+        final producto = ref
+            .read(productosProvider)
+            .where((p) => p.id == productoId)
+            .firstOrNull;
+        return CuponLeido(
+          nombreProducto: producto?.nombre ?? productoId,
+          porcentaje: porcentaje,
+          valido: validacion is CuponValido,
+        );
       case QrDesconocido():
         return const QrAjeno();
     }

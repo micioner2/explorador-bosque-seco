@@ -4,6 +4,8 @@
 /// Formatos (texto del QR):
 /// - Grupo: `bosqueseco:visita:<id de la visita>` (lo muestra el guía).
 /// - Punto de la ruta: `bosqueseco:punto:<id del punto>` (cartel impreso).
+/// - Cupón de canje: `bosqueseco:cupon:<id>:<producto>:<porcentaje>` (lo
+///   muestra el turista en la tienda).
 sealed class LecturaQr {
   const LecturaQr();
 
@@ -12,6 +14,18 @@ sealed class LecturaQr {
   factory LecturaQr.desde(String texto) {
     final limpio = texto.trim();
     final partes = limpio.split(':');
+    if (partes.length == 5 &&
+        partes[0].toLowerCase() == prefijo &&
+        partes[1].toLowerCase() == 'cupon') {
+      final porcentaje = int.tryParse(partes[4]);
+      if (partes[2].isNotEmpty && partes[3].isNotEmpty && porcentaje != null) {
+        return QrDeCupon(
+          id: partes[2],
+          productoId: partes[3],
+          porcentaje: porcentaje,
+        );
+      }
+    }
     if (partes.length == 3 && partes[0].toLowerCase() == prefijo) {
       final id = partes[2].trim();
       if (id.isNotEmpty) {
@@ -48,6 +62,19 @@ final class QrDePunto extends LecturaQr {
   const QrDePunto(this.puntoId);
 
   final String puntoId;
+}
+
+/// Cupón de canje del turista: se valida en el puesto de control.
+final class QrDeCupon extends LecturaQr {
+  const QrDeCupon({
+    required this.id,
+    required this.productoId,
+    required this.porcentaje,
+  });
+
+  final String id;
+  final String productoId;
+  final int porcentaje;
 }
 
 /// Un QR que no es de la app (un enlace, un producto...).

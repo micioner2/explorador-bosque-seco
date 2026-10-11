@@ -223,6 +223,7 @@ class _PanelResultado extends StatelessWidget {
     final textos = context.textos;
     final exito = switch (resultado) {
       GrupoVinculado() || SelloGanado() => true,
+      CuponLeido(:final valido) => valido,
       _ => false,
     };
     final frente = exito ? esquema.onPrimaryContainer : esquema.onSurface;
@@ -247,6 +248,23 @@ class _PanelResultado extends StatelessWidget {
         Icons.group_add_outlined,
         l10n.escanearFaltaGrupo,
         l10n.escanearFaltaGrupoDetalle(punto.nombre),
+      ),
+      CuponLeido(:final valido, :final porcentaje, :final nombreProducto) =>
+        valido
+            ? (
+                Icons.local_offer,
+                l10n.escanearCuponValido(porcentaje, nombreProducto),
+                l10n.escanearCuponValidoDetalle,
+              )
+            : (
+                Icons.block,
+                l10n.escanearCuponUsado,
+                l10n.escanearCuponUsadoDetalle,
+              ),
+      CuponDelTurista() => (
+        Icons.local_offer_outlined,
+        l10n.escanearCuponTurista,
+        l10n.escanearCuponTuristaDetalle,
       ),
       PuntoAjeno() => (
         Icons.help_outline,

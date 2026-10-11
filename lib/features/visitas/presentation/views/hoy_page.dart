@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/router/rutas.dart';
 import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/acciones_barra.dart';
@@ -63,7 +65,15 @@ class HoyPage extends ConsumerWidget {
     return Scaffold(
       appBar: BarraAsociacion(
         titulo: l10n.hoyTitulo,
-        acciones: const [BotonSesion()],
+        acciones: [
+          // La tienda valida aquí los cupones de canje, sin señal (A5).
+          IconButton(
+            tooltip: l10n.hoyValidarCupon,
+            icon: const Icon(Icons.local_offer_outlined),
+            onPressed: () => context.push<void>(Rutas.escanear),
+          ),
+          const BotonSesion(),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(AppEspacios.l),

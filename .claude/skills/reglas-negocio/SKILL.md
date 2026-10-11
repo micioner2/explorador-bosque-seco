@@ -22,6 +22,11 @@ lo que no se puede romper.
 - El id de cada escaneo se genera en el celular para que reenviarlo no lo
   duplique (idempotencia).
 
+- **R18.** Canjear entrega un `Cupon` con QR
+  (`bosqueseco:cupon:<id>:<producto>:<porcentaje>`). En el puesto,
+  `CuponesUsados.validar` lo acepta una sola vez (sin señal; se guarda en
+  el celular del puesto).
+
 ## Visitas (`lib/features/visitas/domain/`)
 
 - **R5.** Protocolo del SERNANP (seguridad y rescate): cada integrante

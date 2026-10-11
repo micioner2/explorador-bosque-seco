@@ -35,6 +35,26 @@ final class FaltaGrupo extends ResultadoEscaneo {
   final PuntoRuta punto;
 }
 
+/// En el puesto de control se leyó un cupón de canje.
+final class CuponLeido extends ResultadoEscaneo {
+  const CuponLeido({
+    required this.nombreProducto,
+    required this.valido,
+    required this.porcentaje,
+  });
+
+  final String nombreProducto;
+  final int porcentaje;
+
+  /// `false` si ya se había usado (R18).
+  final bool valido;
+}
+
+/// El turista escaneó un cupón: es para mostrarlo en la tienda.
+final class CuponDelTurista extends ResultadoEscaneo {
+  const CuponDelTurista();
+}
+
 /// Parece el código de un punto, pero no es de esta ruta.
 final class PuntoAjeno extends ResultadoEscaneo {
   const PuntoAjeno();

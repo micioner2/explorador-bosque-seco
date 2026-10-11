@@ -20,6 +20,7 @@ import '../../../sincronizacion/presentation/views/boton_sincronizar.dart';
 import '../../domain/pasaporte.dart';
 import '../../domain/producto.dart';
 import '../view_models/pasaporte_view_model.dart';
+import 'cupon_dialog.dart';
 
 /// Pasaporte del turista: puntos ganados, sellos de la ruta y canje en la
 /// tienda comunal.
@@ -33,6 +34,7 @@ class PasaportePage extends ConsumerWidget {
     final productos = ref.watch(productosProvider);
     final progreso = ref.watch(mapaViewModelProvider);
     final vinculado = ref.watch(vinculoViewModelProvider) != null;
+    final cupones = ref.watch(cuponesViewModelProvider);
 
     Future<void> canjear(Producto producto) async {
       final mensajero = ScaffoldMessenger.of(context);
@@ -48,10 +50,10 @@ class PasaportePage extends ConsumerWidget {
       );
       if (!aceptado || !context.mounted) return;
       try {
-        ref.read(pasaporteViewModelProvider.notifier).canjear(producto);
-        mensajero.showSnackBar(
-          SnackBar(content: Text(l10n.canjeCupon(producto.nombre))),
-        );
+        final cupon = ref
+            .read(pasaporteViewModelProvider.notifier)
+            .canjear(producto);
+        await mostrarCupon(context, cupon);
       } on CanjeInvalido {
         mensajero.showSnackBar(
           SnackBar(
@@ -128,6 +130,27 @@ class PasaportePage extends ConsumerWidget {
                     pasaporte: pasaporte,
                     onCanjear: () => canjear(producto),
                   ),
+                if (cupones.isNotEmpty) ...[
+                  TituloSeccion(l10n.cuponMisCupones),
+                  for (final cupon in cupones.reversed)
+                    Card(
+                      child: ListTile(
+                        minTileHeight: 64,
+                        leading: const Icon(Icons.local_offer_outlined),
+                        title: Text(cupon.nombreProducto),
+                        subtitle: Text('-${cupon.porcentajeDescuento}%'),
+                        trailing: TextButton(
+                          onPressed: () => mostrarCupon(context, cupon),
+                          child: Text(
+                            l10n.cuponVer,
+                            semanticsLabel: l10n.cuponVerDe(
+                              cupon.nombreProducto,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ],
             ),
           ),

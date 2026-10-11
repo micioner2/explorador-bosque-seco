@@ -59,9 +59,9 @@ flowchart LR
 
 | | Cantidad |
 |---|---|
-| ✅ Funcionalidades terminadas | 16 |
-| 🟡 Funcionalidades a medias | 4 |
-| ⏳ Funcionalidades pendientes | 2 |
+| ✅ Funcionalidades terminadas | 18 |
+| 🟡 Funcionalidades a medias | 3 |
+| ⏳ Funcionalidades pendientes | 1 |
 
 Lo más importante que **ya funciona**: el registro de grupos que reemplaza al
 cuaderno, el escaneo de QR con la cámara, el mapa con GPS sin señal, las
@@ -91,7 +91,7 @@ asociación cargue la real en el portal web.
 | T5 | **Mapa de la ruta:** puntos con su estado, el siguiente punto con distancia y tiempo a pie, y la ubicación por GPS (funciona sin señal). | ✅ Hecha | Coordenadas de ejemplo. El mapa de fondo (calles, relieve) es opcional; sin él se ve la ruta sobre fondo liso. |
 | T6 | **Sello por punto:** al escanear el cartel de un punto gana un sello y 1 punto. Escanear dos veces no suma de nuevo. | 🟡 En parte | El sello funciona sin señal. Faltan las fotos y el audio de cada punto. |
 | T7 | **Pasaporte:** sellos conseguidos, pendientes y por visitar, y puntos disponibles. | ✅ Hecha | |
-| T8 | **Canje de puntos** por descuentos en productos de la comunidad. | 🟡 En parte | Se canjea con confirmación y se descuentan los puntos. Falta el cupón con QR para mostrar en la tienda. |
+| T8 | **Canje de puntos** por descuentos en productos de la comunidad. | ✅ Hecha | Al canjear sale un **cupón con QR** para mostrar en la tienda; queda en "Mis cupones". |
 | T9 | **Opinión al salir** e insignia para compartir. | ⏳ Pendiente | Es opcional. |
 | T10 | **Ajustes:** idioma (español o inglés) y apariencia (clara, oscura o la del celular). | ✅ Hecha | También muestra si hay conexión con el servidor. |
 
@@ -107,7 +107,7 @@ asociación cargue la real en el portal web.
 | A9 | **Reservas:** anotar quién viene, día, hora y cuántas personas; reprogramar o cancelar. Cuando el grupo llega, "Llegaron" abre el registro de siempre. | ✅ Hecha | Muestra las reservas retrasadas y las que no llegaron. |
 | A4 | **Reporte del día:** visitantes, grupos, procedencia, edades y detalle por guía. **Descargar PDF** lo crea en el celular, sin señal, y lo comparte por WhatsApp o lo guarda. | ✅ Hecha | El panel web también podrá generar el consolidado de todas las asociaciones. |
 | A8 | **Cerrar el día:** deja constancia de quién cerró y a qué hora, y avisa si hay grupos sin salida. | ✅ Hecha | Si algo cambia después del cierre, avisa que hay que actualizarlo. |
-| A5 | **Validar cupones** de canje escaneando su QR. | ⏳ Pendiente | Depende del cupón con QR (T8). |
+| A5 | **Validar cupones** de canje escaneando su QR. | ✅ Hecha | "Validar cupón" en Hoy, sin señal. Un cupón vale una sola vez en ese puesto; falta cruzarlo con el servidor entre puestos. |
 
 ### Para todos
 
@@ -301,6 +301,9 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
   (48 px, con nombre para el lector de pantalla); las listas dejan espacio
   para que "Escanear QR" no tape nada; "Usar cuenta de prueba" entra con un
   solo toque.
+- **Cupón con QR:** al canjear puntos sale un cupón con su QR ("Mis
+  cupones"); en el puesto, "Validar cupón" lo lee sin señal y no deja
+  usarlo dos veces.
 
 > **Dónde está:** las etapas 2 a 6 están en la rama `feature/reservas` y
 > todavía no se han unido a la versión principal (`develop` y `main`).
@@ -316,16 +319,16 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
 | Contenido real: rutas, coordenadas, fotos, tarifas y números de WhatsApp. | Equipo de datos y asociaciones, desde el portal web. | Reemplazar los datos de ejemplo. |
 | Descargar la información del lugar desde el servidor (T4). | Desarrollo móvil, después de la sincronización. | Que cada comunidad cargue su propio contenido sin publicar otra versión de la app. |
 | Fotos y audio de cada punto (T6). | Asociaciones (material) y desarrollo móvil. | Que el turista aprenda algo en cada punto. |
-| Cupón con QR (T8) y su validación en la tienda (A5). | Desarrollo móvil. | Cerrar el ciclo visita → venta para la comunidad. |
+| Validar cupones contra el servidor entre varios puestos (A5). | Equipo web (tabla de cupones) y desarrollo móvil. | Que un cupón usado en un puesto no se use en otro. |
 | Opinión e insignia (T9). | Desarrollo móvil. Opcional. | Recoger la opinión del turista y difusión en redes. |
 | Traducir el contenido que carga la asociación. | Acuerdo con el equipo web (columnas por idioma). | Que el turista extranjero lea los atractivos en inglés. |
 | Unir los avances a la versión principal. | Desarrollo móvil. | Tener una versión estable para la presentación. |
 
 ### Limitaciones que conviene conocer para la demo
 
-- Como la sincronización aún no está, los sellos ganados en el bosque se
-  quedan **pendientes**. El canje se muestra con puntos de ejemplo que ya
-  vienen confirmados.
+- Mientras el servidor no tenga las tablas, los sellos ganados se quedan
+  **pendientes**. El canje se muestra con puntos de ejemplo que ya vienen
+  confirmados (grupo de prueba `v-demo`).
 - Los datos de ejemplo se calculan con la hora del celular: a cualquier
   hora hay un grupo con la alerta "sigue dentro" (debió salir hace 30
   minutos), dos grupos dentro de su horario y una reserva que llega en la
