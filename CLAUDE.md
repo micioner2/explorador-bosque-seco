@@ -183,16 +183,30 @@ funcionar en modo avión:
 
 ## Estado actual
 
-- Datos de **demostración** en todos los repositorios (`*_repository_demo.dart`).
+- **Offline-first real:** visitas, reservas, pasaporte, vínculo con el
+  grupo, último guía y cierres se guardan en el celular
+  (`core/almacen/`: `AlmacenLocal` + `ColeccionLocal` con JSON en
+  `shared_preferences`). Sobreviven al cerrar la app. Sin Supabase (cuenta
+  de prueba) el celular empieza con los datos de demostración
+  (`datosDemoProvider`); con cuentas reales, vacío. Aún no se envían al
+  servidor: la interfaz los muestra "pendientes de sincronizar". Script de
+  tablas para el equipo web: `docs/supabase/sincronizacion-app.sql`.
 - **Idiomas y apariencia:** español e inglés, modo claro y oscuro, elegibles
   en Ajustes y guardados en el celular (`shared_preferences`). El contenido
-  que carga la asociación (nombres, tarifas) aún no se traduce: el esquema de
-  Supabase no tiene columnas por idioma.
-- **Registro por grupo:** cada integrante por separado, una o varias
-  actividades y un único QR (`qr_flutter`). Falta que el turista lo lea.
-- **Ruta:** distancias, tiempos y avance listos (`features/mapa`). El mapa es
-  un esquema: falta integrar `flutter_map` (teselas incluidas en la app).
-- **Escáner:** falta integrar `mobile_scanner`; hoy se simula el escaneo.
+  que carga la asociación (nombres, tarifas) aún no se traduce.
+- **Registro por grupo** (R5, SERNANP): nombre, DNI (o pasaporte y país si
+  es extranjero), edad y procedencia de cada integrante; actividades y
+  salida prevista del grupo; un único QR (`qr_flutter`).
+- **Escáner** (`features/escaneo`, `mobile_scanner`): un solo botón lee el
+  QR del grupo (vincula el celular) o el de un punto (da el sello). Plan B:
+  escribir el código. Carteles imprimibles: `docs/demo/qr-puntos.html`.
+- **Mapa** (`features/mapa`, `flutter_map` + `geolocator`): ruta con
+  coordenadas de ejemplo, puntos con su estado y GPS sin señal. Teselas
+  opcionales en `assets/teselas/` (`tool/descargar_teselas.py`).
+- **Explorar:** catálogo de demostración con ilustraciones en
+  `assets/fotos/` (reemplazables por fotos reales con el mismo nombre).
+  WhatsApp abre el chat con el mensaje escrito (`url_launcher`).
+- **Cierre del día** (R17) en Reporte, con el detalle por guía.
 - **Supabase conectado.** La URL y la clave pública van en
   `config/supabase.json` (ignorado por git; copia de
   `config/supabase.example.json`) y se pasan con `--dart-define-from-file`.
@@ -207,12 +221,13 @@ funcionar en modo avión:
   sesión se recupera sin internet) y el guía toca su nombre. El router
   protege el modo asociación (`redirigirSegunSesion`). Sin servidor se entra
   con la cuenta de prueba que muestra la pantalla. Cada visita guarda la
-  asociación y el guía. Falta la tabla de guías (hoy son de demostración) y
-  el cierre diario.
+  asociación y el guía. "Continuar como…" recuerda al último guía. Falta la
+  tabla de guías (hoy son de demostración).
 - **Reservas** (`features/reservas`): pestaña "Reservas" del puesto de
   control para anotar, reprogramar y cancelar; "Llegan hoy" en la pantalla
   Hoy. "Llegaron" abre el registro de siempre y, al registrar, la reserva
-  queda como ingreso de la visita. Datos demo; falta su tabla en Supabase.
+  queda como ingreso de la visita. Se guardan en el celular; falta su tabla
+  en Supabase.
   Los ids nuevos se generan en el celular con `nuevoId()` (`core/id.dart`).
 
 ## Skills del proyecto (`.claude/skills/`)
