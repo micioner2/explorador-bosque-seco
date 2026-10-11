@@ -1,3 +1,4 @@
+import 'package:explorador_bosque_seco/core/almacen/almacen_local.dart';
 import 'package:explorador_bosque_seco/features/sesion/data/sesion_repository_demo.dart';
 import 'package:explorador_bosque_seco/features/sesion/presentation/view_models/sesion_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,9 +7,15 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   const cuenta = SesionRepositoryDemo.cuentaDemo;
 
-  ProviderContainer crear(SesionRepositoryDemo repositorio) {
+  ProviderContainer crear(
+    SesionRepositoryDemo repositorio, {
+    AlmacenLocal? almacen,
+  }) {
     final container = ProviderContainer(
-      overrides: [sesionRepositoryProvider.overrideWithValue(repositorio)],
+      overrides: [
+        sesionRepositoryProvider.overrideWithValue(repositorio),
+        if (almacen != null) almacenLocalProvider.overrideWithValue(almacen),
+      ],
     );
     addTearDown(container.dispose);
     return container;
@@ -68,5 +75,52 @@ void main() {
 
     expect(container.read(sesionViewModelProvider).iniciada, isFalse);
     expect(repositorio.cuentaGuardada(), isNull);
+  });
+
+  group('continuar como el último guía', () {
+    test('la primera vez no hay a quién ofrecer', () {
+      final container = crear(SesionRepositoryDemo(cuentaGuardada: cuenta));
+
+      expect(container.read(ultimoGuiaViewModelProvider), isNull);
+    });
+
+    test('recuerda al guía que eligió su nombre', () {
+      final container = crear(SesionRepositoryDemo(cuentaGuardada: cuenta));
+      final juan = container.read(guiasDeLaCuentaProvider).first;
+
+      container.read(sesionViewModelProvider.notifier).elegirGuia(juan);
+
+      expect(container.read(ultimoGuiaViewModelProvider), juan);
+    });
+
+    test('al volver a abrir la app lo lee del celular', () {
+      final almacen = AlmacenMemoria();
+      final antes = crear(
+        SesionRepositoryDemo(cuentaGuardada: cuenta),
+        almacen: almacen,
+      );
+      final rosa = antes.read(guiasDeLaCuentaProvider).last;
+      antes.read(sesionViewModelProvider.notifier).elegirGuia(rosa);
+
+      final despues = crear(
+        SesionRepositoryDemo(cuentaGuardada: cuenta),
+        almacen: almacen,
+      );
+
+      expect(despues.read(sesionViewModelProvider).guia, isNull);
+      expect(despues.read(ultimoGuiaViewModelProvider), rosa);
+    });
+
+    test('si el guía ya no está en la lista, no se ofrece', () {
+      final almacen = AlmacenMemoria({
+        'sesion.ultimoGuia.${cuenta.asociacionId}': 'g-que-ya-no-esta',
+      });
+      final container = crear(
+        SesionRepositoryDemo(cuentaGuardada: cuenta),
+        almacen: almacen,
+      );
+
+      expect(container.read(ultimoGuiaViewModelProvider), isNull);
+    });
   });
 }

@@ -23,7 +23,12 @@ class ElegirGuiaPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final cuenta = ref.watch(sesionViewModelProvider).cuenta;
-    final guias = ref.watch(guiasDeLaCuentaProvider);
+    final ultimo = ref.watch(ultimoGuiaViewModelProvider);
+    // El último guía se ofrece arriba con un botón grande; el resto, abajo.
+    final guias = [
+      for (final guia in ref.watch(guiasDeLaCuentaProvider))
+        if (guia != ultimo) guia,
+    ];
     final viewModel = ref.read(sesionViewModelProvider.notifier);
 
     void elegir(Guia guia) {
@@ -70,7 +75,20 @@ class ElegirGuiaPage extends ConsumerWidget {
                 if (cuenta != null)
                   _NombreAsociacion(nombre: cuenta.nombreAsociacion),
                 const SizedBox(height: AppEspacios.m),
-                if (guias.isEmpty)
+                if (ultimo != null) ...[
+                  _ContinuarComo(guia: ultimo, onTap: () => elegir(ultimo)),
+                  if (guias.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: AppEspacios.xl,
+                        bottom: AppEspacios.s,
+                      ),
+                      child: Text(
+                        l10n.guiaOtro,
+                        style: context.textos.titleSmall,
+                      ),
+                    ),
+                ] else if (guias.isEmpty)
                   EstadoVacio(
                     icono: Icons.group_off_outlined,
                     titulo: l10n.guiaSinGuias,
@@ -121,6 +139,40 @@ class _NombreAsociacion extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Botón grande para el guía que usó el celular la última vez: entrar es
+/// un solo toque.
+class _ContinuarComo extends StatelessWidget {
+  const _ContinuarComo({required this.guia, required this.onTap});
+
+  final Guia guia;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        FilledButton.icon(
+          style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(64)),
+          onPressed: onTap,
+          icon: const Icon(Icons.login),
+          label: Text(l10n.guiaContinuarComo(guia.nombre)),
+        ),
+        const SizedBox(height: AppEspacios.xs),
+        Text(
+          l10n.guiaUltimaVez,
+          textAlign: TextAlign.center,
+          style: context.textos.bodySmall?.copyWith(
+            color: context.esquema.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }

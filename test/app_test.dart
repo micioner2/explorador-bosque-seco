@@ -224,6 +224,24 @@ void main() {
       expect(find.text('Juan Chunga'), findsOneWidget);
     });
 
+    testWidgets('el último guía vuelve a entrar con un solo toque', (
+      tester,
+    ) async {
+      await abrirApp(tester);
+      await entrarAlPuesto(tester);
+
+      await tocar(tester, find.byTooltip('Tu sesión'));
+      await tocar(tester, find.text('Cambiar de guía'));
+
+      expect(find.text('Continuar como María Quispe'), findsOneWidget);
+      expect(find.text('¿Eres otro guía?'), findsOneWidget);
+      await tocar(tester, find.text('Continuar como María Quispe'));
+      await tocar(tester, find.text('Registrar'));
+
+      expect(find.text('Registrando como'), findsOneWidget);
+      expect(find.text('María Quispe'), findsOneWidget);
+    });
+
     testWidgets('salir de la cuenta pide confirmación y vuelve al modo '
         'turista', (tester) async {
       await abrirApp(tester);

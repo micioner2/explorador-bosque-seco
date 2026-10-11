@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
+import 'core/almacen/almacen_local.dart';
 import 'core/supabase/cliente_supabase.dart';
 import 'features/preferencias/data/preferencias_repository_local.dart';
 import 'features/preferencias/data/preferencias_repository_memoria.dart';
@@ -19,6 +20,7 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [
+        almacenLocalProvider.overrideWithValue(AlmacenPreferencias(almacen)),
         preferenciasRepositoryProvider.overrideWithValue(
           PreferenciasRepositoryLocal(almacen),
         ),

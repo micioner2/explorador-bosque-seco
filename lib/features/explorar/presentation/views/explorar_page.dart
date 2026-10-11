@@ -69,7 +69,10 @@ class ExplorarPage extends ConsumerWidget {
               children: [
                 TituloSeccion(l10n.explorarServicios),
                 for (final servicio in espacio.servicios)
-                  _TarjetaServicio(servicio: servicio),
+                  _TarjetaServicio(
+                    servicio: servicio,
+                    nombreEspacio: espacio.nombre,
+                  ),
               ],
             ),
           ),
@@ -378,16 +381,31 @@ class _TarjetaAtractivo extends StatelessWidget {
   }
 }
 
-class _TarjetaServicio extends StatelessWidget {
-  const _TarjetaServicio({required this.servicio});
+class _TarjetaServicio extends ConsumerWidget {
+  const _TarjetaServicio({required this.servicio, required this.nombreEspacio});
 
   final Servicio servicio;
+  final String nombreEspacio;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final esquema = context.esquema;
     final tarifa = servicio.tarifaReferencial;
+
+    // Abre WhatsApp con el mensaje escrito. Si no se puede (número no
+    // válido o sin WhatsApp), muestra el número para llamar o copiarlo.
+    Future<void> contactar() async {
+      final mensajero = ScaffoldMessenger.of(context);
+      final abierto = await ref.read(contactarServicioProvider)(
+        servicio,
+        l10n.whatsappMensaje(servicio.nombre, nombreEspacio),
+      );
+      if (abierto) return;
+      mensajero.showSnackBar(
+        SnackBar(content: Text(l10n.whatsappNumero(servicio.whatsapp))),
+      );
+    }
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppEspacios.m),
@@ -432,11 +450,7 @@ class _TarjetaServicio extends StatelessWidget {
               ),
               const SizedBox(height: AppEspacios.m),
               FilledButton.icon(
-                onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.whatsappNumero(servicio.whatsapp)),
-                  ),
-                ),
+                onPressed: contactar,
                 icon: const Icon(Icons.chat_outlined),
                 label: Text(l10n.contactarWhatsapp),
               ),

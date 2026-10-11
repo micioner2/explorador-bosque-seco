@@ -9,18 +9,20 @@ import '../../../core/supabase/cliente_supabase.dart';
 import '../domain/conexion_repository.dart';
 import '../domain/estado_conexion.dart';
 
-/// Prueba la conexión pidiendo una fila del catálogo a Supabase.
+/// Prueba la conexión pidiendo una fila de las asociaciones a Supabase.
 ///
 /// Una sola consulta responde las tres preguntas: si el servidor está al
-/// alcance, si acepta la clave y si ya existen las tablas de la app.
+/// alcance, si acepta la clave y si ya existen las tablas del portal.
 class ConexionRepositorySupabase implements ConexionRepository {
   const ConexionRepositorySupabase(
     this._cliente, {
     this.tiempoMaximo = const Duration(seconds: 10),
   });
 
-  /// Tabla del catálogo, de lectura pública, que indica si el esquema existe.
-  static const tablaDePrueba = 'espacios';
+  /// Tabla del portal que siempre existe (la crea el equipo web) e indica
+  /// si el esquema está listo. Con RLS puede responder vacía: igual cuenta
+  /// como conectado.
+  static const tablaDePrueba = 'associations';
 
   /// Códigos de PostgREST y Postgres para una tabla que no existe.
   static const _tablaInexistente = {'PGRST205', '42P01'};

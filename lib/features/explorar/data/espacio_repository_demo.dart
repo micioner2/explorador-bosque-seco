@@ -8,6 +8,10 @@ import '../domain/espacio_repository.dart';
 class EspacioRepositoryDemo implements EspacioRepository {
   const EspacioRepositoryDemo();
 
+  /// WhatsApp de los servicios de demostración. Para la presentación, pon
+  /// el celular de alguien del equipo: el jurado verá abrirse el chat.
+  static const whatsappDemo = '+51 999 999 999';
+
   @override
   Espacio espacioActual() => const Espacio(
     id: 'el-angolo',
@@ -38,14 +42,14 @@ class EspacioRepositoryDemo implements EspacioRepository {
         id: 'guiado-1',
         tipo: TipoServicio.guiado,
         nombre: 'Guiado comunitario',
-        whatsapp: '[número]',
+        whatsapp: whatsappDemo,
         tarifaReferencial: 'Desde S/ [tarifa] por grupo',
       ),
       Servicio(
         id: 'almuerzo-1',
         tipo: TipoServicio.alimentacion,
         nombre: 'Almuerzo campestre',
-        whatsapp: '[número]',
+        whatsapp: whatsappDemo,
         tarifaReferencial: 'Desde S/ [tarifa] por persona',
       ),
     ],

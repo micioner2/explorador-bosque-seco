@@ -485,5 +485,21 @@
       "total": {"type": "int"}
     }
   },
-  "registrarSinReserva": "Registrar sin la reserva"
+  "registrarSinReserva": "Registrar sin la reserva",
+
+  "whatsappMensaje": "Hola, vi «{servicio}» en la app Bosque Seco. Quisiera información para visitar {espacio}.",
+  "@whatsappMensaje": {
+    "placeholders": {
+      "servicio": {"type": "String"},
+      "espacio": {"type": "String"}
+    }
+  },
+  "guiaContinuarComo": "Continuar como {nombre}",
+  "@guiaContinuarComo": {
+    "placeholders": {
+      "nombre": {"type": "String"}
+    }
+  },
+  "guiaUltimaVez": "Fuiste el último guía en este celular",
+  "guiaOtro": "¿Eres otro guía?"
 }

@@ -38,7 +38,7 @@ description: Conecta los repositorios de la app a Supabase (Postgres, Auth, Stor
 
 ## Prueba de conexión (hecha)
 
-- `features/conexion`: una consulta a `espacios` distingue servidor
+- `features/conexion`: una consulta a `associations` distingue servidor
   conectado con o sin esquema, clave rechazada, sin conexión y error del
   servidor. Se ve en Ajustes → Servidor.
 - Pruebas sin red con `MockClient` en `test/features/conexion/`.

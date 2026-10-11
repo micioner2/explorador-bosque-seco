@@ -260,5 +260,10 @@
   "registrarReserva": "Arrival from a booking",
   "registrarReservaDetalle": "{nombre} · {n, plural, =1{1 person booked} other{{n} people booked}}",
   "registrarIntegrantesDe": "Members ({n} of {total})",
-  "registrarSinReserva": "Register without the booking"
+  "registrarSinReserva": "Register without the booking",
+
+  "whatsappMensaje": "Hi, I saw “{servicio}” in the Bosque Seco app. I'd like information to visit {espacio}.",
+  "guiaContinuarComo": "Continue as {nombre}",
+  "guiaUltimaVez": "You were the last guide on this phone",
+  "guiaOtro": "Are you another guide?"
 }

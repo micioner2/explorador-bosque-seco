@@ -39,7 +39,7 @@ void main() {
   }
 
   test(
-    'pide una sola fila de la tabla del catálogo con la clave pública',
+    'pide una sola fila de la tabla de asociaciones con la clave pública',
     () async {
       late http.Request pedido;
       final repositorio = conServidor((recibido) async {
@@ -49,7 +49,7 @@ void main() {
 
       await repositorio.verificar();
 
-      expect(pedido.url.path, '/rest/v1/espacios');
+      expect(pedido.url.path, '/rest/v1/associations');
       expect(pedido.url.queryParameters, containsPair('limit', '1'));
       expect(pedido.headers['apikey'], 'sb_publishable_prueba');
     },
@@ -75,7 +75,7 @@ void main() {
       final repositorio = conServidor(
         (_) async => respuesta(
           '{"code":"PGRST205","details":null,"hint":null,'
-          '"message":"Could not find the table \'public.espacios\'"}',
+          '"message":"Could not find the table \'public.associations\'"}',
           404,
         ),
       );
