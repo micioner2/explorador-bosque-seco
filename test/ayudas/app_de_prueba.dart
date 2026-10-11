@@ -3,6 +3,9 @@ import 'package:explorador_bosque_seco/core/l10n/l10n.dart';
 import 'package:explorador_bosque_seco/core/reloj.dart';
 import 'package:explorador_bosque_seco/core/theme/app_theme.dart';
 import 'package:explorador_bosque_seco/features/escaneo/presentation/views/visor_camara.dart';
+import 'package:explorador_bosque_seco/features/mapa/data/ubicacion_repository_gps.dart';
+import 'package:explorador_bosque_seco/features/mapa/domain/coordenada.dart';
+import 'package:explorador_bosque_seco/features/mapa/domain/ubicacion_repository.dart';
 import 'package:explorador_bosque_seco/features/preferencias/data/preferencias_repository_memoria.dart';
 import 'package:explorador_bosque_seco/features/preferencias/domain/preferencias.dart';
 import 'package:explorador_bosque_seco/features/sesion/data/sesion_repository_demo.dart';
@@ -49,6 +52,21 @@ final sinCamara = visorCamaraProvider.overrideWithValue(
   (context, alLeer) => const SizedBox.expand(),
 );
 
+/// GPS de prueba: da las posiciones indicadas (por defecto, ninguna).
+class GpsDePrueba implements UbicacionRepository {
+  const GpsDePrueba([this._posiciones = const []]);
+
+  final List<Coordenada> _posiciones;
+
+  @override
+  Stream<Coordenada> posiciones() => Stream.fromIterable(_posiciones);
+}
+
+/// En las pruebas no hay GPS.
+final sinGps = ubicacionRepositoryProvider.overrideWithValue(
+  const GpsDePrueba(),
+);
+
 /// Abre la app completa con idioma, apariencia y hora fijos, para que las
 /// pruebas no dependan del celular ni del reloj de quien las corre.
 Future<void> abrirApp(
@@ -61,6 +79,7 @@ Future<void> abrirApp(
       overrides: [
         relojProvider.overrideWithValue(() => mediodia),
         sinCamara,
+        sinGps,
         preferenciasRepositoryProvider.overrideWithValue(
           PreferenciasRepositoryMemoria(
             Preferencias(idioma: idioma, modoTema: modoTema),
@@ -99,6 +118,7 @@ Future<void> montarPantalla(
   Idioma idioma = Idioma.es,
   bool oscuro = false,
   Sesion? sesion,
+  UbicacionRepository gps = const GpsDePrueba(),
   List<Override> overrides = const [],
 }) async {
   await tester.pumpWidget(
@@ -106,6 +126,7 @@ Future<void> montarPantalla(
       overrides: [
         relojProvider.overrideWithValue(() => mediodia),
         sinCamara,
+        ubicacionRepositoryProvider.overrideWithValue(gps),
         sesionViewModelProvider.overrideWith(
           () => SesionViewModelFijo(sesion ?? sesionDePrueba),
         ),

@@ -1,3 +1,5 @@
+import 'coordenada.dart';
+
 /// Punto de una ruta, en el orden en que se recorre. Su [id] es el mismo
 /// del QR que el turista escanea en ese lugar.
 class PuntoRuta {
@@ -6,6 +8,7 @@ class PuntoRuta {
     required this.nombre,
     this.metrosDesdeAnterior = 0,
     this.minutosDesdeAnterior = 0,
+    this.ubicacion,
   }) {
     if (metrosDesdeAnterior < 0) {
       throw ArgumentError.value(
@@ -32,6 +35,9 @@ class PuntoRuta {
   /// Tiempo aproximado de caminata desde el punto anterior.
   final int minutosDesdeAnterior;
 
+  /// Dónde está el cartel con su QR. `null` si aún no se tomó con GPS.
+  final Coordenada? ubicacion;
+
   Duration get duracionDesdeAnterior => Duration(minutes: minutosDesdeAnterior);
 }
 
@@ -41,7 +47,9 @@ class Ruta {
     required this.id,
     required this.nombre,
     required Iterable<PuntoRuta> puntos,
-  }) : puntos = List.unmodifiable(puntos) {
+    Iterable<Coordenada> trazado = const [],
+  }) : puntos = List.unmodifiable(puntos),
+       trazado = List.unmodifiable(trazado) {
     if (this.puntos.isEmpty) {
       throw ArgumentError.value(puntos, 'puntos', 'Mínimo un punto');
     }
@@ -54,6 +62,18 @@ class Ruta {
   final String id;
   final String nombre;
   final List<PuntoRuta> puntos;
+
+  /// Camino a pie, de inicio a fin, para dibujarlo en el mapa. Si no se
+  /// tomó con GPS, el mapa une los puntos en línea recta.
+  final List<Coordenada> trazado;
+
+  /// La ruta se puede dibujar en un mapa: todos sus puntos tienen ubicación.
+  bool get georreferenciada => puntos.every((p) => p.ubicacion != null);
+
+  /// Líneas a dibujar: el [trazado] o, si no hay, los puntos en orden.
+  List<Coordenada> get camino => trazado.isNotEmpty
+      ? trazado
+      : [for (final punto in puntos) ?punto.ubicacion];
 
   int get metrosTotales =>
       puntos.fold(0, (total, punto) => total + punto.metrosDesdeAnterior);

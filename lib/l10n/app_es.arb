@@ -559,5 +559,30 @@
     "placeholders": {
       "n": {"type": "int"}
     }
-  }
+  },
+
+  "mapaGpsBuscando": "Buscando tu ubicación (GPS)…",
+  "mapaGpsApagado": "Activa la ubicación del celular para verte en el mapa. El GPS funciona sin señal.",
+  "mapaGpsSinPermiso": "Da permiso de ubicación a la app para verte en el mapa.",
+  "mapaGpsAlSiguiente": "Estás a {distancia} del siguiente punto (en línea recta)",
+  "@mapaGpsAlSiguiente": {
+    "placeholders": {
+      "distancia": {"type": "String"}
+    }
+  },
+  "mapaGpsFueraDeRuta": "Estás a {distancia} de la ruta. Al llegar al puesto de control te verás en el mapa.",
+  "@mapaGpsFueraDeRuta": {
+    "placeholders": {
+      "distancia": {"type": "String"}
+    }
+  },
+  "mapaGpsEnRuta": "Estás en la ruta",
+  "mapaTuUbicacion": "Tu ubicación",
+  "mapaDescripcion": "Mapa de la ruta con {n} puntos. El recorrido de abajo los lista en orden.",
+  "@mapaDescripcion": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "mapaCentrar": "Ver toda la ruta"
 }

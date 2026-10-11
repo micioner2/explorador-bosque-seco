@@ -298,5 +298,15 @@
   "registrarSalidaCambiar": "Change exit",
   "registrarSalidaInvalida": "The exit must be later than now",
 
-  "hoyGuardadosEnCelular": "{n, plural, =1{1 group saved} other{{n} groups saved}} on this phone · waiting to sync"
+  "hoyGuardadosEnCelular": "{n, plural, =1{1 group saved} other{{n} groups saved}} on this phone · waiting to sync",
+
+  "mapaGpsBuscando": "Finding your location (GPS)…",
+  "mapaGpsApagado": "Turn on your phone's location to see yourself on the map. GPS works without signal.",
+  "mapaGpsSinPermiso": "Allow location access for the app to see yourself on the map.",
+  "mapaGpsAlSiguiente": "You are {distancia} from the next stop (straight line)",
+  "mapaGpsFueraDeRuta": "You are {distancia} from the trail. At the checkpoint you will see yourself on the map.",
+  "mapaGpsEnRuta": "You are on the trail",
+  "mapaTuUbicacion": "Your location",
+  "mapaDescripcion": "Trail map with {n} stops. The list below shows them in order.",
+  "mapaCentrar": "Show the whole trail"
 }

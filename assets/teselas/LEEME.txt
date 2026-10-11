@@ -1,0 +1,3 @@
+Teselas del mapa base de la ruta (OpenStreetMap), incluidas en la app para
+verlo sin señal. Se generan con: python3 tool/descargar_teselas.py
+Formato de cada archivo: z-x-y.png

@@ -15,11 +15,14 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  flutter_map: ^8.3.2
   flutter_riverpod: ^3.3.2
+  geolocator: ^14.1.1
   go_router: ^17.4.0
   http: ^1.6.0
   # La versión de intl la fija flutter_localizations (SDK de Flutter).
   intl: any
+  latlong2: ^0.10.1
   mobile_scanner: ^7.1.4
   qr_flutter: ^4.1.0
   shared_preferences: ^2.5.5
@@ -33,5 +36,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    # Mapa base de la ruta para verlo sin señal (tool/descargar_teselas.py).
+    - assets/teselas/
   # Genera AppLocalizations desde lib/l10n/*.arb (ver l10n.yaml).
   generate: true

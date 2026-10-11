@@ -1,4 +1,5 @@
 import '../../puntos/domain/escaneo.dart';
+import 'coordenada.dart';
 import 'ruta.dart';
 
 /// Estado de un punto de la ruta para el turista.
@@ -75,5 +76,23 @@ class ProgresoRuta {
       if (!punto.visitado) return punto;
     }
     return null;
+  }
+
+  /// Más lejos que esto de todos los puntos, el turista no está en la ruta
+  /// (por ejemplo, aún en la ciudad): el mapa lo dice en vez de medir.
+  static const metrosFueraDeRuta = 3000;
+
+  /// Metros en línea recta desde [posicion] (GPS) hasta el siguiente punto.
+  /// `null` si la ruta está completa o ese punto no tiene ubicación.
+  int? metrosAlSiguiente(Coordenada posicion) =>
+      siguiente?.punto.ubicacion?.distanciaA(posicion);
+
+  /// El turista está a más de [metrosFueraDeRuta] de todos los puntos.
+  bool fueraDeRuta(Coordenada posicion) {
+    final ubicaciones = [for (final p in puntos) ?p.punto.ubicacion];
+    if (ubicaciones.isEmpty) return false;
+    return ubicaciones.every(
+      (ubicacion) => ubicacion.distanciaA(posicion) > metrosFueraDeRuta,
+    );
   }
 }

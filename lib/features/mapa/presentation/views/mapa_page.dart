@@ -11,12 +11,11 @@ import '../../../../shared/widgets/etiqueta_estado.dart';
 import '../../../../shared/widgets/titulo_seccion.dart';
 import '../../domain/progreso_ruta.dart';
 import '../view_models/mapa_view_model.dart';
+import 'mapa_ruta.dart';
 
-/// Ruta del turista: siguiente punto, distancias y avance.
-///
-/// Siguiente paso: reemplazar [_EsquemaRuta] por `flutter_map` con las
-/// teselas de la zona incluidas en la app y la ruta en GeoJSON, para ver la
-/// ubicación GPS sin señal.
+/// Ruta del turista: siguiente punto, mapa con GPS, distancias y avance.
+/// Todo funciona sin señal. Si la ruta aún no tiene coordenadas, se
+/// muestra el esquema dibujado ([_EsquemaRuta]).
 class MapaPage extends ConsumerWidget {
   const MapaPage({super.key});
 
@@ -40,7 +39,10 @@ class MapaPage extends ConsumerWidget {
           const SizedBox(height: AppEspacios.m),
           _TarjetaSiguiente(progreso: progreso),
           const SizedBox(height: AppEspacios.m),
-          _EsquemaRuta(progreso: progreso),
+          if (ruta.georreferenciada)
+            MapaRuta(progreso: progreso)
+          else
+            _EsquemaRuta(progreso: progreso),
           TituloSeccion(l10n.mapaRecorrido),
           Text(
             l10n.mapaTotal(
@@ -214,8 +216,8 @@ class _Medida extends StatelessWidget {
   }
 }
 
-/// Dibujo simple del recorrido con sus puntos numerados. Ocupa el lugar
-/// donde irá el mapa real.
+/// Dibujo simple del recorrido con sus puntos numerados, para rutas que aún
+/// no tienen coordenadas.
 class _EsquemaRuta extends StatelessWidget {
   const _EsquemaRuta({required this.progreso});
 

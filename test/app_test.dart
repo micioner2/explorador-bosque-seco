@@ -27,6 +27,10 @@ void main() {
   testWidgets('el mapa muestra el siguiente punto con distancia y tiempo', (
     tester,
   ) async {
+    // Pantalla alta: el recorrido queda debajo del mapa.
+    tester.view.physicalSize = const Size(800, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await abrirApp(tester);
 
     await tocar(tester, find.text('Mapa'));
@@ -37,14 +41,7 @@ void main() {
     expect(find.text('3 de 5 puntos'), findsOneWidget);
 
     // El recorrido sigue más abajo: la caída de agua se escaneó sin señal.
-    await tester.scrollUntilVisible(
-      find.text('Pendiente de sincronizar'),
-      200,
-      scrollable: find.descendant(
-        of: find.byType(MapaPage),
-        matching: find.byType(Scrollable),
-      ),
-    );
+    expect(find.text('Pendiente de sincronizar'), findsOneWidget);
     expect(find.text('Caída de agua'), findsOneWidget);
   });
 
