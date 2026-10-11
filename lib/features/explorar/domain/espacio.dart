@@ -8,11 +8,15 @@ class Atractivo {
     required this.id,
     required this.nombre,
     required this.descripcion,
+    this.foto,
   });
 
   final String id;
   final String nombre;
   final String descripcion;
+
+  /// Imagen incluida en la app (ruta del asset), para verla sin señal.
+  final String? foto;
 }
 
 /// Servicio de un socio de la asociación, con contacto directo.

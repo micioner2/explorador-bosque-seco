@@ -327,6 +327,25 @@ class _Atractivos extends StatelessWidget {
   }
 }
 
+/// Espacio de la foto cuando el atractivo aún no tiene una.
+class _SinFoto extends StatelessWidget {
+  const _SinFoto({required this.icono});
+
+  final IconData icono;
+
+  @override
+  Widget build(BuildContext context) {
+    final esquema = context.esquema;
+
+    return Container(
+      height: 112,
+      width: double.infinity,
+      color: esquema.primaryContainer,
+      child: Icon(icono, size: 36, color: esquema.onPrimaryContainer),
+    );
+  }
+}
+
 class _TarjetaAtractivo extends StatelessWidget {
   const _TarjetaAtractivo({required this.atractivo, required this.icono});
 
@@ -345,12 +364,19 @@ class _TarjetaAtractivo extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                height: 76,
-                width: double.infinity,
-                color: esquema.primaryContainer,
-                child: Icon(icono, size: 36, color: esquema.onPrimaryContainer),
-              ),
+              if (atractivo.foto case final foto?)
+                // Decorativa: el nombre y la descripción dicen lo mismo.
+                Image.asset(
+                  foto,
+                  height: 112,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  excludeFromSemantics: true,
+                  errorBuilder: (context, error, pila) =>
+                      _SinFoto(icono: icono),
+                )
+              else
+                _SinFoto(icono: icono),
               Padding(
                 padding: const EdgeInsets.all(AppEspacios.m),
                 child: Column(

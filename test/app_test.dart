@@ -680,10 +680,7 @@ void main() {
     expect(find.textContaining('3 grupos siguen sin salida'), findsOneWidget);
     await tocar(tester, enDialogo('Cerrar el día'));
 
-    expect(
-      find.textContaining('por María Quispe'),
-      findsOneWidget,
-    );
+    expect(find.textContaining('por María Quispe'), findsOneWidget);
     expect(find.text('Cerrar el día'), findsNothing);
   });
 }

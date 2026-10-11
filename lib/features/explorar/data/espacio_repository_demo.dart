@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/espacio.dart';
 import '../domain/espacio_repository.dart';
 
-/// Datos de demostración de El Angolo. Los valores entre corchetes se
-/// reemplazan con la información real de la asociación.
+/// Datos de demostración de El Angolo: textos, tarifas e imágenes de
+/// ejemplo hasta que la asociación cargue los suyos en el portal web. Las
+/// imágenes de `assets/fotos/` son ilustraciones: se reemplazan por fotos
+/// reales con el mismo nombre.
 class EspacioRepositoryDemo implements EspacioRepository {
   const EspacioRepositoryDemo();
 
@@ -24,17 +26,34 @@ class EspacioRepositoryDemo implements EspacioRepository {
       Atractivo(
         id: 'pozas',
         nombre: 'Pozas de agua',
-        descripcion: '[Descripción de la asociación]',
+        descripcion:
+            'Pozas naturales entre algarrobos y palos santos, donde '
+            'beben venados y aves al amanecer.',
+        foto: 'assets/fotos/pozas.jpg',
       ),
       Atractivo(
         id: 'caida',
         nombre: 'Caída de agua',
-        descripcion: '[Descripción de la asociación]',
+        descripcion:
+            'En temporada de lluvias (enero a abril) el agua cae entre '
+            'rocas. Lleva calzado que no resbale.',
+        foto: 'assets/fotos/caida.jpg',
+      ),
+      Atractivo(
+        id: 'mirador',
+        nombre: 'Mirador',
+        descripcion:
+            'Vista del bosque seco hasta los cerros de Amotape. Ideal '
+            'para fotos al atardecer.',
+        foto: 'assets/fotos/mirador.jpg',
       ),
       Atractivo(
         id: 'venados',
         nombre: 'Avistamiento de venados',
-        descripcion: '[Descripción de la asociación]',
+        descripcion:
+            'Zona tranquila para ver venados de cola blanca. Camina en '
+            'silencio y sigue al guía.',
+        foto: 'assets/fotos/venados.jpg',
       ),
     ],
     servicios: [
@@ -43,14 +62,35 @@ class EspacioRepositoryDemo implements EspacioRepository {
         tipo: TipoServicio.guiado,
         nombre: 'Guiado comunitario',
         whatsapp: whatsappDemo,
-        tarifaReferencial: 'Desde S/ [tarifa] por grupo',
+        tarifaReferencial: 'Desde S/ 50 por grupo',
+      ),
+      Servicio(
+        id: 'aves-1',
+        tipo: TipoServicio.guiado,
+        nombre: 'Salida de aves al amanecer',
+        whatsapp: whatsappDemo,
+        tarifaReferencial: 'Desde S/ 80 por grupo',
       ),
       Servicio(
         id: 'almuerzo-1',
         tipo: TipoServicio.alimentacion,
-        nombre: 'Almuerzo campestre',
+        nombre: 'Almuerzo campestre (seco de cabrito)',
         whatsapp: whatsappDemo,
-        tarifaReferencial: 'Desde S/ [tarifa] por persona',
+        tarifaReferencial: 'Desde S/ 20 por persona',
+      ),
+      Servicio(
+        id: 'hospedaje-1',
+        tipo: TipoServicio.hospedaje,
+        nombre: 'Zona de campamento con baño',
+        whatsapp: whatsappDemo,
+        tarifaReferencial: 'Desde S/ 15 por carpa',
+      ),
+      Servicio(
+        id: 'transporte-1',
+        tipo: TipoServicio.transporte,
+        nombre: 'Mototaxi desde Máncora',
+        whatsapp: whatsappDemo,
+        tarifaReferencial: 'Desde S/ 60 ida y vuelta',
       ),
     ],
   );

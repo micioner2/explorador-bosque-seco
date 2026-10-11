@@ -39,5 +39,7 @@ flutter:
   assets:
     # Mapa base de la ruta para verlo sin señal (tool/descargar_teselas.py).
     - assets/teselas/
+    # Imágenes de los atractivos (ilustraciones de demostración).
+    - assets/fotos/
   # Genera AppLocalizations desde lib/l10n/*.arb (ver l10n.yaml).
   generate: true
