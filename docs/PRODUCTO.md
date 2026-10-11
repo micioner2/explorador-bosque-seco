@@ -67,11 +67,11 @@ Actores reales (según el mentor de AIDER):
 | Id | Funcionalidad | Prioridad | Estado |
 |---|---|---|---|
 | T1 | Explorar el espacio: ficha práctica (pago, señal, acceso), atractivos y servicios | Obligatoria | Base hecha (datos demo) |
-| T2 | Contactar servicios por WhatsApp con mensaje prellenado | Obligatoria | Pendiente (`url_launcher`) |
-| T3 | Vincular la visita escaneando el QR del grupo que se muestra en el puesto | Obligatoria | Pendiente (falta `mobile_scanner`) |
-| T4 | Descargar el paquete del espacio para uso sin señal | Obligatoria | Pendiente |
-| T5 | Mapa offline con la ruta, puntos y ubicación GPS; distancia y tiempo al siguiente punto | Obligatoria | Ruta, distancias, tiempos y avance hechos (datos demo); falta el mapa con teselas y GPS |
-| T6 | Escanear el QR de cada punto: fotos, audio y sello (+1 punto) | Diferenciadora | Lógica hecha; falta `mobile_scanner` |
+| T2 | Contactar servicios por WhatsApp con mensaje prellenado | Obligatoria | Hecha (`url_launcher`; número de demostración) |
+| T3 | Vincular la visita escaneando el QR del grupo que se muestra en el puesto | Obligatoria | Hecha (`mobile_scanner`; plan B: escribir el código) |
+| T4 | Descargar el paquete del espacio para uso sin señal | Obligatoria | En parte: los datos vienen dentro de la app y funcionan sin señal; falta descargarlos del servidor |
+| T5 | Mapa offline con la ruta, puntos y ubicación GPS; distancia y tiempo al siguiente punto | Obligatoria | Hecha (`flutter_map` + `geolocator`; coordenadas de ejemplo, teselas opcionales) |
+| T6 | Escanear el QR de cada punto: fotos, audio y sello (+1 punto) | Diferenciadora | Sello hecho (`mobile_scanner`); faltan fotos y audio del punto |
 | T7 | Pasaporte: puntos confirmados y pendientes, y sellos de la ruta | Diferenciadora | Hecha (datos demo) |
 | T8 | Canje de puntos por descuento en productos de la comunidad (cupón QR) | Diferenciadora | Lógica hecha, con confirmación; falta cupón QR |
 | T9 | Opinión al salir e insignia compartible | Opcional | Pendiente |
@@ -88,7 +88,7 @@ Actores reales (según el mentor de AIDER):
 | A5 | Validar cupones de canje (escanear QR) | Diferenciadora | Pendiente |
 | A6 | Entrar con la cuenta de la asociación (correo y contraseña creados en el portal web). Solo la primera vez necesita señal: después la sesión se recupera sin internet | Obligatoria | Hecha (Supabase Auth; cuenta de prueba sin servidor) |
 | A7 | El guía elige su nombre ("¿Quién eres?"); cada visita queda a nombre de la asociación y del guía. Se puede cambiar de guía o salir de la cuenta | Obligatoria | Hecha (guías de demostración; falta la tabla de guías en Supabase) |
-| A8 | Cierre diario por asociación, con el detalle de cada guía | Obligatoria | Pendiente |
+| A8 | Cierre diario por asociación, con el detalle de cada guía | Obligatoria | Hecha (guardado en el celular; falta sincronizarlo) |
 | A9 | Reservas: anotar quién viene, el día, la hora y cuántas personas; reprogramar o cancelar (con confirmación); agenda por día con las retrasadas y las que no llegaron. Al llegar el grupo, "Llegaron" abre el registro de siempre y la reserva queda como ingreso de esa visita | Obligatoria | Hecha (datos demo; falta la tabla en Supabase) |
 
 ### Fuera del alcance de la app móvil
@@ -145,6 +145,7 @@ Actores reales (según el mentor de AIDER):
 | R13 | Una reserva necesita el nombre de quien reserva, entre 1 y 99 personas y un día y hora que no hayan pasado. Queda a nombre de la asociación y del guía que la anotó. | `Reserva.nueva`, `ReservasViewModel.crear` |
 | R14 | Solo una reserva pendiente se reprograma (nunca a una hora que ya pasó; se cuenta cada cambio) o se cancela. Pasada su hora está "retrasada"; si era de un día anterior, "no llegó". | `Reserva.reprogramar`, `Reserva.cancelar`, `AgendaReservas` |
 | R15 | Cuando el grupo llega, la reserva se convierte en ingreso una sola vez: se registra a quienes vinieron (pueden ser más o menos que los reservados) y la reserva queda ligada a esa visita. Si la cancelaron mientras tanto, el grupo se registra sin ella. | `Reserva.registrarIngreso`, `RegistroGrupoViewModel.registrar` |
+| R17 | "Cerrar el día" guarda en el celular las cifras del día, el detalle por guía, quién cerró y a qué hora. Se advierte si hay grupos sin salida; si algo cambia después, el cierre queda desactualizado. | `CierreDia` |
 
 ## 7. Requisitos no funcionales
 
@@ -200,7 +201,6 @@ datos).
 | Cuenta de la asociación | Correo y contraseña que crea el portal web para cada asociación. La comparten sus guías autorizados. |
 | Guía | Persona autorizada por la asociación. Elige su nombre al entrar y los grupos que registra quedan a su nombre. |
 | Reserva | Aviso de que un grupo llegará: quién, día, hora y cuántas personas. Está pendiente, cancelada o ingresada. |
-| R17 | "Cerrar el día" guarda en el celular las cifras del día, el detalle por guía, quién cerró y a qué hora. Se advierte si hay grupos sin salida; si algo cambia después, el cierre queda desactualizado. | `CierreDia` |
 | Ingreso | Momento en que el grupo de una reserva llega y se registra como visita. |
 
 ## 11. Equipo
