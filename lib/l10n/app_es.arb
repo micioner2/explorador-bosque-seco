@@ -275,5 +275,25 @@
   "temaClaro": "Claro",
   "temaClaroDetalle": "Se lee mejor al sol",
   "temaOscuro": "Oscuro",
-  "temaOscuroDetalle": "Descansa la vista de noche"
+  "temaOscuroDetalle": "Descansa la vista de noche",
+
+  "ajustesServidor": "Servidor",
+  "conexionProbar": "Probar conexión",
+  "conexionProbando": "Probando la conexión…",
+  "conexionSinConfigurar": "Sin servidor configurado",
+  "conexionSinConfigurarDetalle": "La app usa los datos guardados en el celular.",
+  "conexionConectado": "Conectado",
+  "conexionConectadoDetalle": "El servidor responde y la base de datos está lista.",
+  "conexionSinEsquemaDetalle": "El servidor responde, pero aún no se crean las tablas de la app.",
+  "conexionClaveRechazada": "Clave rechazada",
+  "conexionClaveRechazadaDetalle": "El servidor no aceptó la clave de la app.",
+  "conexionSinConexion": "Sin conexión",
+  "conexionSinConexionDetalle": "No se pudo llegar al servidor. Tus datos siguen guardados en el celular.",
+  "conexionError": "Error del servidor",
+  "conexionErrorDetalle": "El servidor respondió con un error ({codigo}).",
+  "@conexionErrorDetalle": {
+    "placeholders": {
+      "codigo": {"type": "String"}
+    }
+  }
 }

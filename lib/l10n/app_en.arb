@@ -150,5 +150,20 @@
   "temaClaro": "Light",
   "temaClaroDetalle": "Easier to read in sunlight",
   "temaOscuro": "Dark",
-  "temaOscuroDetalle": "Easier on the eyes at night"
+  "temaOscuroDetalle": "Easier on the eyes at night",
+
+  "ajustesServidor": "Server",
+  "conexionProbar": "Test connection",
+  "conexionProbando": "Testing the connection…",
+  "conexionSinConfigurar": "No server configured",
+  "conexionSinConfigurarDetalle": "The app uses the data saved on your phone.",
+  "conexionConectado": "Connected",
+  "conexionConectadoDetalle": "The server is responding and the database is ready.",
+  "conexionSinEsquemaDetalle": "The server is responding, but the app's tables have not been created yet.",
+  "conexionClaveRechazada": "Key rejected",
+  "conexionClaveRechazadaDetalle": "The server did not accept the app's key.",
+  "conexionSinConexion": "No connection",
+  "conexionSinConexionDetalle": "Could not reach the server. Your data is still saved on your phone.",
+  "conexionError": "Server error",
+  "conexionErrorDetalle": "The server responded with an error ({codigo})."
 }

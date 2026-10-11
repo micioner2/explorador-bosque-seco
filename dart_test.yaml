@@ -1,0 +1,5 @@
+# Etiquetas de las pruebas.
+tags:
+  # Llama al servidor real de Supabase. Se omite si no se pasa
+  # --dart-define-from-file=config/supabase.json (ver test/integracion/).
+  supabase:

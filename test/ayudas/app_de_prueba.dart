@@ -6,6 +6,7 @@ import 'package:explorador_bosque_seco/features/preferencias/data/preferencias_r
 import 'package:explorador_bosque_seco/features/preferencias/domain/preferencias.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 /// Mediodía de la demostración: de las visitas de ejemplo, solo el grupo
@@ -36,15 +37,20 @@ Future<void> abrirApp(
 }
 
 /// Monta una sola pantalla, sin navegación, con el tema y el idioma dados.
+/// [overrides] permite sustituir repositorios por dobles de prueba.
 Future<void> montarPantalla(
   WidgetTester tester,
   Widget pantalla, {
   Idioma idioma = Idioma.es,
   bool oscuro = false,
+  List<Override> overrides = const [],
 }) async {
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [relojProvider.overrideWithValue(() => mediodia)],
+      overrides: [
+        relojProvider.overrideWithValue(() => mediodia),
+        ...overrides,
+      ],
       child: MaterialApp(
         theme: oscuro ? AppTheme.oscuro : AppTheme.claro,
         locale: Locale(idioma.codigo),
@@ -57,10 +63,14 @@ Future<void> montarPantalla(
   await tester.pumpAndSettle();
 }
 
-/// Toca un elemento, desplazando la lista antes si quedó fuera de la vista.
+/// Toca un elemento. Como una persona, solo desplaza la lista si no se puede
+/// tocar donde está (fuera de la pantalla o tapado por la barra o el botón
+/// flotante).
 Future<void> tocar(WidgetTester tester, Finder elemento) async {
-  await tester.ensureVisible(elemento);
-  await tester.pumpAndSettle();
+  if (!tester.any(elemento.hitTestable())) {
+    await tester.ensureVisible(elemento);
+    await tester.pumpAndSettle();
+  }
   await tester.tap(elemento);
   await tester.pumpAndSettle();
 }

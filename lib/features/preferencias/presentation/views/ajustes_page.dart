@@ -5,11 +5,14 @@ import '../../../../core/l10n/l10n.dart';
 import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/titulo_seccion.dart';
+import '../../../conexion/domain/estado_conexion.dart';
+import '../../../conexion/presentation/view_models/conexion_view_model.dart';
 import '../../domain/preferencias.dart';
 import '../view_models/preferencias_view_model.dart';
 
 /// Ajustes de la app: idioma (español o inglés) y apariencia (clara,
-/// oscura o la del celular). Se guardan en el celular.
+/// oscura o la del celular), que se guardan en el celular, y el estado de
+/// la conexión con el servidor.
 class AjustesPage extends ConsumerWidget {
   const AjustesPage({super.key});
 
@@ -76,7 +79,139 @@ class AjustesPage extends ConsumerWidget {
               ),
             ],
           ),
+          TituloSeccion(l10n.ajustesServidor),
+          const _TarjetaConexion(),
         ],
+      ),
+    );
+  }
+}
+
+/// Intención visual del estado de la conexión. El color siempre va junto a
+/// un icono y un texto que dicen lo mismo.
+enum _Tono { neutro, exito, aviso, error }
+
+/// Estado de la conexión con el servidor y botón para volver a probarla.
+class _TarjetaConexion extends ConsumerWidget {
+  const _TarjetaConexion();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final esquema = context.esquema;
+    final colores = context.colores;
+    final textos = context.textos;
+    final conexion = ref.watch(conexionViewModelProvider);
+    final probando = conexion is AsyncLoading;
+
+    final (icono, titulo, detalle, tono) = switch (conexion) {
+      AsyncData(value: SinConfigurar()) => (
+        Icons.cloud_off_outlined,
+        l10n.conexionSinConfigurar,
+        l10n.conexionSinConfigurarDetalle,
+        _Tono.neutro,
+      ),
+      AsyncData(value: Conectado(esquemaListo: true)) => (
+        Icons.cloud_done_outlined,
+        l10n.conexionConectado,
+        l10n.conexionConectadoDetalle,
+        _Tono.exito,
+      ),
+      AsyncData(value: Conectado()) => (
+        Icons.cloud_done_outlined,
+        l10n.conexionConectado,
+        l10n.conexionSinEsquemaDetalle,
+        _Tono.aviso,
+      ),
+      AsyncData(value: ClaveRechazada()) => (
+        Icons.key_off_outlined,
+        l10n.conexionClaveRechazada,
+        l10n.conexionClaveRechazadaDetalle,
+        _Tono.error,
+      ),
+      AsyncData(value: SinConexion()) => (
+        Icons.wifi_off,
+        l10n.conexionSinConexion,
+        l10n.conexionSinConexionDetalle,
+        _Tono.aviso,
+      ),
+      AsyncData(value: ErrorServidor(:final codigo)) => (
+        Icons.error_outline,
+        l10n.conexionError,
+        l10n.conexionErrorDetalle(codigo),
+        _Tono.error,
+      ),
+      AsyncError() => (
+        Icons.error_outline,
+        l10n.conexionError,
+        null,
+        _Tono.error,
+      ),
+      AsyncLoading() => (Icons.sync, l10n.conexionProbando, null, _Tono.neutro),
+    };
+    final (fondo, frente) = switch (tono) {
+      _Tono.neutro => (
+        esquema.surfaceContainerHighest,
+        esquema.onSurfaceVariant,
+      ),
+      _Tono.exito => (esquema.primaryContainer, esquema.onPrimaryContainer),
+      _Tono.aviso => (colores.aviso, colores.sobreAviso),
+      _Tono.error => (esquema.errorContainer, esquema.onErrorContainer),
+    };
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppEspacios.m),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Semantics(
+              liveRegion: true,
+              child: MergeSemantics(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ExcludeSemantics(
+                      child: Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: fondo,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(icono, size: 22, color: frente),
+                      ),
+                    ),
+                    const SizedBox(width: AppEspacios.m),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(titulo, style: textos.titleSmall),
+                          if (detalle != null)
+                            Text(
+                              detalle,
+                              style: textos.bodyMedium?.copyWith(
+                                color: esquema.onSurfaceVariant,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: AppEspacios.m),
+            OutlinedButton.icon(
+              onPressed: probando
+                  ? null
+                  : ref.read(conexionViewModelProvider.notifier).probarDeNuevo,
+              icon: const Icon(Icons.refresh),
+              label: Text(l10n.conexionProbar),
+            ),
+          ],
+        ),
       ),
     );
   }
