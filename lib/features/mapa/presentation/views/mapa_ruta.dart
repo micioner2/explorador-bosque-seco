@@ -7,6 +7,8 @@ import '../../../../core/l10n/formato.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
+import '../../../preferencias/domain/preferencias.dart';
+import '../../../preferencias/presentation/view_models/preferencias_view_model.dart';
 import '../../domain/coordenada.dart';
 import '../../domain/progreso_ruta.dart';
 import '../../domain/ubicacion_repository.dart';
@@ -29,6 +31,7 @@ List<Widget> _capasRuta(
   BuildContext context, {
   required ProgresoRuta progreso,
   required bool hayTeselas,
+  required bool enLinea,
   required Coordenada? posicion,
 }) {
   final l10n = context.l10n;
@@ -41,6 +44,15 @@ List<Widget> _capasRuta(
         urlTemplate: '$carpetaTeselas{z}-{x}-{y}.png',
         tileProvider: AssetTileProvider(),
         maxNativeZoom: 16,
+        userAgentPackageName: 'pe.bosqueseco.explorador',
+      )
+    else if (enLinea)
+      // Sin teselas en la app: con señal se ven las de OpenStreetMap al
+      // navegar (uso normal, sin descarga masiva) y quedan en caché. Sin
+      // señal, el fondo es liso y la ruta se sigue viendo.
+      TileLayer(
+        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        maxNativeZoom: 19,
         userAgentPackageName: 'pe.bosqueseco.explorador',
       ),
     PolylineLayer(
@@ -81,7 +93,7 @@ List<Widget> _capasRuta(
       ],
     ),
     const Scalebar(alignment: Alignment.bottomLeft),
-    if (hayTeselas)
+    if (hayTeselas || enLinea)
       const Align(alignment: Alignment.bottomRight, child: _Atribucion()),
   ];
 }
@@ -163,6 +175,7 @@ class _MapaRutaState extends ConsumerState<MapaRuta> {
                     context,
                     progreso: progreso,
                     hayTeselas: hayTeselas,
+                    enLinea: ref.watch(teselasEnLineaProvider),
                     posicion: posicion,
                   ),
                   Align(
@@ -252,6 +265,7 @@ class _MapaPantallaCompletaState extends ConsumerState<_MapaPantallaCompleta> {
               context,
               progreso: progreso,
               hayTeselas: hayTeselas,
+              enLinea: ref.watch(teselasEnLineaProvider),
               posicion: posicion,
             ),
             Align(
@@ -376,15 +390,41 @@ class _EstadoGps extends ConsumerWidget {
       null => (Icons.gps_not_fixed, l10n.mapaGpsBuscando),
     };
 
-    return Semantics(
-      liveRegion: true,
-      child: Row(
-        children: [
-          Icon(icono, size: 20, color: context.esquema.primary),
-          const SizedBox(width: AppEspacios.s),
-          Expanded(child: Text(texto, style: context.textos.bodyMedium)),
-        ],
-      ),
+    // En la ruta de la sede (demo) se puede simular la posición si el GPS
+    // no ayuda bajo techo: así la demo y el video siempre funcionan.
+    final enSede =
+        ref.watch(preferenciasViewModelProvider).rutaDemo == RutaDemo.sede;
+    final simulada = ref.watch(posicionDemoViewModelProvider) != null;
+    final demo = ref.read(posicionDemoViewModelProvider.notifier);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(
+          liveRegion: true,
+          child: Row(
+            children: [
+              Icon(icono, size: 20, color: context.esquema.primary),
+              const SizedBox(width: AppEspacios.s),
+              Expanded(
+                child: Text(
+                  simulada ? '${l10n.mapaSimulada} · $texto' : texto,
+                  style: context.textos.bodyMedium,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (enSede)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: simulada ? demo.quitar : demo.simular,
+              icon: Icon(simulada ? Icons.gps_fixed : Icons.directions_walk),
+              label: Text(simulada ? l10n.mapaUsarGps : l10n.mapaSimular),
+            ),
+          ),
+      ],
     );
   }
 

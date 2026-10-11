@@ -106,7 +106,11 @@ class AjustesPage extends ConsumerWidget {
                 titulo: l10n.rutaSede,
                 detalle: l10n.rutaSedeDetalle,
                 seleccionada: preferencias.rutaDemo == RutaDemo.sede,
-                onTap: () => viewModel.cambiarRutaDemo(RutaDemo.sede),
+                // Al elegir la sede, la ruta se arma donde está el celular.
+                onTap: () async {
+                  await viewModel.cambiarRutaDemo(RutaDemo.sede);
+                  await centrarRutaAqui();
+                },
               ),
             ],
           ),

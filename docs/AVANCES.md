@@ -301,6 +301,12 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
   (48 px, con nombre para el lector de pantalla); las listas dejan espacio
   para que "Escanear QR" no tape nada; "Usar cuenta de prueba" entra con un
   solo toque.
+- Mapa: con señal muestra el mapa de OpenStreetMap de fondo (queda en
+  caché); sin señal, la ruta sobre fondo liso. Al elegir la sede, la ruta se
+  arma donde está el celular, y "Simular mi posición (demo)" permite
+  presentar o grabar aunque el GPS no responda bajo techo.
+- Bienvenida al entrar al puesto de control y saludo al guía en Hoy; los
+  botones del sistema ya no tapan el contenido (Android 15).
 - **Cupón con QR:** al canjear puntos sale un cupón con su QR ("Mis
   cupones"); en el puesto, "Validar cupón" lo lee sin señal y no deja
   usarlo dos veces.

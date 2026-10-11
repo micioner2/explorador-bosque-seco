@@ -39,13 +39,51 @@ final mapaViewModelProvider = Provider<ProgresoRuta>((ref) {
   );
 });
 
+/// Si el mapa pide las teselas de OpenStreetMap por internet cuando la app
+/// no trae las suyas. Las pruebas lo apagan (no hay red).
+final teselasEnLineaProvider = Provider<bool>((ref) => true);
+
+/// Posición de demostración para grabar o presentar la ruta de la sede sin
+/// depender del GPS (por ejemplo, bajo techo). Se nota en pantalla.
+class PosicionDemoViewModel extends Notifier<Coordenada?> {
+  @override
+  Coordenada? build() => null;
+
+  /// Pone al turista camino al siguiente punto de la ruta actual.
+  void simular() {
+    final progreso = ref.read(mapaViewModelProvider);
+    final puntos = progreso.ruta.puntos;
+    final siguiente = progreso.siguiente;
+    final destino = (siguiente ?? progreso.puntos.last).punto.ubicacion;
+    final indice = siguiente == null ? puntos.length - 1 : siguiente.orden - 1;
+    final origen = indice > 0 ? puntos[indice - 1].ubicacion : destino;
+    if (destino == null || origen == null) return;
+    // A dos tercios del tramo: cerca del siguiente punto, sin estar encima.
+    state = Coordenada(
+      origen.latitud + (destino.latitud - origen.latitud) * 2 / 3,
+      origen.longitud + (destino.longitud - origen.longitud) * 2 / 3,
+    );
+  }
+
+  void quitar() => state = null;
+}
+
+final posicionDemoViewModelProvider =
+    NotifierProvider<PosicionDemoViewModel, Coordenada?>(
+      PosicionDemoViewModel.new,
+    );
+
 /// Posición GPS del turista mientras el mapa está abierto. Al salir del
 /// mapa se apaga el GPS para cuidar la batería.
 ///
 /// Si el GPS está apagado o sin permiso no se reintenta solo: la pantalla
 /// explica qué hacer y se vuelve a intentar al volver a abrir el mapa.
 final ubicacionViewModelProvider = StreamProvider.autoDispose<Coordenada>(
-  (ref) => ref.watch(ubicacionRepositoryProvider).posiciones(),
+  (ref) {
+    final demo = ref.watch(posicionDemoViewModelProvider);
+    if (demo != null) return Stream.value(demo);
+    return ref.watch(ubicacionRepositoryProvider).posiciones();
+  },
   retry: (intento, error) => error is UbicacionNoDisponible
       ? null
       : Duration(seconds: 2 * (intento + 1)),

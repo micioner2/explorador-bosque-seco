@@ -724,5 +724,9 @@
     "placeholders": {
       "asociacion": {"type": "String"}
     }
-  }
+  },
+
+  "mapaSimular": "Simular mi posición (demo)",
+  "mapaSimulada": "Posición de demostración",
+  "mapaUsarGps": "Usar el GPS"
 }

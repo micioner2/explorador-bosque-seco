@@ -14,9 +14,11 @@ sincronizar y compartir el PDF.
 - [ ] Carteles impresos o en una laptop:
       [`qr-puntos/sede.html`](qr-puntos/sede.html) (5 puntos de la sede) y
       [`qr-puntos.html`](qr-puntos.html) (bosque + grupo de prueba).
-- [ ] En el celular del turista, **dentro de la sede**: Ajustes → "Ruta de la
-      demo" → "Centrar la ruta de la sede aquí". Así el GPS lo muestra sobre
-      la ruta.
+- [ ] En el celular del turista, **dentro de la sede y con señal**: Ajustes →
+      "Ruta de la demo" → "Sede de la presentación" (la ruta se arma donde
+      estás). Abre el Mapa una vez con señal para que el mapa de fondo
+      quede guardado. Si el GPS no responde bajo techo, en el Mapa toca
+      "Simular mi posición (demo)".
 - [ ] En `EspacioRepositoryDemo.whatsappDemo`, el celular de alguien del
       equipo: el jurado verá abrirse el chat.
 - [ ] Permisos de cámara y ubicación ya concedidos (ábrelos una vez antes).

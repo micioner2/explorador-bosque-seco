@@ -373,5 +373,9 @@
 
   "accesoBienvenida": "Welcome to the {asociacion} checkpoint! Now tap your name.",
   "hoySaludo": "Hi, {guia}",
-  "hoySaludoDetalle": "{asociacion} checkpoint. Everything you record is saved on the phone."
+  "hoySaludoDetalle": "{asociacion} checkpoint. Everything you record is saved on the phone.",
+
+  "mapaSimular": "Simulate my position (demo)",
+  "mapaSimulada": "Demo position",
+  "mapaUsarGps": "Use GPS"
 }

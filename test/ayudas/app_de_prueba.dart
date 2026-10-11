@@ -7,6 +7,7 @@ import 'package:explorador_bosque_seco/features/escaneo/presentation/views/visor
 import 'package:explorador_bosque_seco/features/mapa/data/ubicacion_repository_gps.dart';
 import 'package:explorador_bosque_seco/features/mapa/domain/coordenada.dart';
 import 'package:explorador_bosque_seco/features/mapa/domain/ubicacion_repository.dart';
+import 'package:explorador_bosque_seco/features/mapa/presentation/view_models/mapa_view_model.dart';
 import 'package:explorador_bosque_seco/features/preferencias/data/preferencias_repository_memoria.dart';
 import 'package:explorador_bosque_seco/features/preferencias/domain/preferencias.dart';
 import 'package:explorador_bosque_seco/features/sesion/data/sesion_repository_demo.dart';
@@ -105,6 +106,7 @@ Future<void> abrirApp(
         almacenLocalProvider.overrideWithValue(almacenCon(grupo: grupo)),
         sinCamara,
         sinGps,
+        teselasEnLineaProvider.overrideWithValue(false),
         redRepositoryProvider.overrideWithValue(const RedDePrueba()),
         preferenciasRepositoryProvider.overrideWithValue(
           PreferenciasRepositoryMemoria(
@@ -155,6 +157,7 @@ Future<void> montarPantalla(
         almacenLocalProvider.overrideWithValue(almacenCon(grupo: grupo)),
         sinCamara,
         ubicacionRepositoryProvider.overrideWithValue(gps),
+        teselasEnLineaProvider.overrideWithValue(false),
         redRepositoryProvider.overrideWithValue(red),
         sesionViewModelProvider.overrideWith(
           () => SesionViewModelFijo(sesion ?? sesionDePrueba),

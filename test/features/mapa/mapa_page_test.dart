@@ -1,6 +1,8 @@
 import 'package:explorador_bosque_seco/features/mapa/domain/coordenada.dart';
 import 'package:explorador_bosque_seco/features/mapa/domain/ubicacion_repository.dart';
 import 'package:explorador_bosque_seco/features/mapa/presentation/views/mapa_page.dart';
+import 'package:explorador_bosque_seco/features/preferencias/data/preferencias_repository_memoria.dart';
+import 'package:explorador_bosque_seco/features/preferencias/domain/preferencias.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -71,5 +73,28 @@ void main() {
     await montarPantalla(tester, const MapaPage(), gps: _GpsApagado());
 
     expect(find.textContaining('Activa la ubicación'), findsOneWidget);
+  });
+
+  testWidgets('en la ruta de la sede se puede simular la posición para la '
+      'demo', (tester) async {
+    await montarPantalla(
+      tester,
+      const MapaPage(),
+      overrides: [
+        preferenciasRepositoryProvider.overrideWithValue(
+          PreferenciasRepositoryMemoria(
+            const Preferencias(rutaDemo: RutaDemo.sede),
+          ),
+        ),
+      ],
+    );
+
+    await tocar(tester, find.text('Simular mi posición (demo)'));
+
+    expect(
+      find.textContaining('Posición de demostración · Estás a'),
+      findsOneWidget,
+    );
+    expect(find.text('Usar el GPS'), findsOneWidget);
   });
 }

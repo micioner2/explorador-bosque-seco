@@ -21,8 +21,12 @@ class UbicacionRepositoryGps implements UbicacionRepository {
         permiso == LocationPermission.deniedForever) {
       throw const UbicacionNoDisponible(ProblemaUbicacion.sinPermiso);
     }
+    // La última posición conocida aparece al instante; bajo techo el
+    // primer dato nuevo del GPS puede tardar.
+    final ultima = await Geolocator.getLastKnownPosition();
+    if (ultima != null) yield Coordenada(ultima.latitude, ultima.longitude);
     yield* Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(distanceFilter: 5),
+      locationSettings: const LocationSettings(distanceFilter: 3),
     ).map((p) => Coordenada(p.latitude, p.longitude));
   }
 }
