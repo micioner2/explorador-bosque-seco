@@ -1,0 +1,5 @@
+# Finales de línea LF en el repositorio para todos (Windows incluido): así
+# dart format y el CI no ven cambios falsos por CRLF.
+* text=auto eol=lf
+*.bat eol=crlf
+*.cmd eol=crlf
