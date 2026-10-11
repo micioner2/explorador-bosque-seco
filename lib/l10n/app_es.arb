@@ -642,5 +642,16 @@
       "n": {"type": "int"}
     }
   },
-  "conexionSincronizado": "Todo sincronizado"
+  "conexionSincronizado": "Todo sincronizado",
+
+  "ajustesRutaDemo": "Ruta de la demo",
+  "rutaAngolo": "El Angolo · Ruta de las Pozas",
+  "rutaAngoloDetalle": "La ruta del bosque seco",
+  "rutaSede": "Sede de la presentación",
+  "rutaSedeDetalle": "Ruta corta para ver el GPS sobre la ruta",
+
+  "rutaCentrarAqui": "Centrar la ruta de la sede aquí",
+  "rutaCentrarAyuda": "En el lugar de la demo: los 5 puntos se arman alrededor de donde estás (GPS, sin señal).",
+  "rutaCentrada": "Listo: la ruta de la sede está alrededor de tu ubicación",
+  "rutaCentrarError": "No se pudo leer el GPS. Activa la ubicación y vuelve a intentarlo."
 }

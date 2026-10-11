@@ -79,4 +79,35 @@ void main() {
       expect(progreso.fueraDeRuta(piura), isTrue);
     });
   });
+
+  group('ruta de la sede', () {
+    final sede = const RutaRepositoryDemo().rutaDeLaSede();
+
+    test('tiene 5 puntos ubicados, sin repetir los ids del bosque', () {
+      final bosque = {
+        for (final p in const RutaRepositoryDemo().rutaActual().puntos) p.id,
+      };
+
+      expect(sede.puntos, hasLength(5));
+      expect(sede.georreferenciada, isTrue);
+      expect(sede.puntos.where((p) => bosque.contains(p.id)), isEmpty);
+    });
+
+    test('es un recorrido corto, de 100 a 200 metros', () {
+      var metros = 0;
+      for (var i = 1; i < sede.puntos.length; i++) {
+        metros += sede.puntos[i - 1].ubicacion!.distanciaA(
+          sede.puntos[i].ubicacion!,
+        );
+      }
+
+      expect(metros, inInclusiveRange(100, 200));
+    });
+
+    test('desde la entrada de la sede, el turista está en la ruta', () {
+      final progreso = ProgresoRuta.calcular(sede, const []);
+
+      expect(progreso.fueraDeRuta(RutaRepositoryDemo.centroSede), isFalse);
+    });
+  });
 }

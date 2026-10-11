@@ -5,7 +5,7 @@ import '../../../../core/l10n/etiquetas_dominio.dart';
 import '../../../../core/l10n/formato.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/reloj.dart';
-import '../../../mapa/data/ruta_repository_demo.dart';
+import '../../../mapa/presentation/view_models/mapa_view_model.dart';
 import '../../../puntos/presentation/view_models/pasaporte_view_model.dart';
 import '../../../sesion/presentation/view_models/sesion_view_model.dart';
 import '../../../visitas/domain/visita.dart';
@@ -93,7 +93,7 @@ class ReportePdfViewModel extends Notifier<EstadoPdf> {
     final cierre = ref.read(cierreViewModelProvider);
     final asociacion = ref.read(sesionViewModelProvider).cuenta;
     final puntos = {
-      for (final punto in ref.read(rutaRepositoryProvider).rutaActual().puntos)
+      for (final punto in ref.read(rutaActualProvider).puntos)
         punto.id: punto.nombre,
     };
     final dia = reporte.dia;

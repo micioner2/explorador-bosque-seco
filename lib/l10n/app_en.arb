@@ -333,5 +333,16 @@
 
   "conexionSinSenal": "No signal · everything saved on your phone{n, plural, =0{} =1{ (1 pending)} other{ ({n} pending)}}",
   "conexionConSenal": "Online · {n, plural, =1{1 item} other{{n} items}} waiting to sync",
-  "conexionSincronizado": "Everything synced"
+  "conexionSincronizado": "Everything synced",
+
+  "ajustesRutaDemo": "Demo trail",
+  "rutaAngolo": "El Angolo · Pools trail",
+  "rutaAngoloDetalle": "The dry forest trail",
+  "rutaSede": "Presentation venue",
+  "rutaSedeDetalle": "Short trail to see the GPS on the trail",
+
+  "rutaCentrarAqui": "Center the venue trail here",
+  "rutaCentrarAyuda": "At the demo venue: the 5 stops are placed around where you are (GPS, no signal needed).",
+  "rutaCentrada": "Done: the venue trail is around your location",
+  "rutaCentrarError": "Could not read the GPS. Turn on location and try again."
 }

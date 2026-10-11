@@ -69,6 +69,56 @@ class RutaRepositoryDemo implements RutaRepository {
       Coordenada(-4.2875, -80.8585),
     ],
   );
+
+  /// Centro de la sede de la presentación (coordenadas que dio el equipo).
+  /// En el lugar se puede cambiar desde Ajustes → "Centrar la ruta aquí".
+  static const centroSede = Coordenada(-4.425429, -80.756187);
+
+  /// Cinco puntos a pocos pasos de la sede (unos 170 m en total), en el
+  /// orden en que se recorren. Mismo formato de QR que la ruta del bosque.
+  @override
+  Ruta rutaDeLaSede([Coordenada? centro]) {
+    final c = centro ?? centroSede;
+    // 1 metro ≈ 0,000009 grados cerca del ecuador.
+    Coordenada a(double norte, double este) =>
+        Coordenada(c.latitud + norte * 0.000009, c.longitud + este * 0.000009);
+
+    return Ruta(
+      id: 'sede',
+      nombre: 'Ruta de demostración · Cámara de Comercio de Piura',
+      puntos: [
+        PuntoRuta(id: 'sede-entrada', nombre: 'Entrada', ubicacion: a(0, 0)),
+        PuntoRuta(
+          id: 'sede-norte',
+          nombre: 'Esquina norte',
+          metrosDesdeAnterior: 40,
+          minutosDesdeAnterior: 1,
+          ubicacion: a(40, 0),
+        ),
+        PuntoRuta(
+          id: 'sede-noreste',
+          nombre: 'Esquina noreste',
+          metrosDesdeAnterior: 40,
+          minutosDesdeAnterior: 1,
+          ubicacion: a(40, 40),
+        ),
+        PuntoRuta(
+          id: 'sede-este',
+          nombre: 'Esquina este',
+          metrosDesdeAnterior: 40,
+          minutosDesdeAnterior: 1,
+          ubicacion: a(0, 40),
+        ),
+        PuntoRuta(
+          id: 'sede-encuentro',
+          nombre: 'Punto de encuentro',
+          metrosDesdeAnterior: 50,
+          minutosDesdeAnterior: 1,
+          ubicacion: a(-30, 20),
+        ),
+      ],
+    );
+  }
 }
 
 /// Punto único donde se elige la implementación del repositorio.

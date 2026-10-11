@@ -1,9 +1,14 @@
 import 'package:explorador_bosque_seco/core/almacen/almacen_local.dart';
 import 'package:explorador_bosque_seco/core/reloj.dart';
 import 'package:explorador_bosque_seco/features/mapa/data/ruta_repository_demo.dart';
+import 'package:explorador_bosque_seco/features/mapa/data/ubicacion_repository_gps.dart';
+import 'package:explorador_bosque_seco/features/mapa/domain/coordenada.dart';
 import 'package:explorador_bosque_seco/features/mapa/domain/ruta.dart';
 import 'package:explorador_bosque_seco/features/mapa/domain/ruta_repository.dart';
+import 'package:explorador_bosque_seco/features/mapa/domain/ubicacion_repository.dart';
 import 'package:explorador_bosque_seco/features/mapa/presentation/view_models/mapa_view_model.dart';
+import 'package:explorador_bosque_seco/features/preferencias/domain/preferencias.dart';
+import 'package:explorador_bosque_seco/features/preferencias/presentation/view_models/preferencias_view_model.dart';
 import 'package:explorador_bosque_seco/features/puntos/data/puntos_repository_local.dart';
 import 'package:explorador_bosque_seco/features/puntos/domain/pasaporte.dart';
 import 'package:explorador_bosque_seco/features/puntos/domain/producto.dart';
@@ -21,6 +26,13 @@ class _RutaCorta implements RutaRepository {
       PuntoRuta(id: 'entrada', nombre: 'Entrada'),
       PuntoRuta(id: 'pozas', nombre: 'Pozas', metrosDesdeAnterior: 1500),
     ],
+  );
+
+  @override
+  Ruta rutaDeLaSede([Coordenada? centro]) => Ruta(
+    id: 'sede',
+    nombre: 'Sede',
+    puntos: [PuntoRuta(id: 'sede-entrada', nombre: 'Entrada')],
   );
 }
 
@@ -90,4 +102,44 @@ void main() {
 
     expect(container.read(mapaViewModelProvider).visitados, 0);
   });
+
+  test(
+    'en Ajustes se cambia a la ruta de la sede y el mapa la sigue',
+    () async {
+      await container
+          .read(preferenciasViewModelProvider.notifier)
+          .cambiarRutaDemo(RutaDemo.sede);
+
+      expect(container.read(mapaViewModelProvider).ruta.id, 'sede');
+    },
+  );
+
+  test(
+    '"Centrar la ruta aquí" arma la ruta de la sede donde está el GPS',
+    () async {
+      const aqui = Coordenada(-5.1945, -80.6328);
+      final app = ProviderContainer(
+        overrides: [
+          ubicacionRepositoryProvider.overrideWithValue(const _GpsFijo(aqui)),
+        ],
+      );
+      addTearDown(app.dispose);
+
+      final listo = await app.read(centrarRutaAquiProvider)();
+
+      final ruta = app.read(rutaActualProvider);
+      expect(listo, isTrue);
+      expect(ruta.id, 'sede');
+      expect(ruta.puntos.first.ubicacion, aqui);
+    },
+  );
+}
+
+class _GpsFijo implements UbicacionRepository {
+  const _GpsFijo(this.aqui);
+
+  final Coordenada aqui;
+
+  @override
+  Stream<Coordenada> posiciones() => Stream.value(aqui);
 }

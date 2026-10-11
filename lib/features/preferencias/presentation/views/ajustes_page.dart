@@ -7,6 +7,7 @@ import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/titulo_seccion.dart';
 import '../../../conexion/domain/estado_conexion.dart';
 import '../../../conexion/presentation/view_models/conexion_view_model.dart';
+import '../../../mapa/presentation/view_models/mapa_view_model.dart';
 import '../../domain/preferencias.dart';
 import '../view_models/preferencias_view_model.dart';
 
@@ -25,6 +26,17 @@ class AjustesPage extends ConsumerWidget {
     final idiomaActual = Idioma.deCodigo(
       Localizations.localeOf(context).languageCode,
     );
+
+    // Arma la ruta de la sede alrededor de la posición GPS actual.
+    Future<void> centrarRutaAqui() async {
+      final mensajero = ScaffoldMessenger.of(context);
+      final listo = await ref.read(centrarRutaAquiProvider)();
+      mensajero.showSnackBar(
+        SnackBar(
+          content: Text(listo ? l10n.rutaCentrada : l10n.rutaCentrarError),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.ajustes)),
@@ -78,6 +90,38 @@ class AjustesPage extends ConsumerWidget {
                 onTap: () => viewModel.cambiarModoTema(ModoTema.oscuro),
               ),
             ],
+          ),
+          TituloSeccion(l10n.ajustesRutaDemo),
+          _GrupoOpciones(
+            opciones: [
+              _Opcion(
+                icono: Icons.forest_outlined,
+                titulo: l10n.rutaAngolo,
+                detalle: l10n.rutaAngoloDetalle,
+                seleccionada: preferencias.rutaDemo == RutaDemo.angolo,
+                onTap: () => viewModel.cambiarRutaDemo(RutaDemo.angolo),
+              ),
+              _Opcion(
+                icono: Icons.location_city_outlined,
+                titulo: l10n.rutaSede,
+                detalle: l10n.rutaSedeDetalle,
+                seleccionada: preferencias.rutaDemo == RutaDemo.sede,
+                onTap: () => viewModel.cambiarRutaDemo(RutaDemo.sede),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppEspacios.s),
+          Text(
+            l10n.rutaCentrarAyuda,
+            style: context.textos.bodySmall?.copyWith(
+              color: context.esquema.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppEspacios.xs),
+          OutlinedButton.icon(
+            onPressed: centrarRutaAqui,
+            icon: const Icon(Icons.my_location),
+            label: Text(l10n.rutaCentrarAqui),
           ),
           TituloSeccion(l10n.ajustesServidor),
           const _TarjetaConexion(),

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../mapa/data/ruta_repository_demo.dart';
+import '../../../mapa/presentation/view_models/mapa_view_model.dart';
 import '../../../puntos/domain/pasaporte.dart';
 import '../../../puntos/presentation/view_models/pasaporte_view_model.dart';
 import '../../data/vinculo_repository_local.dart';
@@ -44,7 +44,7 @@ class EscaneoViewModel extends Notifier<ResultadoEscaneo?> {
         if (!yaEstaba) vinculo.vincular(visitaId);
         return GrupoVinculado(yaEstaba: yaEstaba);
       case QrDePunto(:final puntoId):
-        final ruta = ref.read(rutaRepositoryProvider).rutaActual();
+        final ruta = ref.read(rutaActualProvider);
         final punto = ruta.puntos.where((p) => p.id == puntoId).firstOrNull;
         if (punto == null) return const PuntoAjeno();
         final visitaId = ref.read(vinculoViewModelProvider);

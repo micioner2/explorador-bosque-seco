@@ -289,6 +289,11 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
 - **Estado de conexión real** en Mapa y Hoy: "Sin señal · todo guardado en
   el celular (N pendientes)", "Con señal · N pendientes por sincronizar" o
   "Todo sincronizado". Cambia solo al activar o quitar el modo avión.
+- **Ruta de demostración en la sede** (Cámara de Comercio de Piura): 5
+  puntos en unos 170 m. En Ajustes → "Ruta de la demo" se elige entre El
+  Angolo y la sede, y "Centrar la ruta de la sede aquí" la arma alrededor de
+  donde está el celular (GPS, sin señal). Carteles en
+  [`demo/qr-puntos/sede.html`](demo/qr-puntos/sede.html).
 
 > **Dónde está:** las etapas 2 a 6 están en la rama `feature/reservas` y
 > todavía no se han unido a la versión principal (`develop` y `main`).
@@ -332,8 +337,11 @@ Ordenada de lo más antiguo a lo más reciente. Todo lo de abajo se hizo el
 4. **Modo asociación:** ícono de tienda → "Usar cuenta de prueba" → elegir un
    guía.
 5. Para probar el escaneo, abrir los carteles de
-   [`demo/qr-puntos.html`](demo/qr-puntos.html) en otra pantalla o
-   imprimirlos.
+   [`demo/qr-puntos.html`](demo/qr-puntos.html) (bosque) o
+   [`demo/qr-puntos/sede.html`](demo/qr-puntos/sede.html) (sede) en otra
+   pantalla o imprimirlos.
+6. Para ver el GPS sobre la ruta sin ir al bosque: Ajustes → "Ruta de la
+   demo" → "Centrar la ruta de la sede aquí".
 
 ---
 
