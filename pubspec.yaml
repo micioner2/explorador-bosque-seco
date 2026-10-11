@@ -40,6 +40,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
@@ -50,3 +51,16 @@ flutter:
     - assets/fotos/
   # Genera AppLocalizations desde lib/l10n/*.arb (ver l10n.yaml).
   generate: true
+
+# Ícono del launcher desde el logo de EcoRumbo (símbolo verde sobre blanco).
+# Es una herramienta de desarrollo: no forma parte del APK. Las imágenes
+# fuente están en assets/icono/ (no se empaquetan: esa carpeta no se declara
+# arriba). Regenerar tras cambiar el logo:
+#   dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: 'assets/icono/ecorumbo_icono.png'
+  adaptive_icon_background: '#FFFFFF'
+  adaptive_icon_foreground: 'assets/icono/ecorumbo_frente.png'
+  remove_alpha_ios: true

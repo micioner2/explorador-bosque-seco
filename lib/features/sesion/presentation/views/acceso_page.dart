@@ -7,6 +7,7 @@ import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/acciones_barra.dart';
 import '../../../../shared/widgets/icono_circular.dart';
+import '../../../../shared/widgets/logo_app.dart';
 import '../../domain/resultado_acceso.dart';
 import '../view_models/acceso_view_model.dart';
 import 'cabecera_acceso.dart';
@@ -87,6 +88,9 @@ class _AccesoPageState extends ConsumerState<AccesoPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const SizedBox(height: AppEspacios.l),
+                  const LogoApp(),
+                  const SizedBox(height: AppEspacios.l),
                   if (rechazo != null) ...[
                     _AvisoRechazo(motivo: rechazo.motivo),
                     const SizedBox(height: AppEspacios.m),
