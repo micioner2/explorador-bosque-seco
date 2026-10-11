@@ -21,6 +21,27 @@ void main() {
     expect(find.text('Buscando tu ubicación (GPS)…'), findsOneWidget);
   });
 
+  testWidgets('sin grupo vinculado, el mapa invita a escanear el QR del grupo', (
+    tester,
+  ) async {
+    await montarPantalla(tester, const MapaPage(), grupo: null);
+
+    expect(find.text('Escanea el QR de tu grupo'), findsOneWidget);
+    expect(find.text('Escanear el QR del grupo'), findsOneWidget);
+    // La ruta y los puntos no aparecen hasta escanear.
+    expect(find.byType(FlutterMap), findsNothing);
+  });
+
+  testWidgets('el mapa se abre en pantalla completa', (tester) async {
+    await montarPantalla(tester, const MapaPage());
+
+    await tocar(tester, find.byTooltip('Ver en pantalla completa'));
+
+    // En pantalla completa ya no está el botón de abrir y queda un mapa.
+    expect(find.byTooltip('Ver en pantalla completa'), findsNothing);
+    expect(find.byType(FlutterMap), findsOneWidget);
+  });
+
   testWidgets('con GPS dice cuánto falta al siguiente punto', (tester) async {
     // A unos 400 m del Mirador, el siguiente punto de la demostración.
     await montarPantalla(

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/formato.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/router/rutas.dart';
 import '../../../../core/theme/app_espacios.dart';
 import '../../../../core/theme/colores_app.dart';
 import '../../../../shared/widgets/acciones_barra.dart';
+import '../../../../shared/widgets/estado_vacio.dart';
 import '../../../../shared/widgets/etiqueta_estado.dart';
 import '../../../../shared/widgets/titulo_seccion.dart';
+import '../../../escaneo/presentation/view_models/escaneo_view_model.dart';
 import '../../../sincronizacion/presentation/view_models/sincronizacion_view_model.dart';
 import '../../../sincronizacion/presentation/views/aviso_conexion.dart';
 import '../../domain/progreso_ruta.dart';
@@ -23,6 +27,39 @@ class MapaPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
+    final vinculado = ref.watch(vinculoViewModelProvider) != null;
+
+    // Sin grupo vinculado no se muestra la ruta ni los puntos: primero hay
+    // que escanear el QR del grupo, igual que en el pasaporte.
+    if (!vinculado) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.navMapa),
+          actions: const [BotonAjustes()],
+        ),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            AppEspacios.l,
+            AppEspacios.xl,
+            AppEspacios.l,
+            AppEspacios.bajoBotonFlotante,
+          ),
+          children: [
+            EstadoVacio(
+              icono: Icons.qr_code_2,
+              titulo: l10n.mapaSinGrupo,
+              detalle: l10n.mapaSinGrupoDetalle,
+            ),
+            FilledButton.icon(
+              onPressed: () => context.push<void>(Rutas.escanear),
+              icon: const Icon(Icons.qr_code_scanner),
+              label: Text(l10n.pasaporteEscanearGrupo),
+            ),
+          ],
+        ),
+      );
+    }
+
     final progreso = ref.watch(mapaViewModelProvider);
     final ruta = progreso.ruta;
 

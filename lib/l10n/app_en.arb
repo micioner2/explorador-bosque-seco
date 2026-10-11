@@ -39,6 +39,8 @@
   "mapaDesdeAnterior": "from the previous stop",
   "mapaAPie": "on foot, approx.",
   "mapaAvance": "{visitados} of {total} stops",
+  "mapaSinGrupo": "Scan your group's QR",
+  "mapaSinGrupoDetalle": "The trail and its stops appear once you link your phone to the group. The guide shows you the QR at the checkpoint.",
   "mapaRutaCompletada": "Trail completed!",
   "mapaRutaCompletadaDetalle": "You visited every stop. Check your stamps in the passport.",
   "mapaEsquema": "Trail sketch · not to scale",
@@ -303,6 +305,8 @@
   "mapaTuUbicacion": "Your location",
   "mapaDescripcion": "Trail map with {n} stops. The list below shows them in order.",
   "mapaCentrar": "Show the whole trail",
+  "mapaPantallaCompleta": "Open full screen",
+  "mapaMoverAyuda": "Move the map with two fingers. For a closer look, open it full screen.",
 
   "reportePorGuia": "By guide",
   "reporteGuiaDetalle": "{grupos, plural, =1{1 group} other{{grupos} groups}} · {personas, plural, =1{1 person} other{{personas} people}}",

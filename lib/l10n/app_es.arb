@@ -57,6 +57,8 @@
       "total": {"type": "int"}
     }
   },
+  "mapaSinGrupo": "Escanea el QR de tu grupo",
+  "mapaSinGrupoDetalle": "La ruta y los puntos aparecen cuando vinculas tu celular al grupo. El guía te muestra el QR en el puesto de control.",
   "mapaRutaCompletada": "¡Ruta completada!",
   "mapaRutaCompletadaDetalle": "Visitaste todos los puntos. Revisa tus sellos en el pasaporte.",
   "mapaEsquema": "Esquema de la ruta · no está a escala",
@@ -569,6 +571,8 @@
     }
   },
   "mapaCentrar": "Ver toda la ruta",
+  "mapaPantallaCompleta": "Ver en pantalla completa",
+  "mapaMoverAyuda": "Mueve el mapa con dos dedos. Para explorarlo mejor, ábrelo en pantalla completa.",
 
   "reportePorGuia": "Por guía",
   "reporteGuiaDetalle": "{grupos, plural, =1{1 grupo} other{{grupos} grupos}} · {personas, plural, =1{1 persona} other{{personas} personas}}",

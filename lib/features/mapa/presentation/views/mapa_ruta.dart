@@ -14,9 +14,92 @@ import '../view_models/mapa_view_model.dart';
 
 LatLng _aLatLng(Coordenada c) => LatLng(c.latitud, c.longitud);
 
+/// Ajuste de cámara que muestra toda la ruta.
+CameraFit _ajusteRuta(ProgresoRuta progreso) => CameraFit.coordinates(
+  coordinates: [for (final c in progreso.ruta.camino) _aLatLng(c)],
+  padding: const EdgeInsets.all(40),
+  maxZoom: 16,
+);
+
+/// Capas del mapa que comparten la vista incrustada y la de pantalla
+/// completa: el camino, los puntos con su estado y la posición GPS. Si la
+/// app trae las teselas del mapa base, se dibujan debajo; si no, el fondo es
+/// liso.
+List<Widget> _capasRuta(
+  BuildContext context, {
+  required ProgresoRuta progreso,
+  required bool hayTeselas,
+  required Coordenada? posicion,
+}) {
+  final l10n = context.l10n;
+  final esquema = context.esquema;
+  final siguiente = progreso.siguiente;
+
+  return [
+    if (hayTeselas)
+      TileLayer(
+        urlTemplate: '$carpetaTeselas{z}-{x}-{y}.png',
+        tileProvider: AssetTileProvider(),
+        maxNativeZoom: 16,
+        userAgentPackageName: 'pe.bosqueseco.explorador',
+      ),
+    PolylineLayer(
+      polylines: [
+        Polyline(
+          points: [for (final c in progreso.ruta.camino) _aLatLng(c)],
+          color: esquema.primary,
+          strokeWidth: 5,
+          borderColor: esquema.surface,
+          borderStrokeWidth: 2,
+        ),
+      ],
+    ),
+    MarkerLayer(
+      markers: [
+        for (final punto in progreso.puntos)
+          if (punto.punto.ubicacion case final ubicacion?)
+            Marker(
+              point: _aLatLng(ubicacion),
+              width: 36,
+              height: 36,
+              child: _MarcaPunto(
+                orden: punto.orden,
+                visitado: punto.visitado,
+                esSiguiente: punto == siguiente,
+              ),
+            ),
+        if (posicion != null)
+          Marker(
+            point: _aLatLng(posicion),
+            width: 28,
+            height: 28,
+            child: Tooltip(
+              message: l10n.mapaTuUbicacion,
+              child: const _MarcaTurista(),
+            ),
+          ),
+      ],
+    ),
+    const Scalebar(alignment: Alignment.bottomLeft),
+    if (hayTeselas)
+      const Align(alignment: Alignment.bottomRight, child: _Atribucion()),
+  ];
+}
+
+/// Botón redondo para recentrar la cámara en toda la ruta.
+Widget _botonCentrar(BuildContext context, VoidCallback onPressed) =>
+    IconButton.filledTonal(
+      tooltip: context.l10n.mapaCentrar,
+      onPressed: onPressed,
+      icon: const Icon(Icons.fit_screen_outlined),
+    );
+
 /// Mapa de la ruta que funciona sin señal: el camino, los puntos con su
-/// estado y la posición GPS del turista. Si la app trae las teselas del
-/// mapa base, se dibujan debajo; si no, el fondo es liso.
+/// estado y la posición GPS del turista.
+///
+/// Dentro de la lista solo responde al zoom con dos dedos, para que el
+/// arrastre con un dedo haga scroll de la página. Para navegarlo con un
+/// dedo, se abre en pantalla completa.
 class MapaRuta extends ConsumerStatefulWidget {
   const MapaRuta({required this.progreso, super.key});
 
@@ -29,26 +112,26 @@ class MapaRuta extends ConsumerStatefulWidget {
 class _MapaRutaState extends ConsumerState<MapaRuta> {
   final _controlador = MapController();
 
-  CameraFit get _todaLaRuta => CameraFit.coordinates(
-    coordinates: [for (final c in widget.progreso.ruta.camino) _aLatLng(c)],
-    padding: const EdgeInsets.all(40),
-    maxZoom: 16,
-  );
-
   @override
   void dispose() {
     _controlador.dispose();
     super.dispose();
   }
 
+  void _abrirPantallaCompleta() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => _MapaPantallaCompleta(progreso: widget.progreso),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final esquema = context.esquema;
     final progreso = widget.progreso;
     final hayTeselas = ref.watch(hayTeselasProvider).value ?? false;
     final posicion = ref.watch(ubicacionViewModelProvider).value;
-    final siguiente = progreso.siguiente;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -62,86 +145,128 @@ class _MapaRutaState extends ConsumerState<MapaRuta> {
               child: FlutterMap(
                 mapController: _controlador,
                 options: MapOptions(
-                  initialCameraFit: _todaLaRuta,
+                  initialCameraFit: _ajusteRuta(progreso),
                   backgroundColor: context.colores.mapa,
                   minZoom: 10,
                   maxZoom: 18,
+                  // Solo gestos con dos dedos: así el arrastre con un dedo
+                  // hace scroll de la lista en vez de mover el mapa.
                   interactionOptions: const InteractionOptions(
-                    flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                    flags:
+                        InteractiveFlag.pinchZoom |
+                        InteractiveFlag.pinchMove |
+                        InteractiveFlag.doubleTapZoom,
                   ),
                 ),
                 children: [
-                  if (hayTeselas)
-                    TileLayer(
-                      urlTemplate: '$carpetaTeselas{z}-{x}-{y}.png',
-                      tileProvider: AssetTileProvider(),
-                      maxNativeZoom: 16,
-                      userAgentPackageName: 'pe.bosqueseco.explorador',
-                    ),
-                  PolylineLayer(
-                    polylines: [
-                      Polyline(
-                        points: [
-                          for (final c in progreso.ruta.camino) _aLatLng(c),
-                        ],
-                        color: esquema.primary,
-                        strokeWidth: 5,
-                        borderColor: esquema.surface,
-                        borderStrokeWidth: 2,
-                      ),
-                    ],
+                  ..._capasRuta(
+                    context,
+                    progreso: progreso,
+                    hayTeselas: hayTeselas,
+                    posicion: posicion,
                   ),
-                  MarkerLayer(
-                    markers: [
-                      for (final punto in progreso.puntos)
-                        if (punto.punto.ubicacion case final ubicacion?)
-                          Marker(
-                            point: _aLatLng(ubicacion),
-                            width: 36,
-                            height: 36,
-                            child: _MarcaPunto(
-                              orden: punto.orden,
-                              visitado: punto.visitado,
-                              esSiguiente: punto == siguiente,
-                            ),
-                          ),
-                      if (posicion != null)
-                        Marker(
-                          point: _aLatLng(posicion),
-                          width: 28,
-                          height: 28,
-                          child: Tooltip(
-                            message: l10n.mapaTuUbicacion,
-                            child: const _MarcaTurista(),
-                          ),
-                        ),
-                    ],
-                  ),
-                  const Scalebar(alignment: Alignment.bottomLeft),
                   Align(
                     alignment: Alignment.topRight,
                     child: Padding(
                       padding: const EdgeInsets.all(AppEspacios.s),
-                      child: IconButton.filledTonal(
-                        tooltip: l10n.mapaCentrar,
-                        onPressed: () => _controlador.fitCamera(_todaLaRuta),
-                        icon: const Icon(Icons.fit_screen_outlined),
+                      child: Column(
+                        children: [
+                          IconButton.filledTonal(
+                            tooltip: l10n.mapaPantallaCompleta,
+                            onPressed: _abrirPantallaCompleta,
+                            icon: const Icon(Icons.fullscreen),
+                          ),
+                          const SizedBox(height: AppEspacios.s),
+                          _botonCentrar(
+                            context,
+                            () => _controlador.fitCamera(_ajusteRuta(progreso)),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  if (hayTeselas)
-                    const Align(
-                      alignment: Alignment.bottomRight,
-                      child: _Atribucion(),
-                    ),
                 ],
               ),
             ),
           ),
         ),
         const SizedBox(height: AppEspacios.s),
+        Text(
+          l10n.mapaMoverAyuda,
+          style: context.textos.bodySmall?.copyWith(
+            color: context.esquema.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: AppEspacios.xs),
         _EstadoGps(progreso: progreso),
       ],
+    );
+  }
+}
+
+/// La ruta a pantalla completa, donde se navega con un dedo sin pelear con
+/// el scroll de la página. El botón de volver la cierra.
+class _MapaPantallaCompleta extends ConsumerStatefulWidget {
+  const _MapaPantallaCompleta({required this.progreso});
+
+  final ProgresoRuta progreso;
+
+  @override
+  ConsumerState<_MapaPantallaCompleta> createState() =>
+      _MapaPantallaCompletaState();
+}
+
+class _MapaPantallaCompletaState extends ConsumerState<_MapaPantallaCompleta> {
+  final _controlador = MapController();
+
+  @override
+  void dispose() {
+    _controlador.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final progreso = widget.progreso;
+    final hayTeselas = ref.watch(hayTeselasProvider).value ?? false;
+    final posicion = ref.watch(ubicacionViewModelProvider).value;
+
+    return Scaffold(
+      appBar: AppBar(title: Text(progreso.ruta.nombre)),
+      body: Semantics(
+        label: l10n.mapaDescripcion(progreso.total),
+        child: FlutterMap(
+          mapController: _controlador,
+          options: MapOptions(
+            initialCameraFit: _ajusteRuta(progreso),
+            backgroundColor: context.colores.mapa,
+            minZoom: 10,
+            maxZoom: 18,
+            interactionOptions: const InteractionOptions(
+              flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+            ),
+          ),
+          children: [
+            ..._capasRuta(
+              context,
+              progreso: progreso,
+              hayTeselas: hayTeselas,
+              posicion: posicion,
+            ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.all(AppEspacios.s),
+                child: _botonCentrar(
+                  context,
+                  () => _controlador.fitCamera(_ajusteRuta(progreso)),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
