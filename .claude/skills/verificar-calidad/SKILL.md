@@ -34,6 +34,9 @@ los tres pasen.
      letra grande: corrige la pantalla.
    - `traducciones_test.dart` falla si un texto está en un `.arb` y no en el
      otro: agrega la traducción que falta.
+   - La prueba con el Supabase real (`test/integracion/`) se omite sin
+     configuración. Si tocaste la conexión, córrela aparte con
+     `flutter test --tags supabase --dart-define-from-file=config/supabase.json`.
 
 ## Si el CI de GitHub falla y en local pasa
 

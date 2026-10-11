@@ -1,29 +1,45 @@
 ---
 name: integrar-supabase
-description: Conecta los repositorios de la app a Supabase (Postgres, Auth, Storage) manteniendo el funcionamiento offline-first, cuando el equipo entregue la URL y la clave pública. Úsala al configurar Supabase, crear el esquema, escribir repositorios Supabase o implementar la sincronización. Hoy está PENDIENTE de credenciales.
+description: Conecta los repositorios de la app a Supabase (Postgres, Auth, Storage) manteniendo el funcionamiento offline-first. La conexión y su prueba ya están hechas; falta el esquema y los repositorios. Úsala al configurar Supabase, crear el esquema, escribir repositorios Supabase o implementar la sincronización.
 ---
 
-# Integrar Supabase (pendiente de credenciales)
+# Integrar Supabase
 
-> **Estado:** las credenciales todavía no están. No inventes URL ni claves y no
-> dejes la app dependiendo de Supabase hasta tenerlas. Mientras tanto se usan
-> los repositorios `*_repository_demo.dart`.
+> **Estado:** conexión hecha y probada (servidor y clave OK). **Falta crear el
+> esquema** (las tablas aún no existen) y escribir los repositorios Supabase.
+> Mientras tanto se usan los repositorios `*_repository_demo.dart`. No
+> inventes URL ni claves: las reales están en `config/supabase.json`.
 
 ## 1. Configuración (sin subir secretos)
 
-- La URL y la **anon key** van en `config/supabase.json` (ignorado por git),
-  copiando `config/supabase.example.json`.
+- La URL y la **clave pública** (`sb_publishable_...`) van en
+  `config/supabase.json` (ignorado por git), copiando
+  `config/supabase.example.json`.
 - Se pasan al compilar con `--dart-define-from-file=config/supabase.json` y
-  se leen con `String.fromEnvironment('SUPABASE_URL')` y
-  `String.fromEnvironment('SUPABASE_ANON_KEY')`.
-- Nunca uses la `service_role` key en la app.
+  se leen en `lib/core/supabase/config_supabase.dart` (`SUPABASE_URL` y
+  `SUPABASE_PUBLISHABLE_KEY`).
+- Nunca uses la clave secreta ni la `service_role` en la app: el APK se
+  instala en celulares de terceros. La seguridad la dan las políticas RLS.
 
-## 2. Paquete
+## 2. Paquete y cliente (hecho)
 
-- Antes de agregar `supabase_flutter`, verifica en pub.dev que la versión
-  soporte **Dart 3.10** (Flutter 3.38.9). Fija la versión con `^x.y.z`.
-- Inicializa en `main.dart` solo si las variables existen; si no, la app sigue
-  con datos demo.
+- `supabase_flutter: ^2.18.2` (compatible con Dart 3.10). En Windows,
+  `flutter pub add paquete:^x` pierde el `^`: revisa `pubspec.yaml`.
+- `iniciarSupabase()` (`lib/core/supabase/cliente_supabase.dart`) se llama
+  en `main.dart` solo si hay configuración. No necesita señal y, si falla,
+  la app sigue con datos demo.
+- **`clienteSupabaseProvider`** es el único punto de acceso al cliente. Los
+  repositorios Supabase lo leen en su Provider: si es `null`, usan la
+  versión demo (ver `conexionRepositoryProvider` como ejemplo).
+
+## Prueba de conexión (hecha)
+
+- `features/conexion`: una consulta a `espacios` distingue servidor
+  conectado con o sin esquema, clave rechazada, sin conexión y error del
+  servidor. Se ve en Ajustes → Servidor.
+- Pruebas sin red con `MockClient` en `test/features/conexion/`.
+- Contra el servidor real (se omite sin configuración, como en el CI):
+  `flutter test --tags supabase --dart-define-from-file=config/supabase.json`.
 
 ## 3. Esquema y seguridad
 

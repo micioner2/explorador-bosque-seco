@@ -55,6 +55,21 @@ Cambiar los datos de demostración por la base local o la API solo toca la
 capa `data` y el *provider* del repositorio: ni las pantallas ni las reglas
 cambian.
 
+### Conexión con Supabase
+
+- La URL y la clave pública se pasan al compilar
+  (`--dart-define-from-file=config/supabase.json`) y se leen en
+  `core/supabase/config_supabase.dart`. El archivo no se sube al
+  repositorio.
+- `main.dart` llama a `iniciarSupabase()`: si no hay configuración o falla,
+  devuelve `null` y la app arranca igual. No necesita señal.
+- `clienteSupabaseProvider` es el único punto de acceso al cliente. El
+  Provider de cada repositorio elige la versión Supabase si hay cliente, o
+  la de demostración si no.
+- `features/conexion` prueba el servidor con una consulta liviana y
+  distingue: conectado (con o sin esquema), clave rechazada, sin conexión y
+  error del servidor. Nunca lanza excepciones; se muestra en Ajustes.
+
 ## Interfaz: tema, idiomas y preferencias
 
 La capa `views` no decide colores ni textos; los pide.
@@ -99,3 +114,7 @@ pendiente con el proyecto web.
   pareja texto/fondo de los dos temas.
 - `test/l10n/traducciones_test.dart` compara los dos `.arb`: mismas claves,
   mismas variables y ningún texto vacío.
+- `test/features/conexion/` simula el servidor de Supabase con `MockClient`
+  (sin red). `test/integracion/` llama al servidor real y solo corre con
+  `--tags supabase --dart-define-from-file=config/supabase.json`; en el CI
+  se omite.

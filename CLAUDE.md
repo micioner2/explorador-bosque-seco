@@ -28,6 +28,8 @@ datos (Supabase).
 | flutter_localizations + intl | las del SDK de Flutter (`intl: any`) |
 | shared_preferences | ^2.5.5 |
 | qr_flutter | ^4.1.0 |
+| supabase_flutter | ^2.18.2 |
+| http | ^1.6.0 |
 | Java (Android) | 17 |
 
 Las versiones mayores nuevas de paquetes suelen exigir Dart 3.12: **no las
@@ -42,7 +44,10 @@ flutter gen-l10n                # regenerar traducciones tras editar un .arb
 dart format lib test            # formato (el CI falla si hay cambios)
 flutter analyze                 # análisis estático (el CI falla con infos)
 flutter test                    # pruebas
-flutter run                     # ejecutar en el celular/emulador
+flutter run                     # ejecutar en el celular/emulador (solo datos demo)
+flutter run --dart-define-from-file=config/supabase.json   # con Supabase
+flutter test --tags supabase --dart-define-from-file=config/supabase.json
+                                # prueba de conexión con el Supabase real
 flutter build apk --release     # APK (el CI lo compila en main)
 ```
 
@@ -60,7 +65,7 @@ lib/features/<funcionalidad>/
 └── presentation/
     ├── view_models/         # Notifier/Provider de Riverpod
     └── views/               # pantallas (solo dibujan y delegan)
-lib/core/                    # router (go_router), tema, l10n, reloj inyectable
+lib/core/                    # router, tema, l10n, Supabase, reloj inyectable
 lib/l10n/                    # textos: app_es.arb (plantilla) y app_en.arb
 lib/shared/widgets/          # widgets reutilizables
 ```
@@ -188,8 +193,13 @@ funcionar en modo avión:
 - **Ruta:** distancias, tiempos y avance listos (`features/mapa`). El mapa es
   un esquema: falta integrar `flutter_map` (teselas incluidas en la app).
 - **Escáner:** falta integrar `mobile_scanner`; hoy se simula el escaneo.
-- **Supabase pendiente:** el equipo entregará las credenciales. No inventes
-  URL ni claves; ver la skill `/integrar-supabase`.
+- **Supabase conectado.** La URL y la clave pública van en
+  `config/supabase.json` (ignorado por git; copia de
+  `config/supabase.example.json`) y se pasan con `--dart-define-from-file`.
+  Sin ese archivo la app arranca igual, con datos demo. La prueba de
+  conexión está en Ajustes → Servidor y en `test/integracion/`. **Falta
+  crear el esquema** (las tablas aún no existen) y los repositorios
+  Supabase; ver la skill `/integrar-supabase`.
 
 ## Skills del proyecto (`.claude/skills/`)
 
@@ -198,12 +208,14 @@ funcionar en modo avión:
 | `/nueva-funcionalidad` | Crear una funcionalidad con sus capas, Provider, ruta y pruebas. |
 | `/verificar-calidad` | Correr formato, análisis y pruebas como el CI. |
 | `/reglas-negocio` | Consultar las reglas del dominio (puntos, visitas, reporte) y el glosario. |
-| `/integrar-supabase` | Conectar los repositorios a Supabase cuando lleguen las credenciales. |
+| `/integrar-supabase` | Crear el esquema y conectar los repositorios a Supabase (la conexión ya está). |
 | `/commit-y-pr` | Preparar commits y pull requests con las convenciones del equipo. |
 
 ## Qué no hacer
 
-- No subas credenciales, `.env` ni `google-services.json` al repositorio.
+- No subas credenciales, `config/supabase.json`, `.env` ni
+  `google-services.json` al repositorio. En la app solo va la clave
+  pública (`sb_publishable_...`), nunca la secreta ni la `service_role`.
 - No pongas lógica de negocio en vistas ni en repositorios.
 - No escribas textos visibles ni colores fijos en las vistas (reglas 8 y 9).
 - No subas `lib/l10n/app_localizations*.dart`: se generan solos.

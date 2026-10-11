@@ -73,10 +73,11 @@ test/                               # dominio, ViewModels y widgets
 ```
 
 Funcionalidades: `explorar`, `mapa`, `escaneo`, `puntos`, `visitas`,
-`reportes` y `preferencias`.
+`reportes`, `preferencias` y `conexion`.
 
 **Stack:** Flutter 3.38.9 (Dart 3.10) · Riverpod 3 · go_router ·
-flutter_localizations (es/en) · shared_preferences · qr_flutter.
+flutter_localizations (es/en) · shared_preferences · qr_flutter ·
+Supabase (`supabase_flutter`).
 
 ### Reglas de negocio con pruebas
 
@@ -97,8 +98,19 @@ Requisitos: Flutter **3.38.9** (canal stable) y un celular o emulador Android.
 
 ```bash
 flutter pub get      # también genera las traducciones
-flutter run
+flutter run          # solo datos de demostración
 ```
+
+**Con Supabase:** copia `config/supabase.example.json` como
+`config/supabase.json` (no se sube al repositorio), completa la URL y la
+clave pública del proyecto y ejecuta:
+
+```bash
+flutter run --dart-define-from-file=config/supabase.json
+flutter test --tags supabase --dart-define-from-file=config/supabase.json  # prueba de conexión
+```
+
+El estado de la conexión también se ve en **Ajustes → Servidor**.
 
 Si editas un texto en `lib/l10n/*.arb`, regenera las traducciones con
 `flutter gen-l10n`.
