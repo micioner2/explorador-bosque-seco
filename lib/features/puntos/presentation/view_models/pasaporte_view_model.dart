@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/id.dart';
 import '../../../../core/reloj.dart';
-import '../../data/puntos_repository_demo.dart';
+import '../../data/puntos_repository_local.dart';
 import '../../domain/escaneo.dart';
 import '../../domain/pasaporte.dart';
 import '../../domain/producto.dart';
@@ -20,24 +21,30 @@ class PasaporteViewModel extends Notifier<Pasaporte> {
     final fecha = ref.read(relojProvider)();
     final resultado = state.registrar(
       Escaneo(
-        id: '$visitaId-$puntoId-${fecha.microsecondsSinceEpoch}',
+        id: nuevoId(),
         visitaId: visitaId,
         puntoId: puntoId,
         fecha: fecha,
       ),
     );
-    if (resultado is PuntoGanado) state = resultado.pasaporte;
+    if (resultado is PuntoGanado) _guardar(resultado.pasaporte);
     return resultado;
   }
 
   /// Aplica la respuesta del servidor tras sincronizar.
   void confirmar(Set<String> idsConfirmados) {
-    state = state.confirmar(idsConfirmados);
+    _guardar(state.confirmar(idsConfirmados));
   }
 
   /// Canjea puntos por un producto. Lanza [CanjeInvalido] si no alcanzan.
   void canjear(Producto producto) {
-    state = state.canjear(producto);
+    _guardar(state.canjear(producto));
+  }
+
+  /// Muestra el cambio de inmediato y lo guarda en el celular.
+  void _guardar(Pasaporte pasaporte) {
+    state = pasaporte;
+    ref.read(puntosRepositoryProvider).guardar(pasaporte);
   }
 }
 

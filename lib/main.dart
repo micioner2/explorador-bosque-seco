@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
 import 'core/almacen/almacen_local.dart';
+import 'core/almacen/coleccion_local.dart';
 import 'core/supabase/cliente_supabase.dart';
 import 'features/preferencias/data/preferencias_repository_local.dart';
 import 'features/preferencias/data/preferencias_repository_memoria.dart';
@@ -21,6 +22,9 @@ Future<void> main() async {
     ProviderScope(
       overrides: [
         almacenLocalProvider.overrideWithValue(AlmacenPreferencias(almacen)),
+        // Con cuentas reales el celular empieza vacío; con la cuenta de
+        // prueba, con los datos de demostración.
+        datosDemoProvider.overrideWithValue(clienteSupabase == null),
         preferenciasRepositoryProvider.overrideWithValue(
           PreferenciasRepositoryLocal(almacen),
         ),

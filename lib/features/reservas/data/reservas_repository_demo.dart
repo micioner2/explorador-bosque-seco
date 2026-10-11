@@ -1,14 +1,10 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../domain/reserva.dart';
-import '../domain/reservas_repository.dart';
 
 /// Reservas de demostración, relativas al día de hoy. Se reemplazan por las
 /// de Supabase cuando exista su tabla.
-class ReservasRepositoryDemo implements ReservasRepository {
+class ReservasRepositoryDemo {
   const ReservasRepositoryDemo();
 
-  @override
   List<Reserva> reservas(DateTime hoy) {
     DateTime en(int dias, int hora, [int minuto = 0]) =>
         DateTime(hoy.year, hoy.month, hoy.day + dias, hora, minuto);
@@ -67,7 +63,3 @@ class ReservasRepositoryDemo implements ReservasRepository {
     ];
   }
 }
-
-final reservasRepositoryProvider = Provider<ReservasRepository>(
-  (ref) => const ReservasRepositoryDemo(),
-);

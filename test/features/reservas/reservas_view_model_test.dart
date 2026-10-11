@@ -1,5 +1,5 @@
 import 'package:explorador_bosque_seco/core/reloj.dart';
-import 'package:explorador_bosque_seco/features/reservas/data/reservas_repository_demo.dart';
+import 'package:explorador_bosque_seco/features/reservas/data/reservas_repository_local.dart';
 import 'package:explorador_bosque_seco/features/reservas/domain/reserva.dart';
 import 'package:explorador_bosque_seco/features/reservas/domain/reservas_repository.dart';
 import 'package:explorador_bosque_seco/features/reservas/presentation/view_models/reservas_view_model.dart';
@@ -11,6 +11,9 @@ import 'package:flutter_test/flutter_test.dart';
 class _SinReservas implements ReservasRepository {
   @override
   List<Reserva> reservas(DateTime hoy) => const [];
+
+  @override
+  Future<void> guardar(Reserva reserva) async {}
 }
 
 void main() {

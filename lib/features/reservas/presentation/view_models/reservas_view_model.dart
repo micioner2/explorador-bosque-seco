@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/id.dart';
 import '../../../../core/reloj.dart';
 import '../../../sesion/presentation/view_models/sesion_view_model.dart';
-import '../../data/reservas_repository_demo.dart';
+import '../../data/reservas_repository_local.dart';
 import '../../domain/agenda_reservas.dart';
 import '../../domain/reserva.dart';
 
@@ -39,6 +39,7 @@ class ReservasViewModel extends Notifier<List<Reserva>> {
       nombreGuia: guia.nombre,
     );
     state = [...state, reserva];
+    ref.read(reservasRepositoryProvider).guardar(reserva);
     return reserva;
   }
 
@@ -72,6 +73,7 @@ class ReservasViewModel extends Notifier<List<Reserva>> {
     }
     final nueva = cambio(actual);
     state = [for (final reserva in state) reserva.id == id ? nueva : reserva];
+    ref.read(reservasRepositoryProvider).guardar(nueva);
     return nueva;
   }
 }

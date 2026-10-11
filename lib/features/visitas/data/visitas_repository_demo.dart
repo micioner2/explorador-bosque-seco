@@ -1,14 +1,10 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../domain/visita.dart';
-import '../domain/visitas_repository.dart';
 
-/// Visitas de demostración. Se reemplazan por las registradas en el puesto
-/// de control cuando se conecte el backend.
-class VisitasRepositoryDemo implements VisitasRepository {
+/// Visitas de demostración: con ellas empieza el celular cuando la app se
+/// compila sin servidor (ver `VisitasRepositoryLocal`).
+class VisitasRepositoryDemo {
   const VisitasRepositoryDemo();
 
-  @override
   List<Visita> visitasDelDia(DateTime dia) {
     DateTime a(int hora, [int minuto = 0]) =>
         DateTime(dia.year, dia.month, dia.day, hora, minuto);
@@ -72,7 +68,3 @@ class VisitasRepositoryDemo implements VisitasRepository {
     ];
   }
 }
-
-final visitasRepositoryProvider = Provider<VisitasRepository>(
-  (ref) => const VisitasRepositoryDemo(),
-);

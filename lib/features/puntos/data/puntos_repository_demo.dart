@@ -1,16 +1,12 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../domain/escaneo.dart';
 import '../domain/pasaporte.dart';
 import '../domain/producto.dart';
-import '../domain/puntos_repository.dart';
 
 /// Pasaporte de demostración: dos puntos confirmados y uno pendiente de
 /// sincronizar, como si el turista estuviera en el bosque sin señal.
-class PuntosRepositoryDemo implements PuntosRepository {
+class PuntosRepositoryDemo {
   const PuntosRepositoryDemo();
 
-  @override
   Pasaporte pasaporte() {
     final inicio = DateTime(2026, 10, 10, 9);
     return Pasaporte(
@@ -40,7 +36,6 @@ class PuntosRepositoryDemo implements PuntosRepository {
   }
 
   /// Productos de la comunidad (valores de ejemplo).
-  @override
   List<Producto> productos() => [
     Producto(
       id: 'miel',
@@ -56,7 +51,3 @@ class PuntosRepositoryDemo implements PuntosRepository {
     ),
   ];
 }
-
-final puntosRepositoryProvider = Provider<PuntosRepository>(
-  (ref) => const PuntosRepositoryDemo(),
-);

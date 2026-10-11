@@ -296,5 +296,7 @@
   "registrarSalida": "Expected exit",
   "registrarSalidaAyuda": "If they camp, choose the day they leave the forest.",
   "registrarSalidaCambiar": "Change exit",
-  "registrarSalidaInvalida": "The exit must be later than now"
+  "registrarSalidaInvalida": "The exit must be later than now",
+
+  "hoyGuardadosEnCelular": "{n, plural, =1{1 group saved} other{{n} groups saved}} on this phone · waiting to sync"
 }

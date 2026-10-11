@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/id.dart';
 import '../../../../core/reloj.dart';
 import '../../../sesion/presentation/view_models/sesion_view_model.dart';
-import '../../data/visitas_repository_demo.dart';
+import '../../data/visitas_repository_local.dart';
 import '../../domain/resumen_del_dia.dart';
 import '../../domain/visita.dart';
 
@@ -41,14 +41,15 @@ class VisitasViewModel extends Notifier<List<Visita>> {
       reservaId: reservaId,
     );
     state = [...state, visita];
+    ref.read(visitasRepositoryProvider).guardar(visita);
     return visita;
   }
 
   void marcarSalida(String visitaId) {
-    state = [
-      for (final visita in state)
-        visita.id == visitaId ? visita.marcarSalida(_ahora) : visita,
-    ];
+    final visita = state.firstWhere((v) => v.id == visitaId);
+    final conSalida = visita.marcarSalida(_ahora);
+    state = [for (final v in state) v.id == visitaId ? conSalida : v];
+    ref.read(visitasRepositoryProvider).guardar(conSalida);
   }
 }
 

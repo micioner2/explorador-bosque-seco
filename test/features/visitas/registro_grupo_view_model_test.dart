@@ -3,7 +3,7 @@ import 'package:explorador_bosque_seco/features/reservas/domain/reserva.dart';
 import 'package:explorador_bosque_seco/features/reservas/presentation/view_models/reservas_view_model.dart';
 import 'package:explorador_bosque_seco/features/sesion/data/sesion_repository_demo.dart';
 import 'package:explorador_bosque_seco/features/sesion/presentation/view_models/sesion_view_model.dart';
-import 'package:explorador_bosque_seco/features/visitas/data/visitas_repository_demo.dart';
+import 'package:explorador_bosque_seco/features/visitas/data/visitas_repository_local.dart';
 import 'package:explorador_bosque_seco/features/visitas/domain/visita.dart';
 import 'package:explorador_bosque_seco/features/visitas/domain/visitas_repository.dart';
 import 'package:explorador_bosque_seco/features/visitas/presentation/view_models/registro_grupo_view_model.dart';
@@ -14,6 +14,9 @@ import 'package:flutter_test/flutter_test.dart';
 class _SinVisitas implements VisitasRepository {
   @override
   List<Visita> visitasDelDia(DateTime dia) => const [];
+
+  @override
+  Future<void> guardar(Visita visita) async {}
 }
 
 void main() {

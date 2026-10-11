@@ -1,5 +1,5 @@
 import 'package:explorador_bosque_seco/core/reloj.dart';
-import 'package:explorador_bosque_seco/features/puntos/data/puntos_repository_demo.dart';
+import 'package:explorador_bosque_seco/features/puntos/data/puntos_repository_local.dart';
 import 'package:explorador_bosque_seco/features/puntos/domain/pasaporte.dart';
 import 'package:explorador_bosque_seco/features/puntos/domain/producto.dart';
 import 'package:explorador_bosque_seco/features/puntos/domain/puntos_repository.dart';
@@ -10,6 +10,9 @@ import 'package:flutter_test/flutter_test.dart';
 class _PasaporteVacio implements PuntosRepository {
   @override
   Pasaporte pasaporte() => Pasaporte();
+
+  @override
+  Future<void> guardar(Pasaporte pasaporte) async {}
 
   @override
   List<Producto> productos() => const [];
