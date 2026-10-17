@@ -25,7 +25,7 @@ dependencies:
   # La versión de intl la fija flutter_localizations (SDK de Flutter).
   # Fijada: image 4.11.0 (que trae pdf) usa una función de archive que pdf
   # no permite instalar, y no compila.
-  image: 4.10.2
+  image: 4.11.0
   intl: any
   latlong2: ^0.10.1
   mobile_scanner: ^7.1.4
